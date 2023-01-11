@@ -8,6 +8,9 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include <frc/MathUtil.h>
+#include <frc/TimedRobot.h>
+
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -58,7 +61,11 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic(){
+
+  m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
+
+}
 
 void Robot::DisabledInit() {}
 
