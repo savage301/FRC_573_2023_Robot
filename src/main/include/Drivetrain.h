@@ -11,6 +11,7 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/filter/SlewRateLimiter.h>
+#include "frc/ADXRS450_Gyro.h"
 #include "SwerveModule.h"
 
 /**
@@ -49,7 +50,7 @@ class Drivetrain {
   SwerveModule m_backLeft{7, 8, 9};
   SwerveModule m_backRight{10, 11, 12};
 
-  frc::AnalogGyro m_gyro{0};
+  frc::ADXRS450_Gyro m_gyro;
 
   frc::SwerveDriveKinematics<4> m_kinematics{
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation,
