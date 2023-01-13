@@ -6,12 +6,12 @@
 
 #include <numbers>
 
-#include <frc/AnalogGyro.h>
+
 #include <frc/geometry/Translation2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/filter/SlewRateLimiter.h>
-#include "frc/ADXRS450_Gyro.h"
+
 #include "SwerveModule.h"
 
 /**
@@ -50,7 +50,7 @@ class Drivetrain {
   SwerveModule m_backLeft{7, 8, 9};
   SwerveModule m_backRight{10, 11, 12};
 
-  frc::ADXRS450_Gyro m_gyro;
+  ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{13};
 
   frc::SwerveDriveKinematics<4> m_kinematics{
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation,

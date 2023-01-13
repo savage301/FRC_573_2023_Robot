@@ -58,7 +58,18 @@ void SwerveModule::SetDesiredState(
   const auto turnFeedforward = m_turnFeedforward.Calculate(
       m_turningPIDController.GetSetpoint().velocity);
 
-  // Set the motor outputs.
-  m_driveMotor.SetVoltage(units::volt_t{driveOutput} + driveFeedforward);
-  m_turningMotor.SetVoltage(units::volt_t{turnOutput} + turnFeedforward);
+ // Set the motor outputs.
+  if (m_driveMotor.GetDeviceId() == 1 || m_driveMotor.GetDeviceId() == 7 || m_driveMotor.GetDeviceId() == 4){
+    m_driveMotor.SetVoltage(units::volt_t{-driveOutput} );//+ driveFeedforward);
+  }
+  else{
+    m_driveMotor.SetVoltage(units::volt_t{driveOutput} );//+ driveFeedforward);
+  }
+  //m_driveMotor.SetVoltage(units::volt_t{driveOutput} );//+ driveFeedforward);
+  
+  if (m_turningMotor.GetDeviceId() == 5 || m_turningMotor.GetDeviceId() == 11){
+    m_turningMotor.SetVoltage(units::volt_t{-turnOutput} );//+ turnFeedforward);
+  }else{
+    m_turningMotor.SetVoltage(units::volt_t{turnOutput} );//+ turnFeedforward);
+  }
 }
