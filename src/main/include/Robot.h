@@ -9,6 +9,10 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/XboxController.h>
+#include <frc/smartdashboard/Field2d.h>
+#include <frc/Timer.h>
+#include <frc/controller/RamseteController.h>
+#include <frc/trajectory/TrajectoryGenerator.h>
 #include "Drivetrain.h"
 
 
@@ -16,6 +20,29 @@ class Robot : public frc::TimedRobot {
  public:
   Drivetrain m_swerve;
   frc::XboxController m_controller{0};
+
+// -------------- Added for Auto------------------------------
+  frc::Trajectory exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+      // Start at the origin facing the +X direction
+      frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)),
+      // Pass through these two interior waypoints, making an 's' curve path
+      {frc::Translation2d(6_m, 6_m), frc::Translation2d(7_m, 4_m)},
+      // End 3 meters straight ahead of where we started, facing forward
+      frc::Pose2d(8_m, 5_m, frc::Rotation2d(0_deg)),
+      // Pass the config
+      m_swerve.auto_traj);
+
+  // The timer to use during the autonomous period.
+  frc::Timer m_timer;
+
+  // Create Field2d for robot and trajectory visualizations.
+  frc::Field2d m_field;
+
+  // The Ramsete Controller to follow the trajectory.
+  frc::RamseteController m_ramseteController;
+
+// -------------------------------------------------------------
+
   void RobotInit() override;
   void RobotPeriodic() override;
   void AutonomousInit() override;

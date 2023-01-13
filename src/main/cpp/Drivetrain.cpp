@@ -2,6 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+
+#include <frc/smartdashboard/Field2d.h>
+#include <frc/Timer.h>
+
+
 #include "Drivetrain.h"
 
 void Drivetrain::Drive(units::meters_per_second_t xSpeed,
@@ -55,4 +60,19 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
 
     
     Drive(xSpeed, ySpeed, rot, fieldRelative);
+    UpdateOdometry();
   }
+
+
+  void Drivetrain::ResetOdometry(const frc::Pose2d& pose) {
+  m_odometry.ResetPosition(m_gyro.GetRotation2d(),
+                            {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+                            m_backLeft.GetPosition(), m_backRight.GetPosition()},
+                            pose);
+
+  }
+
+  frc::Pose2d Drivetrain::GetPose() const {
+  return m_odometry.GetPose();
+  }
+
