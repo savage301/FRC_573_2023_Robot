@@ -5,9 +5,7 @@
 #include "Robot.h"
 
 #include <fmt/core.h>
-
 #include <frc/smartdashboard/SmartDashboard.h>
-
 #include <frc/MathUtil.h>
 #include <frc/TimedRobot.h>
 
@@ -50,7 +48,8 @@ void Robot::AutonomousInit() {
     // Default Auto goes here
   }*/
 
-  // Traj following swerve autonomous
+// ---------------------------------- Trajectory Following Auto Section ---------------------
+  // Generate trajectory to follow for autonomous
   // Start the timer.
     m_timer.Start();
 
@@ -62,7 +61,7 @@ void Robot::AutonomousInit() {
 
     // Send our generated trajectory to Field2d.
     m_field.GetObject("traj")->SetTrajectory(exampleTrajectory);
-
+// ----------------------------------------------------------------------------------------
 
 }
 
@@ -73,6 +72,7 @@ void Robot::AutonomousPeriodic() {
     // Default Auto goes here
   }*/
 
+// ---------------------------------- Trajectory Following Auto Section ---------------------
   // Update odometry.
     m_swerve.UpdateOdometry();
 
@@ -91,19 +91,30 @@ void Robot::AutonomousPeriodic() {
       m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
 
   // Set the linear and angular speeds.
-      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+    m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
     } 
     else {
-      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+    m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
     }
+  // ----------------------------------------------------------------------------------------
     
 }
 
 void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic(){
-
+  
+  // Drive with joystick 0 with swervedrive
   m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),false);
+
+
+// ----------- Update robot pose and send it to field object on DS ----------------------------- 
+  // Update robot position on Field2d.
+    m_field.SetRobotPose(m_swerve.GetPose());
+
+  // Send Field2d to SmartDashboard.
+    frc::SmartDashboard::PutData(&m_field);
+// ----------------------------------------------------------------------------------------
 
 }
 

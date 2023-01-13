@@ -49,24 +49,21 @@ void SwerveModule::SetDesiredState(
   const auto driveOutput = m_drivePIDController.Calculate(
       m_driveEncoder.GetVelocity(), state.speed.value());
 
-  const auto driveFeedforward = m_driveFeedforward.Calculate(state.speed);
+  //const auto driveFeedforward = m_driveFeedforward.Calculate(state.speed);
 
   // Calculate the turning motor output from the turning PID controller.
   const auto turnOutput = m_turningPIDController.Calculate(
       units::radian_t{m_turningEncoder.GetPosition()}, state.angle.Radians());
 
-  const auto turnFeedforward = m_turnFeedforward.Calculate(
-      m_turningPIDController.GetSetpoint().velocity);
+  //const auto turnFeedforward = m_turnFeedforward.Calculate(m_turningPIDController.GetSetpoint().velocity);
 
- // Set the motor outputs.
+ // Set the motor outputs. Flip directions as needed to get modules to spin proper direction.
   if (m_driveMotor.GetDeviceId() == 1 || m_driveMotor.GetDeviceId() == 7 || m_driveMotor.GetDeviceId() == 4){
     m_driveMotor.SetVoltage(units::volt_t{-driveOutput} );//+ driveFeedforward);
   }
   else{
     m_driveMotor.SetVoltage(units::volt_t{driveOutput} );//+ driveFeedforward);
-  }
-  //m_driveMotor.SetVoltage(units::volt_t{driveOutput} );//+ driveFeedforward);
-  
+  }  
   if (m_turningMotor.GetDeviceId() == 5 || m_turningMotor.GetDeviceId() == 11){
     m_turningMotor.SetVoltage(units::volt_t{-turnOutput} );//+ turnFeedforward);
   }else{
