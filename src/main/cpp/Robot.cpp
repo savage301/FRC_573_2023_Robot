@@ -5,8 +5,9 @@
 #include "Robot.h"
 
 #include <fmt/core.h>
-
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/MathUtil.h>
+#include <frc/TimedRobot.h>
 
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -36,7 +37,7 @@ void Robot::RobotPeriodic() {}
  * make sure to add them to the chooser code above as well.
  */
 void Robot::AutonomousInit() {
-  m_autoSelected = m_chooser.GetSelected();
+  /*m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
   //     kAutoNameDefault);
   fmt::print("Auto selected: {}\n", m_autoSelected);
@@ -45,20 +46,77 @@ void Robot::AutonomousInit() {
     // Custom Auto goes here
   } else {
     // Default Auto goes here
-  }
+  }*/
+
+// ---------------------------------- Trajectory Following Auto Section ---------------------
+  // Generate trajectory to follow for autonomous
+  // Start the timer.
+    m_timer.Start();
+
+    // Send Field2d to SmartDashboard.
+    frc::SmartDashboard::PutData(&m_field);
+
+    // Reset the drivetrain's odometry to the starting pose of the trajectory.
+    m_swerve.ResetOdometry(exampleTrajectory.InitialPose());
+
+    // Send our generated trajectory to Field2d.
+    m_field.GetObject("traj")->SetTrajectory(exampleTrajectory);
+// ----------------------------------------------------------------------------------------
+
 }
 
 void Robot::AutonomousPeriodic() {
-  if (m_autoSelected == kAutoNameCustom) {
+  /*if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
   } else {
     // Default Auto goes here
-  }
+  }*/
+
+// ---------------------------------- Trajectory Following Auto Section ---------------------
+  // Update odometry.
+    m_swerve.UpdateOdometry();
+
+  // Update robot position on Field2d.
+    m_field.SetRobotPose(m_swerve.GetPose());
+
+  // Send Field2d to SmartDashboard.
+    frc::SmartDashboard::PutData(&m_field);
+
+  if (m_timer.Get() < exampleTrajectory.TotalTime()) {
+  // Get the desired pose from the trajectory.
+    auto desiredPose = exampleTrajectory.Sample(m_timer.Get());
+
+  // Get the reference chassis speeds from the Ramsete Controller.
+    auto refChassisSpeeds =
+      m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
+
+  // Set the linear and angular speeds.
+    m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+    } 
+    else {
+    m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+    }
+  // ----------------------------------------------------------------------------------------
+    
 }
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic(){
+  
+  // Drive with joystick 0 with swervedrive
+  m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
+
+
+// ----------- Update robot pose and send it to field object on DS ----------------------------- 
+  // Update robot position on Field2d.
+    m_field.SetRobotPose(m_swerve.GetPose());
+
+  // Send Field2d to SmartDashboard.
+    frc::SmartDashboard::PutData(&m_field);
+// ----------------------------------------------------------------------------------------
+
+}
 
 void Robot::DisabledInit() {}
 
