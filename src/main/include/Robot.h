@@ -14,6 +14,7 @@
 #include <frc/controller/RamseteController.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include "Drivetrain.h"
+#include "Led.h"
 
 
 class Robot : public frc::TimedRobot {
