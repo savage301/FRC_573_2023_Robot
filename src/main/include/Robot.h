@@ -14,12 +14,14 @@
 #include <frc/controller/RamseteController.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include "Drivetrain.h"
+#include "Appendage.h"
 #include "Led.h"
 
 
 class Robot : public frc::TimedRobot {
  public:
   Drivetrain m_swerve;
+  Appendage m_appendage;
   frc::XboxController m_controller{0};
 
 // -------------- Added for Auto------------------------------
