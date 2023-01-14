@@ -105,7 +105,7 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic(){
   
   // Drive with joystick 0 with swervedrive
-  m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),false);
+  m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
 
 
 // ----------- Update robot pose and send it to field object on DS ----------------------------- 
