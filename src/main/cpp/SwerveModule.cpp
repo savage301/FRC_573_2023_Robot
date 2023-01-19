@@ -7,6 +7,7 @@
 #include <numbers>
 
 #include <frc/geometry/Rotation2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 
 
@@ -63,6 +64,8 @@ void SwerveModule::SetDesiredState(
   }
   else{
     m_driveMotor.SetVoltage(units::volt_t{driveOutput} );//+ driveFeedforward);
+    frc::SmartDashboard::PutNumber("Can 10 Measured Velo",m_driveEncoder.GetVelocity());
+    frc::SmartDashboard::PutNumber("Can 10 Desired Velo",state.speed.value());
   }  
   if (m_turningMotor.GetDeviceId() == 5 || m_turningMotor.GetDeviceId() == 11){
     m_turningMotor.SetVoltage(units::volt_t{-turnOutput} );//+ turnFeedforward);
