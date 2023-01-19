@@ -4,6 +4,7 @@
 
 
 #include <frc/smartdashboard/Field2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/Timer.h>
 
 
@@ -61,6 +62,7 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
     
     Drive(xSpeed, ySpeed, rot, fieldRelative);
     UpdateOdometry();
+    frc::SmartDashboard::PutNumber("Gyro", m_gyro.GetAngle());
   }
 
 

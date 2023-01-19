@@ -100,7 +100,10 @@ void Robot::AutonomousPeriodic() {
     
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+
+  m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 0_rad});
+}
 
 void Robot::TeleopPeriodic(){
   
