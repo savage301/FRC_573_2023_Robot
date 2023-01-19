@@ -19,9 +19,9 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
 
 
   m_driveEncoder.SetPositionConversionFactor(2 * std::numbers::pi * kWheelRadius /
-                                     kDriveEncoderResolution);
-  m_driveEncoder.SetVelocityConversionFactor(2 * std::numbers::pi * kWheelRadius /
-                                     kDriveEncoderResolution);
+                                     kDriveEncoderResolution); // Conversion from rot to m
+  m_driveEncoder.SetVelocityConversionFactor((2 * std::numbers::pi * kWheelRadius /
+                                     kDriveEncoderResolution)/60); // Converstion from rpm to to m/s
 
   // Limit the PID Controller's input range between -pi and pi and set the input
   // to be continuous.
@@ -35,7 +35,7 @@ frc::SwerveModuleState SwerveModule::GetState() {
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {
-  return {units::meter_t{(m_driveEncoder.GetPosition())*70},
+  return {units::meter_t{(m_driveEncoder.GetPosition())},
           units::radian_t{m_turningEncoder.GetPosition()}};
 }
 
