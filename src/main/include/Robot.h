@@ -17,6 +17,12 @@
 #include "Appendage.h"
 #include "Led.h"
 
+#include "frc/smartdashboard/Smartdashboard.h"
+#include "networktables/NetworkTable.h"
+#include "networktables/NetworkTableInstance.h"
+#include "networktables/NetworkTableEntry.h"
+#include "networktables/NetworkTableValue.h"
+#include <span>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -67,7 +73,7 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  
+  nt::DoubleArraySubscriber camTran;  
 
 
 

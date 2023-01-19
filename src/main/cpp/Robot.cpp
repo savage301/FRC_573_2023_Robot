@@ -13,6 +13,9 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
+  camTran = table->GetDoubleArrayTopic("camtran").Subscribe({});
 }
 
 /**
@@ -106,7 +109,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic(){
-  
+
   // Drive with joystick 0 with swervedrive
   m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
 
@@ -118,6 +121,13 @@ void Robot::TeleopPeriodic(){
   // Send Field2d to SmartDashboard.
     frc::SmartDashboard::PutData(&m_field);
 // ----------------------------------------------------------------------------------------
+
+  std::vector<double>robotPose = camTran.Get();
+  frc::SmartDashboard::PutNumber("robotPoseX",robotPose[2]);
+  frc::SmartDashboard::PutNumber("robotPoseY",robotPose[1]);
+  frc::SmartDashboard::PutNumber("robotPoseYaw",robotPose[4]);
+
+  //frc::Pose2d relPose = frc::Pose2d(robotPose[2]_m, robotPose[1]_m, frc::Rotation2d(0_deg)),
 
 }
 
