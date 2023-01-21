@@ -111,9 +111,38 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic(){
 
-  // Drive with joystick 0 with swervedrive
-  m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
+  if (m_controller.GetAButton()) {
+    if (m_controller.GetAButtonPressed()) {
+      // select color
+      trajectory_ = frc::TrajectoryGenerator::GenerateTrajectory(
+      // Start at the origin facing the +X direction
+      std::vector<frc::Pose2d> {m_swerve.GetPose(), redPose[1]},
+      // Pass the config
+      m_swerve.auto_traj);
 
+      m_timer.Reset();
+      // Start the timer.
+      m_timer.Start();
+      
+    }
+    if (m_timer.Get() < trajectory_.TotalTime()) {
+    // Get the desired pose from the trajectory.
+      auto desiredPose = trajectory_.Sample(m_timer.Get());
+
+    // Get the reference chassis speeds from the Ramsete Controller.
+      auto refChassisSpeeds =
+        m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
+
+    // Set the linear and angular speeds.
+      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+      } 
+      else {
+      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+      }
+  } else {
+    // Drive with joystick 0 with swervedrive
+    m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
+  }
   int validTarFnd = validTarget.Get();
   std::vector<double> robotPose = botPose.Get();
   if (validTarFnd == 1 && robotPose.size()>0) {

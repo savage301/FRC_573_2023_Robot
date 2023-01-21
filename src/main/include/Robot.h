@@ -41,12 +41,14 @@ class Robot : public frc::TimedRobot {
       // Pass the config
       m_swerve.auto_traj);
 
+  frc::Trajectory trajectory_;
+
   // The timer to use during the autonomous period.
   frc::Timer m_timer;
 
   // Create Field2d for robot and trajectory visualizations.
   frc::Field2d m_field;
-  
+
   frc::Field2d field_off;
 
   // The Ramsete Controller to follow the trajectory.
@@ -77,4 +79,21 @@ class Robot : public frc::TimedRobot {
 
   nt::DoubleArraySubscriber botPose;  
   nt::IntegerSubscriber validTarget;
+
+#define pose(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
+#define poseRed(y) pose(6.84_m,y)
+#define poseBlue(y) pose(-6.84_m,y)
+
+  std::vector<frc::Pose2d> redPose = {
+    poseRed(-3.5_m), poseRed(-2.94_m),
+    poseRed(-2.38_m),poseRed(-1.82_m),
+    poseRed(-1.26_m),poseRed(-.7_m),
+    poseRed(-.14_m),poseRed(-.42_m),
+    poseRed(.98_m)};
+  std::vector<frc::Pose2d> bluePose = {
+    poseBlue(-3.5_m), poseBlue(-2.94_m),
+    poseBlue(-2.38_m),poseBlue(-1.82_m),
+    poseBlue(-1.26_m),poseBlue(-.7_m),
+    poseBlue(-.14_m),poseBlue(-.42_m),
+    poseBlue(.98_m)};
 };

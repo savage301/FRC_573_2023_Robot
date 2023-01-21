@@ -34,12 +34,12 @@ class Drivetrain {
   frc::Pose2d GetPose() const;
 
   static constexpr units::meters_per_second_t kMaxSpeed =
-      1_mps;  // 3 meters per second
+      3_mps;  // 3 meters per second
   static constexpr units::radians_per_second_t kMaxAngularSpeed{
-      std::numbers::pi};  // 1/2 rotation per second
+      std::numbers::pi*2};  // 1/2 rotation per second
 
   static constexpr auto kMaxAcceleration =
-     units::meters_per_second_squared_t(2.5);  // meters per second^2
+     units::meters_per_second_squared_t(1);  // meters per second^2
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
     // to 1.
@@ -48,6 +48,7 @@ class Drivetrain {
     frc::SlewRateLimiter<units::dimensionless::scalar> m_rotLimiter{3 / 1_s};
 
     frc::TrajectoryConfig auto_traj {kMaxSpeed,kMaxAcceleration};
+    //auto_traj.AddConstraints(SwerveDriveKinematicsConstraint);
 
  private:
   frc::Translation2d m_frontLeftLocation{+0.305_m, +0.305_m};
@@ -71,7 +72,6 @@ class Drivetrain {
       m_gyro.GetRotation2d(),
       {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
        m_backLeft.GetPosition(), m_backRight.GetPosition()}};
-
 
 
 };
