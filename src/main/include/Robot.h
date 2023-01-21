@@ -46,6 +46,8 @@ class Robot : public frc::TimedRobot {
 
   // Create Field2d for robot and trajectory visualizations.
   frc::Field2d m_field;
+  
+  frc::Field2d field_off;
 
   // The Ramsete Controller to follow the trajectory.
   frc::RamseteController m_ramseteController;
