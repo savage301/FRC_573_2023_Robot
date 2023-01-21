@@ -15,7 +15,8 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
-  camTran = table->GetDoubleArrayTopic("camtran").Subscribe({});
+  botPose = table->GetDoubleArrayTopic("botPose").Subscribe({});
+  validTarget = table->GetIntegerTopic("tv").Subscribe({});
 }
 
 /**
@@ -113,21 +114,28 @@ void Robot::TeleopPeriodic(){
   // Drive with joystick 0 with swervedrive
   m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
 
-
-// ----------- Update robot pose and send it to field object on DS ----------------------------- 
-  // Update robot position on Field2d.
-    m_field.SetRobotPose(m_swerve.GetPose());
-
-  // Send Field2d to SmartDashboard.
-    frc::SmartDashboard::PutData(&m_field);
-// ----------------------------------------------------------------------------------------
-
-  std::vector<double>robotPose = camTran.Get();
-  frc::SmartDashboard::PutNumber("robotPoseX",robotPose[2]);
+  auto robotPose = botPose.Get();
+  frc::SmartDashboard::PutNumber("robotPoseX",robotPose[0]);
   frc::SmartDashboard::PutNumber("robotPoseY",robotPose[1]);
-  frc::SmartDashboard::PutNumber("robotPoseYaw",robotPose[4]);
+  frc::SmartDashboard::PutNumber("robotPoseYaw",robotPose[5]);
 
-  //frc::Pose2d relPose = frc::Pose2d(robotPose[2]_m, robotPose[1]_m, frc::Rotation2d(0_deg)),
+/*
+  auto tmp2d = frc::Translation2d(units::meter_t(robotPose[0]), units::meter_t(robotPose[1]));
+  auto tmpAng = frc::Rotation2d(units::degree_t(robotPose[5]));
+  auto fldPose = frc::Pose2d(tmp2d, tmpAng);
+
+  auto validTarFnd = validTarget.Get();
+  if (validTarFnd == 1) {
+      m_field.SetRobotPose(fldPose);
+  } else {
+  // ----------- Update robot pose and send it to field object on DS ----------------------------- 
+    // Update robot position on Field2d.
+      m_field.SetRobotPose(m_swerve.GetPose());
+  // ----------------------------------------------------------------------------------------
+  }
+  */
+  // Send Field2d to SmartDashboard.
+  frc::SmartDashboard::PutData(&m_field);
 
 }
 

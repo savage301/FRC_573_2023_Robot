@@ -73,8 +73,6 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  nt::DoubleArraySubscriber camTran;  
-
-
-
+  nt::DoubleArraySubscriber botPose;  
+  nt::IntegerSubscriber validTarget;
 };
