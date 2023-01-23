@@ -136,10 +136,6 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic(){
-
-  // Pose to offeset things so it looks correct on Shuffleboard. Translating orgin from center of field to bottom left corner of field
-  frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
-
   frc::TrajectoryConfig auto_traj {m_swerve.kMaxSpeed,m_swerve.kMaxAcceleration};
   auto_traj.SetKinematics(m_swerve.m_kinematics);
 // -------------- Added for Auto------------------------------
@@ -162,9 +158,6 @@ void Robot::TeleopPeriodic(){
       // Pass the config
       auto_traj);
 
-      // Send our generated trajectory to Field2d on shuffleboard
-      field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-      
       m_timer.Reset();
       // Start the timer.
       m_timer.Start();
@@ -212,7 +205,11 @@ void Robot::TeleopPeriodic(){
   // ----------------------------------------------------------------------------------------
   }
 
+  // Send Field2d to SmartDashboard.
+  frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
+
   //frc::SmartDashboard::PutData(&m_field);
+  
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
   frc::SmartDashboard::PutData(&field_off);
 
