@@ -111,6 +111,10 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic(){
 
+  // Send Field2d to SmartDashboard.
+  frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
+
+
   if (m_controller.GetAButton()) {
     if (m_controller.GetAButtonPressed()) {
       m_swerve.setTrajCon();
@@ -120,6 +124,10 @@ void Robot::TeleopPeriodic(){
       std::vector<frc::Pose2d> {m_swerve.GetPose(), redPose[1]},
       // Pass the config
       m_swerve.auto_traj);
+
+      
+    // Send our generated trajectory to Field2d.
+    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
 
       m_timer.Reset();
       // Start the timer.
@@ -168,9 +176,7 @@ void Robot::TeleopPeriodic(){
   // ----------------------------------------------------------------------------------------
   }
 
-  // Send Field2d to SmartDashboard.
-  frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
-
+  
   //frc::SmartDashboard::PutData(&m_field);
   
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
