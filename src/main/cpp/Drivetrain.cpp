@@ -78,3 +78,7 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
   return m_odometry.GetPose();
   }
 
+  void Drivetrain::setTrajCon(){
+    auto_traj.SetKinematics(m_kinematics);
+  }
+

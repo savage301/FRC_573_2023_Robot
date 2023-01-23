@@ -113,6 +113,7 @@ void Robot::TeleopPeriodic(){
 
   if (m_controller.GetAButton()) {
     if (m_controller.GetAButtonPressed()) {
+      m_swerve.setTrajCon();
       // select color
       trajectory_ = frc::TrajectoryGenerator::GenerateTrajectory(
       // Start at the origin facing the +X direction

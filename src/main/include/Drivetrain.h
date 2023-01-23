@@ -50,6 +50,8 @@ class Drivetrain {
     frc::TrajectoryConfig auto_traj {kMaxSpeed,kMaxAcceleration};
     //auto_traj.AddConstraints(SwerveDriveKinematicsConstraint);
 
+    void setTrajCon();
+
  private:
   frc::Translation2d m_frontLeftLocation{+0.305_m, +0.305_m};
   frc::Translation2d m_frontRightLocation{+0.305_m, -0.305_m};
