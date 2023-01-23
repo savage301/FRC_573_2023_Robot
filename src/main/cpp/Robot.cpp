@@ -52,19 +52,6 @@ void Robot::AutonomousInit() {
     // Default Auto goes here
   }*/
 
-  frc::TrajectoryConfig auto_traj {m_swerve.kMaxSpeed,m_swerve.kMaxAcceleration};
-  auto_traj.SetKinematics(m_swerve.m_kinematics);
-// -------------- Added for Auto------------------------------
-  exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-      // Start at the origin facing the +X direction
-      frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)),
-      // Pass through these two interior waypoints, making an 's' curve path
-      {frc::Translation2d(6_m, 6_m), frc::Translation2d(7_m, 4_m)},
-      // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d(8_m, 5_m, frc::Rotation2d(0_deg)),
-      // Pass the config
-    auto_traj);
-
 // ---------------------------------- Trajectory Following Auto Section ---------------------
   // Generate trajectory to follow for autonomous
   // Start the timer.
@@ -88,19 +75,6 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }*/
-
-  frc::TrajectoryConfig auto_traj {m_swerve.kMaxSpeed,m_swerve.kMaxAcceleration};
-  auto_traj.SetKinematics(m_swerve.m_kinematics);
-// -------------- Added for Auto------------------------------
- exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-      // Start at the origin facing the +X direction
-      frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)),
-      // Pass through these two interior waypoints, making an 's' curve path
-      {frc::Translation2d(6_m, 6_m), frc::Translation2d(7_m, 4_m)},
-      // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d(8_m, 5_m, frc::Rotation2d(0_deg)),
-      // Pass the config
-    auto_traj);
 
 // ---------------------------------- Trajectory Following Auto Section ---------------------
   // Update odometry.
@@ -136,18 +110,6 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic(){
-  frc::TrajectoryConfig auto_traj {m_swerve.kMaxSpeed,m_swerve.kMaxAcceleration};
-  auto_traj.SetKinematics(m_swerve.m_kinematics);
-// -------------- Added for Auto------------------------------
-  exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-      // Start at the origin facing the +X direction
-      frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)),
-      // Pass through these two interior waypoints, making an 's' curve path
-      {frc::Translation2d(6_m, 6_m), frc::Translation2d(7_m, 4_m)},
-      // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d(8_m, 5_m, frc::Rotation2d(0_deg)),
-      // Pass the config
-    auto_traj);
 
   if (m_controller.GetAButton()) {
     if (m_controller.GetAButtonPressed()) {
@@ -156,7 +118,7 @@ void Robot::TeleopPeriodic(){
       // Start at the origin facing the +X direction
       std::vector<frc::Pose2d> {m_swerve.GetPose(), redPose[1]},
       // Pass the config
-      auto_traj);
+      m_swerve.auto_traj);
 
       m_timer.Reset();
       // Start the timer.

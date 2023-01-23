@@ -47,11 +47,8 @@ class Drivetrain {
     frc::SlewRateLimiter<units::dimensionless::scalar> m_yspeedLimiter{3 / 1_s};
     frc::SlewRateLimiter<units::dimensionless::scalar> m_rotLimiter{3 / 1_s};
 
-
-  frc::SwerveDriveKinematics<4> m_kinematics{
-      m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation,
-      m_backRightLocation};
-
+    frc::TrajectoryConfig auto_traj {kMaxSpeed,kMaxAcceleration};
+    //auto_traj.AddConstraints(SwerveDriveKinematicsConstraint);
 
  private:
   frc::Translation2d m_frontLeftLocation{+0.305_m, +0.305_m};
@@ -65,6 +62,11 @@ class Drivetrain {
   SwerveModule m_backRight{10, 11, 12};
 
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{13};
+
+  frc::SwerveDriveKinematics<4> m_kinematics{
+      m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation,
+      m_backRightLocation};
+
   frc::SwerveDriveOdometry<4> m_odometry{
       m_kinematics,
       m_gyro.GetRotation2d(),

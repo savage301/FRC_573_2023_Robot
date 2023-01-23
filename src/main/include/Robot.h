@@ -31,7 +31,15 @@ class Robot : public frc::TimedRobot {
   frc::XboxController m_controller{0};
 
 // -------------- Added for Auto------------------------------
-  frc::Trajectory exampleTrajectory;
+  frc::Trajectory exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+      // Start at the origin facing the +X direction
+      frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)),
+      // Pass through these two interior waypoints, making an 's' curve path
+      {frc::Translation2d(6_m, 6_m), frc::Translation2d(7_m, 4_m)},
+      // End 3 meters straight ahead of where we started, facing forward
+      frc::Pose2d(8_m, 5_m, frc::Rotation2d(0_deg)),
+      // Pass the config
+      m_swerve.auto_traj);
 
   frc::Trajectory trajectory_;
 
