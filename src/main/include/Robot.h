@@ -24,6 +24,10 @@
 #include "networktables/NetworkTableValue.h"
 #include <span>
 
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/PathPoint.h>
+
 class Robot : public frc::TimedRobot {
  public:
   Drivetrain m_swerve;
