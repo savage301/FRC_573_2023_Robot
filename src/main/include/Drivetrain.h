@@ -41,6 +41,9 @@ class Drivetrain {
   static constexpr auto kMaxAcceleration =
      units::meters_per_second_squared_t(1);  // meters per second^2
 
+    static constexpr units::radians_per_second_squared_t kMaxAngularAccel{
+      std::numbers::pi};  // 1/2 rotation per second per second
+
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
     // to 1.
     frc::SlewRateLimiter<units::dimensionless::scalar> m_xspeedLimiter{3 / 1_s};

@@ -28,7 +28,7 @@
 #include <pathplanner/lib/PathPlanner.h>
 #include <pathplanner/lib/PathPoint.h>
 
-#include <frc/geometry/Transform2d.h>
+#include <frc/controller/HolonomicDriveController.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -59,6 +59,17 @@ class Robot : public frc::TimedRobot {
 
   // The Ramsete Controller to follow the trajectory.
   frc::RamseteController m_ramseteController;
+
+  frc2::PIDController X_PIDController{1.0, 0, 0}; 
+  frc2::PIDController Y_PIDController{1.0, 0, 0}; 
+  frc::ProfiledPIDController<units::radians> theta_PIDController{
+      1,
+      0.0,
+      0.0,
+      {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
+
+ //Swerve Controller to follow the trajectory
+  frc::HolonomicDriveController m_holonmicController = frc::HolonomicDriveController(X_PIDController,Y_PIDController,theta_PIDController);
 
 // -------------------------------------------------------------
 

@@ -143,14 +143,11 @@ void Robot::TeleopPeriodic(){
     }
     if (m_timer.Get() < trajectory_.TotalTime()) {
     // Get the desired pose from the trajectory.
-      
-      frc::Transform2d Trans = frc::Transform2d(frc::Pose2d(5_m, 5_m, frc::Rotation2d(50_deg)),frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)));
-      trajectory_.TransformBy(Trans);
-      auto desiredPose = trajectory_.Sample(m_timer.Get());
+      auto desiredState = trajectory_.Sample(m_timer.Get());
     // Get the reference chassis speeds from the Ramsete Controller.
     
-      auto refChassisSpeeds =
-        m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
+      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));
+        //m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
      
  
     // Set the linear and angular speeds.
