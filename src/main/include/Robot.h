@@ -28,6 +28,8 @@
 #include <pathplanner/lib/PathPlanner.h>
 #include <pathplanner/lib/PathPoint.h>
 
+#include <frc/geometry/Transform2d.h>
+
 class Robot : public frc::TimedRobot {
  public:
   Drivetrain m_swerve;
