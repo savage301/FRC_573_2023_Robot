@@ -126,15 +126,15 @@ void Robot::TeleopPeriodic(){
       m_swerve.auto_traj);*/
 
       // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
-    pathplanner::PathPlannerTrajectory trajectory_ = pathplanner::PathPlanner::generatePath(
+    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
     pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
     pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
     pathplanner::PathPoint(redPose[1].Translation(),redPose[1].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
     ));
 
-      
+    trajectory_ = trajectoryPP_.asWPILibTrajectory();
     // Send our generated trajectory to Field2d.
-    //field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
+    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
 
       m_timer.Reset();
       // Start the timer.
@@ -148,7 +148,8 @@ void Robot::TeleopPeriodic(){
     // Get the reference chassis speeds from the Ramsete Controller.
       auto refChassisSpeeds =
         m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
-
+     
+ 
     // Set the linear and angular speeds.
       m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
       } 

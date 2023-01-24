@@ -45,8 +45,8 @@ class Robot : public frc::TimedRobot {
       // Pass the config
       m_swerve.auto_traj);
 
+  pathplanner::PathPlannerTrajectory trajectoryPP_;
   frc::Trajectory trajectory_;
-
   // The timer to use during the autonomous period.
   frc::Timer m_timer;
 
@@ -84,9 +84,9 @@ class Robot : public frc::TimedRobot {
   nt::DoubleArraySubscriber botPose;  
   nt::IntegerSubscriber validTarget;
 
-#define pose(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
-#define poseRed(y) pose(6.84_m,y)
-#define poseBlue(y) pose(-6.84_m,y)
+#define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
+#define poseRed(y) pose1(6.84_m,y)
+#define poseBlue(y) pose1(-6.84_m,y)
 
   std::vector<frc::Pose2d> redPose = {
     poseRed(-3.5_m), poseRed(-2.94_m),
