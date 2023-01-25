@@ -105,7 +105,8 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-
+  isBlue = false;
+  tarGrid = Grid::humanLeft;
   m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 0_rad});
 }
 
@@ -114,9 +115,28 @@ void Robot::TeleopPeriodic(){
   // Send Field2d to SmartDashboard.
   frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
 
+  int dPadAng = m_controller.GetPOV();
 
-  if (m_controller.GetAButton()) {
-    if (m_controller.GetAButtonPressed()) {
+  if (dPadAng>75&&dPadAng<105) {
+    tarGrid = Grid::humanRight;
+  } else if (dPadAng>165&&dPadAng<195) {
+    tarGrid = Grid::humanCenter;
+  } else if (dPadAng>255&&dPadAng<285) {
+    tarGrid = Grid::humanLeft;
+  }
+  frc::SmartDashboard::PutNumber("Grid",tarGrid);
+
+  isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue);
+
+  if (m_controller.GetAButton()||m_controller.GetBButton()||m_controller.GetXButton()) {
+    if (m_controller.GetAButtonPressed()||m_controller.GetBButtonPressed()||m_controller.GetXButtonPressed()) {
+     int lmr = 0;
+     if (m_controller.GetAButton())
+      lmr = 1;
+     else if (m_controller.GetBButton())
+      lmr = 2;
+
+     int slot = 3 * tarGrid + lmr;
       /*m_swerve.setTrajCon();
       // select color
       trajectory_ = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -129,7 +149,7 @@ void Robot::TeleopPeriodic(){
     pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
     pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
     pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
-    pathplanner::PathPoint(redPose[1].Translation(),redPose[1].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
+    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
     ));
 
     trajectory_ = trajectoryPP_.asWPILibTrajectory();

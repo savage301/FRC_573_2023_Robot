@@ -102,15 +102,34 @@ class Robot : public frc::TimedRobot {
 #define poseBlue(y) pose1(-6.84_m,y)
 
   std::vector<frc::Pose2d> redPose = {
-    poseRed(-3.5_m), poseRed(-2.94_m),
-    poseRed(-2.38_m),poseRed(-1.82_m),
-    poseRed(-1.26_m),poseRed(-.7_m),
-    poseRed(-.14_m),poseRed(-.42_m),
-    poseRed(.98_m)};
+      poseRed(-3.5_m),
+      poseRed(-2.94_m),
+      poseRed(-2.38_m),
+      poseRed(-1.82_m),
+      poseRed(-1.26_m),
+      poseRed(-.7_m),
+      poseRed(-.14_m),
+      poseRed(.42_m),
+      poseRed(.98_m)};
   std::vector<frc::Pose2d> bluePose = {
-    poseBlue(-3.5_m), poseBlue(-2.94_m),
-    poseBlue(-2.38_m),poseBlue(-1.82_m),
-    poseBlue(-1.26_m),poseBlue(-.7_m),
-    poseBlue(-.14_m),poseBlue(-.42_m),
-    poseBlue(.98_m)};
+      poseBlue(.98_m),
+      poseBlue(.42_m),
+      poseBlue(-.14_m),
+      poseBlue(-.7_m),
+      poseBlue(-1.26_m),
+      poseBlue(-1.82_m),
+      poseBlue(-2.38_m),
+      poseBlue(-2.94_m),
+      poseBlue(-3.5_m)};
+
+  enum Grid
+  {
+    humanLeft,
+    humanCenter,
+    humanRight
+  };
+
+  int tarGrid;
+
+  bool isBlue;
 };
