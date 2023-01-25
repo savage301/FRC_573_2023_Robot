@@ -7,6 +7,7 @@
 #include <numbers>
 
 #include <frc/geometry/Rotation2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 
 
@@ -19,9 +20,9 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
 
 
   m_driveEncoder.SetPositionConversionFactor(2 * std::numbers::pi * kWheelRadius /
-                                     kDriveEncoderResolution);
-  m_driveEncoder.SetVelocityConversionFactor(2 * std::numbers::pi * kWheelRadius /
-                                     kDriveEncoderResolution);
+                                     kDriveEncoderResolution); // Conversion from rot to m
+  m_driveEncoder.SetVelocityConversionFactor((2 * std::numbers::pi * kWheelRadius /
+                                     kDriveEncoderResolution)/60); // Converstion from rpm to to m/s
 
   // Limit the PID Controller's input range between -pi and pi and set the input
   // to be continuous.
@@ -35,7 +36,7 @@ frc::SwerveModuleState SwerveModule::GetState() {
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {
-  return {units::meter_t{m_driveEncoder.GetPosition()},
+  return {units::meter_t{((m_driveEncoder.GetPosition()))*-1.6},
           units::radian_t{m_turningEncoder.GetPosition()}};
 }
 
@@ -63,6 +64,8 @@ void SwerveModule::SetDesiredState(
   }
   else{
     m_driveMotor.SetVoltage(units::volt_t{driveOutput} );//+ driveFeedforward);
+    frc::SmartDashboard::PutNumber("Can 10 Measured Velo",m_driveEncoder.GetVelocity());
+    frc::SmartDashboard::PutNumber("Can 10 Desired Velo",state.speed.value());
   }  
   if (m_turningMotor.GetDeviceId() == 5 || m_turningMotor.GetDeviceId() == 11){
     m_turningMotor.SetVoltage(units::volt_t{-turnOutput} );//+ turnFeedforward);

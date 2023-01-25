@@ -32,13 +32,13 @@ class SwerveModule {
 
  private:
   static constexpr double kWheelRadius = 0.0508;
-  static constexpr int kDriveEncoderResolution = 42*6.75;
+  static constexpr int kDriveEncoderResolution = 6.75;
   static constexpr int kSteerEncoderResolution = 4096;
 
   static constexpr auto kModuleMaxAngularVelocity =
-      std::numbers::pi * 1_rad_per_s;  // radians per second
+      std::numbers::pi * 10_rad_per_s;  // radians per second
   static constexpr auto kModuleMaxAngularAcceleration =
-      std::numbers::pi * 2_rad_per_s / 1_s;  // radians per second^2
+      std::numbers::pi * 20_rad_per_s / 1_s;  // radians per second^2
 
   rev::CANSparkMax m_driveMotor;
   rev::CANSparkMax m_turningMotor;
@@ -46,7 +46,7 @@ class SwerveModule {
   rev::SparkMaxRelativeEncoder m_driveEncoder;
   ctre::phoenix::sensors::CANCoder m_turningEncoder;
 
-  frc2::PIDController m_drivePIDController{1.0, 0, 0};
+  frc2::PIDController m_drivePIDController{1.0, 0, 0}; 
   frc::ProfiledPIDController<units::radians> m_turningPIDController{
       12/1.5,
       0.0,

@@ -17,6 +17,18 @@
 #include "Appendage.h"
 #include "Led.h"
 
+#include "frc/smartdashboard/Smartdashboard.h"
+#include "networktables/NetworkTable.h"
+#include "networktables/NetworkTableInstance.h"
+#include "networktables/NetworkTableEntry.h"
+#include "networktables/NetworkTableValue.h"
+#include <span>
+
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/PathPoint.h>
+
+#include <frc/controller/HolonomicDriveController.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -35,14 +47,29 @@ class Robot : public frc::TimedRobot {
       // Pass the config
       m_swerve.auto_traj);
 
+  pathplanner::PathPlannerTrajectory trajectoryPP_;
+  frc::Trajectory trajectory_;
   // The timer to use during the autonomous period.
   frc::Timer m_timer;
 
   // Create Field2d for robot and trajectory visualizations.
   frc::Field2d m_field;
 
+  frc::Field2d field_off;
+
   // The Ramsete Controller to follow the trajectory.
   frc::RamseteController m_ramseteController;
+
+  frc2::PIDController X_PIDController{1.0, 0, 0}; 
+  frc2::PIDController Y_PIDController{1.0, 0, 0}; 
+  frc::ProfiledPIDController<units::radians> theta_PIDController{
+      1,
+      0.0,
+      0.0,
+      {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
+
+ //Swerve Controller to follow the trajectory
+  frc::HolonomicDriveController m_holonmicController = frc::HolonomicDriveController(X_PIDController,Y_PIDController,theta_PIDController);
 
 // -------------------------------------------------------------
 
@@ -67,8 +94,42 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  
+  nt::DoubleArraySubscriber botPose;  
+  nt::IntegerSubscriber validTarget;
 
+#define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
+#define poseRed(y) pose1(6.84_m,y)
+#define poseBlue(y) pose1(-6.84_m,y)
 
+  std::vector<frc::Pose2d> redPose = {
+      poseRed(-3.5_m),
+      poseRed(-2.94_m),
+      poseRed(-2.38_m),
+      poseRed(-1.82_m),
+      poseRed(-1.26_m),
+      poseRed(-.7_m),
+      poseRed(-.14_m),
+      poseRed(.42_m),
+      poseRed(.98_m)};
+  std::vector<frc::Pose2d> bluePose = {
+      poseBlue(.98_m),
+      poseBlue(.42_m),
+      poseBlue(-.14_m),
+      poseBlue(-.7_m),
+      poseBlue(-1.26_m),
+      poseBlue(-1.82_m),
+      poseBlue(-2.38_m),
+      poseBlue(-2.94_m),
+      poseBlue(-3.5_m)};
 
+  enum Grid
+  {
+    humanLeft,
+    humanCenter,
+    humanRight
+  };
+
+  int tarGrid;
+
+  bool isBlue;
 };

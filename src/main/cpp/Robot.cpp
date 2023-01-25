@@ -13,6 +13,10 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
+  botPose = table->GetDoubleArrayTopic("botpose").Subscribe({});
+  validTarget = table->GetIntegerTopic("tv").Subscribe({});
 }
 
 /**
@@ -100,21 +104,111 @@ void Robot::AutonomousPeriodic() {
     
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+  isBlue = false;
+  tarGrid = Grid::humanLeft;
+  m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 0_rad});
+}
 
 void Robot::TeleopPeriodic(){
-  
-  // Drive with joystick 0 with swervedrive
-  m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
-
-
-// ----------- Update robot pose and send it to field object on DS ----------------------------- 
-  // Update robot position on Field2d.
-    m_field.SetRobotPose(m_swerve.GetPose());
 
   // Send Field2d to SmartDashboard.
-    frc::SmartDashboard::PutData(&m_field);
-// ----------------------------------------------------------------------------------------
+  frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
+
+  int dPadAng = m_controller.GetPOV();
+
+  if (dPadAng>75&&dPadAng<105) {
+    tarGrid = Grid::humanRight;
+  } else if (dPadAng>165&&dPadAng<195) {
+    tarGrid = Grid::humanCenter;
+  } else if (dPadAng>255&&dPadAng<285) {
+    tarGrid = Grid::humanLeft;
+  }
+  frc::SmartDashboard::PutNumber("Grid",tarGrid);
+
+  isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue);
+
+  if (m_controller.GetAButton()||m_controller.GetBButton()||m_controller.GetXButton()) {
+    if (m_controller.GetAButtonPressed()||m_controller.GetBButtonPressed()||m_controller.GetXButtonPressed()) {
+     int lmr = 0;
+     if (m_controller.GetAButton())
+      lmr = 1;
+     else if (m_controller.GetBButton())
+      lmr = 2;
+
+     int slot = 3 * tarGrid + lmr;
+      /*m_swerve.setTrajCon();
+      // select color
+      trajectory_ = frc::TrajectoryGenerator::GenerateTrajectory(
+      // Start at the origin facing the +X direction
+      std::vector<frc::Pose2d> {m_swerve.GetPose(), redPose[1]},
+      // Pass the config
+      m_swerve.auto_traj);*/
+
+      // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
+    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
+    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
+    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
+    ));
+
+    trajectory_ = trajectoryPP_.asWPILibTrajectory();
+    // Send our generated trajectory to Field2d.
+    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
+
+      m_timer.Reset();
+      // Start the timer.
+      m_timer.Start();
+      
+    }
+    if (m_timer.Get() < trajectory_.TotalTime()) {
+    // Get the desired pose from the trajectory.
+      auto desiredState = trajectory_.Sample(m_timer.Get());
+    // Get the reference chassis speeds from the Ramsete Controller.
+    
+      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));
+        //m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
+     
+ 
+    // Set the linear and angular speeds.
+      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+      } 
+      else {
+      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+      }
+  } else {
+    // Drive with joystick 0 with swervedrive
+    m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
+  }
+  int validTarFnd = validTarget.Get();
+  std::vector<double> robotPose = botPose.Get();
+  if (validTarFnd == 1 && robotPose.size()>0) {
+      
+          
+          frc::SmartDashboard::PutNumber("robotPoseX",robotPose[0]);
+          frc::SmartDashboard::PutNumber("robotPoseY",robotPose[1]);
+          frc::SmartDashboard::PutNumber("robotPoseYaw",robotPose[5]);
+
+          frc::Translation2d tmp2d = frc::Translation2d(units::meter_t(robotPose[0]), units::meter_t(robotPose[1]));
+          frc::Rotation2d tmpAng = frc::Rotation2d(units::degree_t(robotPose[5]));
+          frc::Pose2d fldPose = frc::Pose2d(tmp2d, tmpAng);
+
+          m_field.SetRobotPose(fldPose);
+          m_swerve.ResetOdometry(fldPose);
+
+  } else {
+  // ----------- Update robot pose and send it to field object on DS ----------------------------- 
+    // Update robot position on Field2d.
+      m_swerve.UpdateOdometry();
+      m_field.SetRobotPose(m_swerve.GetPose());
+  // ----------------------------------------------------------------------------------------
+  }
+
+  
+  //frc::SmartDashboard::PutData(&m_field);
+  
+  field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
+  frc::SmartDashboard::PutData(&field_off);
 
 }
 
