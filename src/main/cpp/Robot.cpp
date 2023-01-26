@@ -116,7 +116,7 @@ void Robot::TeleopPeriodic(){
   // Send Field2d to SmartDashboard.
   frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
 
-  int dPadAng = m_controller.GetPOV();
+  int dPadAng = m_controller1.GetPOV();
 
   if (dPadAng>75&&dPadAng<105) {
     tarGrid = Grid::humanRight;
@@ -129,12 +129,12 @@ void Robot::TeleopPeriodic(){
 
   isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue);
 
-  if (m_controller.GetAButton()||m_controller.GetBButton()||m_controller.GetXButton()) {
-    if (m_controller.GetAButtonPressed()||m_controller.GetBButtonPressed()||m_controller.GetXButtonPressed()) {
+  if (m_controller1.GetAButton()||m_controller1.GetBButton()||m_controller1.GetXButton()) {
+    if (m_controller1.GetAButtonPressed()||m_controller1.GetBButtonPressed()||m_controller1.GetXButtonPressed()) {
      int lmr = 0;
-     if (m_controller.GetAButton())
+     if (m_controller1.GetAButton())
       lmr = 1;
-     else if (m_controller.GetBButton())
+     else if (m_controller1.GetBButton())
       lmr = 2;
 
      int slot = 3 * tarGrid + lmr;
@@ -179,7 +179,7 @@ void Robot::TeleopPeriodic(){
       }
   } else {
       // Drive w joystick 0 with 50% speed if dpad up is pressed
-      m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true, m_controller.GetPOV()== 0 ? true : false);
+      m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetPOV()== 0 ? true : false);
   }
   int validTarFnd = validTarget.Get();
   std::vector<double> robotPose = botPose.Get();

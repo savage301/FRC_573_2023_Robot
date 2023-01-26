@@ -87,7 +87,9 @@ class Robot : public frc::TimedRobot {
   void SimulationInit() override;
   void SimulationPeriodic() override;
 
-
+  // Appendage
+  frc2::PIDController Arm_PIDController{1.0, 0, 0};
+  frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
 
  private:
   frc::SendableChooser<std::string> m_chooser;
