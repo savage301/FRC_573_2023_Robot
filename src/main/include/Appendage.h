@@ -4,17 +4,39 @@
 
 #pragma once
 
+#include <rev/CANSparkMax.h>
 #include <numbers>
 
-
-/**
- * Represents a swerve drive style drivetrain.
- */
 class Appendage {
  public:
-  Appendage() { }
- 
+  Appendage();
+
+  // Claw - front
+  void frontRollerIn();
+  void frontRollerOut();
+  void frontRollerOff();
+  // Claw - back
+  void backRollerIn();
+  void backRollerOut();
+  void backRollerOff();
+
+  // Telescoping Arm
+  void arm(double d);
+
+  // Shoulder
+  void shoulder(double d);
 
  private:
-  
+  // Claw Motors
+  rev::CANSparkMax* m_backRollerMotor;
+  rev::CANSparkMax* m_frontRollerMotor;
+
+  // Telescoping Arm Motor
+  rev::CANSparkMax* m_armMotor;
+
+  // Shoulder Motor
+  rev::CANSparkMax* m_shoulderMotor;
+
+  double remapVal(double i, double threshold);
+
 };

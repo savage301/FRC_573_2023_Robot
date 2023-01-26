@@ -34,7 +34,8 @@ class Robot : public frc::TimedRobot {
  public:
   Drivetrain m_swerve;
   Appendage m_appendage;
-  frc::XboxController m_controller{0};
+  frc::XboxController m_controller1{0};
+  frc::XboxController m_controller2{1};
 
 // -------------- Added for Auto------------------------------
   frc::Trajectory exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(

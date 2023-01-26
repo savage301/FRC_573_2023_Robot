@@ -210,6 +210,28 @@ void Robot::TeleopPeriodic(){
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
   frc::SmartDashboard::PutData(&field_off);
 
+  // Claw
+  if (m_controller2.GetAButtonPressed()) {
+    m_appendage.backRollerIn();
+  } else if (m_controller2.GetYButtonPressed()) {
+    m_appendage.backRollerOut();  
+  } else {
+    m_appendage.backRollerOff();
+  }
+
+  if (m_controller2.GetBButtonPressed()) {
+    m_appendage.frontRollerIn();
+  } else if (m_controller2.GetXButtonPressed()) {
+    m_appendage.frontRollerOut();  
+  } else {
+    m_appendage.frontRollerOff();
+  }
+
+  // Arm
+  m_appendage.arm(m_controller2.GetLeftY());
+  
+  // Shoulder
+  m_appendage.shoulder(m_controller2.GetRightY());
 }
 
 void Robot::DisabledInit() {}
