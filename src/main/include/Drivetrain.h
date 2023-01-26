@@ -27,7 +27,7 @@ class Drivetrain {
              bool fieldRelative);
   void UpdateOdometry();
 
-  void DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool fieldRelative);
+  void DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool fieldRelative, bool lim);
 
   void ResetOdometry(const frc::Pose2d& pose);
 

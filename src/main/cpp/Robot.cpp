@@ -112,6 +112,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic(){
 
+
   // Send Field2d to SmartDashboard.
   frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
 
@@ -177,8 +178,13 @@ void Robot::TeleopPeriodic(){
       m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
       }
   } else {
-    // Drive with joystick 0 with swervedrive
-    m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
+      if (m_controller.GetPOV() == 0) { // aka DPad up
+        // Drive w joystick 0 with 50% speed
+        m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true, true);
+      } else {
+        // Drive with joystick 0 with swervedrive
+        m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true, false);
+      }
   }
   int validTarFnd = validTarget.Get();
   std::vector<double> robotPose = botPose.Get();
