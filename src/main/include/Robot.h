@@ -134,8 +134,8 @@ class Robot : public frc::TimedRobot {
 
   enum GamePiece
   {
-    cone,
-    cube
+    cone = 1,
+    cube = 2
   };
 
   int tarGamePiece;
