@@ -66,9 +66,7 @@ void Appendage::backRollerOff() {
 
 void Appendage::arm(double d){
   double out=remapVal(d,.7);
-  if (lim_top->Get() && out > 0)
-    out = 0;
-  if (lim_bot->Get() && out < 0)
+  if ((lim_top->Get() && out > 0) || (lim_bot->Get() && out < 0))
     out = 0;
   m_armMotor->Set(d);
 }
@@ -87,9 +85,7 @@ void Appendage::shoulderPID(double tar) {
 void Appendage::armPID(double tar) {
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
-  if (lim_top->Get() && out > 0)
-    out = 0;
-  if (lim_bot->Get() && out < 0)
+  if ((lim_top->Get() && out > 0) || (lim_bot->Get() && out < 0))
     out = 0;
   m_armMotor->Set(out);
 }
