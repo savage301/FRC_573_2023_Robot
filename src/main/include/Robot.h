@@ -131,4 +131,14 @@ class Robot : public frc::TimedRobot {
   int tarGrid;
 
   bool isBlue;
+
+  enum GamePiece
+  {
+    cone,
+    cube
+  };
+
+  int tarGamePiece;
+
+  bool hasGamePiece;
 };

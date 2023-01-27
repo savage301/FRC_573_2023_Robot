@@ -17,6 +17,13 @@ void Robot::RobotInit() {
   std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
   botPose = table->GetDoubleArrayTopic("botpose").Subscribe({});
   validTarget = table->GetIntegerTopic("tv").Subscribe({});
+
+  table->PutNumber("ledMode", 0);
+  table->PutNumber("camMode", 0);
+
+  // -----------PIPELINE STUFF-----------//
+      
+  table -> PutNumber("pipeline", 0);
 }
 
 /**
@@ -105,13 +112,31 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  hasGamePiece = false;
   isBlue = false;
   tarGrid = Grid::humanLeft;
   m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 0_rad});
 }
 
 void Robot::TeleopPeriodic(){
+  std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
 
+  int validTarFnd = validTarget.Get();
+
+  if (m_controller2.GetBackButton())
+    tarGamePiece = GamePiece::cone;
+  else if (m_controller2.GetStartButton())
+    tarGamePiece = GamePiece::cube;
+
+  hasGamePiece = false;// update to ultrasnd
+  if (!hasGamePiece) {
+    //set to 1 if cone 2 if cube, 0 otherwise
+    if (tarGamePiece == GamePiece::cone)
+      table -> PutNumber("pipeline", 1);
+    else if (tarGamePiece == GamePiece::cube)
+      table -> PutNumber("pipeline", 2);
+  } else
+      table -> PutNumber("pipeline", 0);
 
   // Send Field2d to SmartDashboard.
   frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
@@ -177,32 +202,46 @@ void Robot::TeleopPeriodic(){
       else {
       m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
       }
+  } else if (m_controller1.GetYButton()) {
+      if (validTarFnd) {
+        double tx = table -> GetNumber("tx", 0.0);
+        tx *= .05;
+        m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, tx, false, m_controller1.GetLeftBumper() ? true : false);
+      } else 
+        m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, 0, false, m_controller1.GetLeftBumper() ? true : false);
   } else {
-      // Drive w joystick 0 with 50% speed if dpad up is pressed
+      // Drive w joystick 0 with 50% speed if left bumper is pressed
       m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetLeftBumper() ? true : false);
   }
-  int validTarFnd = validTarget.Get();
-  std::vector<double> robotPose = botPose.Get();
-  if (validTarFnd == 1 && robotPose.size()>0) {
-      
+  if (hasGamePiece) {
+    std::vector<double> robotPose = botPose.Get();
+      if (validTarFnd == 1 && robotPose.size()>0) {
           
-          frc::SmartDashboard::PutNumber("robotPoseX",robotPose[0]);
-          frc::SmartDashboard::PutNumber("robotPoseY",robotPose[1]);
-          frc::SmartDashboard::PutNumber("robotPoseYaw",robotPose[5]);
+              
+              frc::SmartDashboard::PutNumber("robotPoseX",robotPose[0]);
+              frc::SmartDashboard::PutNumber("robotPoseY",robotPose[1]);
+              frc::SmartDashboard::PutNumber("robotPoseYaw",robotPose[5]);
 
-          frc::Translation2d tmp2d = frc::Translation2d(units::meter_t(robotPose[0]), units::meter_t(robotPose[1]));
-          frc::Rotation2d tmpAng = frc::Rotation2d(units::degree_t(robotPose[5]));
-          frc::Pose2d fldPose = frc::Pose2d(tmp2d, tmpAng);
+              frc::Translation2d tmp2d = frc::Translation2d(units::meter_t(robotPose[0]), units::meter_t(robotPose[1]));
+              frc::Rotation2d tmpAng = frc::Rotation2d(units::degree_t(robotPose[5]));
+              frc::Pose2d fldPose = frc::Pose2d(tmp2d, tmpAng);
 
-          m_field.SetRobotPose(fldPose);
-          m_swerve.ResetOdometry(fldPose);
+              m_field.SetRobotPose(fldPose);
+              m_swerve.ResetOdometry(fldPose);
 
-  } else {
-  // ----------- Update robot pose and send it to field object on DS ----------------------------- 
-    // Update robot position on Field2d.
-      m_swerve.UpdateOdometry();
-      m_field.SetRobotPose(m_swerve.GetPose());
-  // ----------------------------------------------------------------------------------------
+      } else {
+      // ----------- Update robot pose and send it to field object on DS ----------------------------- 
+        // Update robot position on Field2d.
+          m_swerve.UpdateOdometry();
+          m_field.SetRobotPose(m_swerve.GetPose());
+      }
+      // ----------------------------------------------------------------------------------------
+    } else {
+    // ----------- Update robot pose and send it to field object on DS ----------------------------- 
+      // Update robot position on Field2d.
+        m_swerve.UpdateOdometry();
+        m_field.SetRobotPose(m_swerve.GetPose());
+    }
   }
 
   
