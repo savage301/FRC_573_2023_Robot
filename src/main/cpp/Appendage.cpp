@@ -68,7 +68,7 @@ void Appendage::arm(double d){
   double out=remapVal(d,.7);
   if ((lim_top->Get() && out > 0) || (lim_bot->Get() && out < 0))
     out = 0;
-  m_armMotor->Set(d);
+  m_armMotor->Set(out);
 }
 
 void Appendage::shoulder(double d){
