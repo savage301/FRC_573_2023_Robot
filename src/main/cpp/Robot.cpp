@@ -242,7 +242,6 @@ void Robot::TeleopPeriodic(){
         m_swerve.UpdateOdometry();
         m_field.SetRobotPose(m_swerve.GetPose());
     }
-  }
 
   
   //frc::SmartDashboard::PutData(&m_field);
