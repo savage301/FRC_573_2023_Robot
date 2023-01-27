@@ -129,14 +129,7 @@ void Robot::TeleopPeriodic(){
     tarGamePiece = GamePiece::cube;
 
   hasGamePiece = false;// update to ultrasnd
-  if (!hasGamePiece) {
-    //set to 1 if cone 2 if cube, 0 otherwise
-    if (tarGamePiece == GamePiece::cone)
-      table -> PutNumber("pipeline", 1);
-    else if (tarGamePiece == GamePiece::cube)
-      table -> PutNumber("pipeline", 2);
-  } else
-      table -> PutNumber("pipeline", 0);
+  table -> PutNumber("pipeline", hasGamePiece ? 0 : tarGamePiece);
 
   // Send Field2d to SmartDashboard.
   frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
