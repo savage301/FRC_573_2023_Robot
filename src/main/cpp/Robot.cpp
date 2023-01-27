@@ -196,12 +196,12 @@ void Robot::TeleopPeriodic(){
       m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
       }
   } else if (m_controller1.GetYButton()) {
+      double tx;
       if (validTarFnd) {
-        double tx = table -> GetNumber("tx", 0.0);
+        tx = table -> GetNumber("tx", 0.0);
         tx *= .05;
-        m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, tx, false, m_controller1.GetLeftBumper() ? true : false);
-      } else 
-        m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, 0, false, m_controller1.GetLeftBumper() ? true : false);
+      }
+  m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
   } else {
       // Drive w joystick 0 with 50% speed if left bumper is pressed
       m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetLeftBumper() ? true : false);
@@ -229,12 +229,12 @@ void Robot::TeleopPeriodic(){
           m_field.SetRobotPose(m_swerve.GetPose());
       }
       // ----------------------------------------------------------------------------------------
-    } else {
+  } else {
     // ----------- Update robot pose and send it to field object on DS ----------------------------- 
       // Update robot position on Field2d.
         m_swerve.UpdateOdometry();
         m_field.SetRobotPose(m_swerve.GetPose());
-    }
+  }
 
   
   //frc::SmartDashboard::PutData(&m_field);
