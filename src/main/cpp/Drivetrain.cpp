@@ -34,22 +34,21 @@ void Drivetrain::UpdateOdometry() {
                      m_backLeft.GetPosition(), m_backRight.GetPosition()});
 }
 
-void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool fieldRelative) {
-
-
+void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool fieldRelative, bool lim) {
+    // Weikai: add bool lim to limit speed to 50%
 
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     const auto xSpeed = -Drivetrain::m_xspeedLimiter.Calculate(
                             frc::ApplyDeadband(xJoy, 0.02)) *
-                        Drivetrain::kMaxSpeed;
+                        lim ? Drivetrain::kMaxSpeed/2 : Drivetrain::kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     const auto ySpeed = -Drivetrain::m_yspeedLimiter.Calculate(
                             frc::ApplyDeadband(yJoy, 0.02)) *
-                        Drivetrain::kMaxSpeed;
+                        lim ? Drivetrain::kMaxSpeed/2 : Drivetrain::kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in

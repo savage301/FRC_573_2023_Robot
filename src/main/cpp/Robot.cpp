@@ -112,10 +112,11 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic(){
 
+
   // Send Field2d to SmartDashboard.
   frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
 
-  int dPadAng = m_controller.GetPOV();
+  int dPadAng = m_controller1.GetPOV();
 
   if (dPadAng>75&&dPadAng<105) {
     tarGrid = Grid::humanRight;
@@ -128,12 +129,12 @@ void Robot::TeleopPeriodic(){
 
   isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue);
 
-  if (m_controller.GetAButton()||m_controller.GetBButton()||m_controller.GetXButton()) {
-    if (m_controller.GetAButtonPressed()||m_controller.GetBButtonPressed()||m_controller.GetXButtonPressed()) {
+  if (m_controller1.GetAButton()||m_controller1.GetBButton()||m_controller1.GetXButton()) {
+    if (m_controller1.GetAButtonPressed()||m_controller1.GetBButtonPressed()||m_controller1.GetXButtonPressed()) {
      int lmr = 0;
-     if (m_controller.GetAButton())
+     if (m_controller1.GetAButton())
       lmr = 1;
-     else if (m_controller.GetBButton())
+     else if (m_controller1.GetBButton())
       lmr = 2;
 
      int slot = 3 * tarGrid + lmr;
@@ -177,8 +178,8 @@ void Robot::TeleopPeriodic(){
       m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
       }
   } else {
-    // Drive with joystick 0 with swervedrive
-    m_swerve.DriveWithJoystick(m_controller.GetLeftY(),m_controller.GetLeftX(),m_controller.GetRightX(),true);
+      // Drive w joystick 0 with 50% speed if dpad up is pressed
+      m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetPOV()== 0 ? true : false);
   }
   int validTarFnd = validTarget.Get();
   std::vector<double> robotPose = botPose.Get();
@@ -210,6 +211,28 @@ void Robot::TeleopPeriodic(){
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
   frc::SmartDashboard::PutData(&field_off);
 
+  // Claw
+  if (m_controller2.GetAButtonPressed()) {
+    m_appendage.backRollerIn();
+  } else if (m_controller2.GetYButtonPressed()) {
+    m_appendage.backRollerOut();  
+  } else {
+    m_appendage.backRollerOff();
+  }
+
+  if (m_controller2.GetBButtonPressed()) {
+    m_appendage.frontRollerIn();
+  } else if (m_controller2.GetXButtonPressed()) {
+    m_appendage.frontRollerOut();  
+  } else {
+    m_appendage.frontRollerOff();
+  }
+
+  // Arm
+  m_appendage.arm(m_controller2.GetLeftY());
+  
+  // Shoulder
+  m_appendage.shoulder(m_controller2.GetRightY());
 }
 
 void Robot::DisabledInit() {}
