@@ -41,14 +41,14 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
     // negative values when we push forward.
     const auto xSpeed = -Drivetrain::m_xspeedLimiter.Calculate(
                             frc::ApplyDeadband(xJoy, 0.02)) *
-                        lim ? Drivetrain::kMaxSpeed/2 : Drivetrain::kMaxSpeed;
+                         Drivetrain::kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     const auto ySpeed = -Drivetrain::m_yspeedLimiter.Calculate(
                             frc::ApplyDeadband(yJoy, 0.02)) *
-                        lim ? Drivetrain::kMaxSpeed/2 : Drivetrain::kMaxSpeed;
+                        Drivetrain::kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
@@ -59,7 +59,7 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
                      Drivetrain::kMaxAngularSpeed;
 
     
-    Drive(xSpeed, ySpeed, rot, fieldRelative);
+    Drive(lim ? xSpeed/2:xSpeed, lim ? ySpeed/2 : ySpeed, lim ? rot/2 : rot, fieldRelative);
     //UpdateOdometry();
     frc::SmartDashboard::PutNumber("Gyro", m_gyro.GetAngle());
   }

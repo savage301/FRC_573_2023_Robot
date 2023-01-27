@@ -179,7 +179,7 @@ void Robot::TeleopPeriodic(){
       }
   } else {
       // Drive w joystick 0 with 50% speed if dpad up is pressed
-      m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetPOV()== 0 ? true : false);
+      m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetLeftBumper() ? true : false);
   }
   int validTarFnd = validTarget.Get();
   std::vector<double> robotPose = botPose.Get();
