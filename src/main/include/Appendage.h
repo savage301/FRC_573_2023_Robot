@@ -6,6 +6,9 @@
 
 #include <rev/CANSparkMax.h>
 #include <numbers>
+#include <frc2/command/PIDCommand.h>
+#include <frc/Encoder.h>
+#include <frc/DigitalInput.h>
 
 class Appendage {
  public:
@@ -22,9 +25,12 @@ class Appendage {
 
   // Telescoping Arm
   void arm(double d);
+  void armPID(double tar);
+
 
   // Shoulder
   void shoulder(double d);
+  void shoulderPID(double tar);
 
  private:
   // Claw Motors
@@ -33,10 +39,17 @@ class Appendage {
 
   // Telescoping Arm Motor
   rev::CANSparkMax* m_armMotor;
+  rev::RelativeEncoder* arm_Encoder;
+  frc::DigitalInput* lim_top;
+  frc::DigitalInput* lim_bot;
 
   // Shoulder Motor
   rev::CANSparkMax* m_shoulderMotor;
+  frc::Encoder* shoulder_Encoder;
 
   double remapVal(double i, double threshold);
+
+  frc2::PIDController Arm_PIDController{1.0, 0, 0};
+  frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
 
 };

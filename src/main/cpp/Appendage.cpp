@@ -32,7 +32,12 @@ Appendage::Appendage() {
       new rev::CANSparkMax{m_armId, rev::CANSparkMax::MotorType::kBrushless};
   m_shoulderMotor =
       new rev::CANSparkMax{m_shoulderId, rev::CANSparkMax::MotorType::kBrushless};
+  arm_Encoder = 
+      new rev::SparkMaxRelativeEncoder{m_armMotor->GetEncoder(rev::SparkMaxRelativeEncoder::Type::kHallSensor,42)};
+  shoulder_Encoder = new frc::Encoder(2, 3, false);
 
+  lim_top = new frc::DigitalInput(6);
+  lim_bot = new frc::DigitalInput(7);
 }
 
 void Appendage::frontRollerIn() {
@@ -60,11 +65,31 @@ void Appendage::backRollerOff() {
 }
 
 void Appendage::arm(double d){
-  d=remapVal(d,.7);
+  double out=remapVal(d,.7);
+  if (lim_top->Get() && out > 0)
+    out = 0;
+  if (lim_bot->Get() && out < 0)
+    out = 0;
   m_armMotor->Set(d);
 }
 
 void Appendage::shoulder(double d){
   d=remapVal(d,.7);
   m_shoulderMotor->Set(d);
+}
+
+void Appendage::shoulderPID(double tar) {
+  double cur = shoulder_Encoder->GetDistance();
+  double out = Shoulder_PIDController.Calculate(cur, tar);
+  m_shoulderMotor->Set(out);
+}
+
+void Appendage::armPID(double tar) {
+  double cur = arm_Encoder->GetPosition();
+  double out = Arm_PIDController.Calculate(cur, tar);
+  if (lim_top->Get() && out > 0)
+    out = 0;
+  if (lim_bot->Get() && out < 0)
+    out = 0;
+  m_armMotor->Set(out);
 }
