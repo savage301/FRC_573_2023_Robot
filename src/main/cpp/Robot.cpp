@@ -130,9 +130,11 @@ void Robot::TeleopPeriodic(){
     std::vector<double> coneCornerXy = cornerXy.Get();
     std::vector<bool> x_orien, y_orien;
     int length = coneCornerXy.size();
+    frc::SmartDashboard::PutNumber("Corner Arr Length", length);
     std::vector<double> avg = {0.0, 0.0};
     int i;
     int idxFA = 0; // furtherest away
+    double FADist =0;
     for (i = 0; i < length; i += 2)
     {
       avg[0] += coneCornerXy[i];
@@ -144,9 +146,11 @@ void Robot::TeleopPeriodic(){
     frc::SmartDashboard::PutNumber("avg y", avg[1]);
     for (i = 0; i < length; i += 2)
     {
-      double tmpIdxFA = sqrt(pow((coneCornerXy[i] - avg[0]),2) + pow((coneCornerXy[i + 1] - avg[1]),2));
-      if (tmpIdxFA >= idxFA)
-        idxFA = tmpIdxFA;
+      double tmpDistFA = sqrt(pow((coneCornerXy[i] - avg[0]),2) + pow((coneCornerXy[i + 1] - avg[1]),2));
+      if (tmpDistFA >= FADist){
+        FADist = tmpDistFA;
+        idxFA = i;
+      }
     }
     frc::SmartDashboard::PutNumber("index of FA", idxFA);
     for (i = 0; i < length; i += 2)
@@ -164,18 +168,54 @@ void Robot::TeleopPeriodic(){
     // if x all true, right
     // x all false, left
     // y all false, bot
-    for (bool y_ : y_orien) {
+    /*for (bool y_ : y_orien) {
       if (y_)
-        curFA_Pos = Robot::fA_Pos::top;
-      else if (!y_)
         curFA_Pos = Robot::fA_Pos::bot;
+      else if (!y_)
+        curFA_Pos = Robot::fA_Pos::top;
+    }*/
+
+    /*if (std::all_of(x_orien.begin(),x_orien.end(), [](bool j){return j;}))
+      curFA_Pos = Robot::fA_Pos::left;
+    if (std::all_of(x_orien.begin(),x_orien.end(), [](bool j){return j;}))
+      curFA_Pos = Robot::fA_Pos::right;
+      */
+
+     int y_true = 0;
+     int y_false = 0;
+    for (i = 0; i < y_orien.size(); i++){
+      if (y_orien[i] == true)
+        y_true ++;
+      else if (y_orien[i] == false)
+        y_false ++;
     }
-    for (bool x_ : x_orien) {
-      if (x_)
-        curFA_Pos = Robot::fA_Pos::right;
-      else if (!x_)
-        curFA_Pos = Robot::fA_Pos::left;
+
+    if(y_false == y_orien.size()){
+      curFA_Pos = Robot::fA_Pos::bot;
     }
+
+    if(y_true == y_orien.size()){
+      curFA_Pos = Robot::fA_Pos::top;
+    }
+
+     int x_true = 0;
+     int x_false = 0;
+    for (i = 0; i < x_orien.size(); i++){
+      if (x_orien[i] == true)
+        x_true ++;
+      else if (x_orien[i] == false)
+        x_false ++;
+    }
+
+    if(x_false == x_orien.size()){
+      curFA_Pos = Robot::fA_Pos::right;
+    }
+
+    if(x_true == x_orien.size()){
+      curFA_Pos = Robot::fA_Pos::left;
+    }
+
+
     for (uint i = 0; i < x_orien.size(); i++) {
     frc::SmartDashboard::PutBoolean(("x_bool"+ std::to_string(i)), x_orien[i]);
     frc::SmartDashboard::PutBoolean(("y_bool"+ std::to_string(i)), y_orien[i]);
