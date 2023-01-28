@@ -146,7 +146,7 @@ void Robot::TeleopPeriodic(){
     {
       double tmpIdxFA = sqrt(pow((coneCornerXy[i] - avg[0]),2) + pow((coneCornerXy[i + 1] - avg[1]),2));
       if (tmpIdxFA >= idxFA)
-        idxFA = tmpIdxFA;
+        idxFA = i;
     }
     frc::SmartDashboard::PutNumber("index of FA", idxFA);
     for (i = 0; i < length; i += 2)
