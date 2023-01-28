@@ -182,12 +182,13 @@ void Robot::TeleopPeriodic(){
       curFA_Pos = Robot::fA_Pos::right;
       */
 
-     int y_true = 0;
-     int y_false = 0;
-    for (i = 0; i < y_orien.size(); i++){
-      if (y_orien[i] == true)
+     uint y_true = 0;
+     uint y_false = 0;
+     uint j;
+    for (j = 0; j < y_orien.size(); j++){
+      if (y_orien[j] == true)
         y_true ++;
-      else if (y_orien[i] == false)
+      else if (y_orien[j] == false)
         y_false ++;
     }
 
@@ -199,12 +200,12 @@ void Robot::TeleopPeriodic(){
       curFA_Pos = Robot::fA_Pos::top;
     }
 
-     int x_true = 0;
-     int x_false = 0;
-    for (i = 0; i < x_orien.size(); i++){
-      if (x_orien[i] == true)
+     uint x_true = 0;
+     uint x_false = 0;
+    for (j = 0; j < x_orien.size(); j++){
+      if (x_orien[j] == true)
         x_true ++;
-      else if (x_orien[i] == false)
+      else if (x_orien[j] == false)
         x_false ++;
     }
 
@@ -303,11 +304,46 @@ void Robot::TeleopPeriodic(){
       }
   } else if (m_controller1.GetYButton()) {
       double tx;
-      if (validTarFnd) {
-        tx = table -> GetNumber("tx", 0.0);
-        tx *= .05;
+      if (tarGamePiece == Robot::GamePiece::cube)
+      {
+        if (validTarFnd)
+        {
+          tx = table->GetNumber("tx", 0.0);
+          tx *= .05;
+        }
+        // bot / top ^
+        // left / right until its bot / top
+        m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
+      } else if (tarGamePiece == Robot::GamePiece::cone) {
+        if (curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top) {
+          tx = table->GetNumber("tx", 0.0);
+          tx *= .05;
+          m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
+        } else if (curFA_Pos == Robot::fA_Pos::left || curFA_Pos == Robot::fA_Pos::right) {
+          // drive around idk how
+          double ta = table->GetNumber("ta", 0.0);
+          if (ta < 2) {
+            tx = table->GetNumber("tx", 0.0);
+            tx *= .05;
+            m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
+          } else {
+            bool leftRight = false;
+            tx = table->GetNumber("tx", 0.0);
+            tx *= .05;
+            if (curFA_Pos == Robot::fA_Pos::left)
+              leftRight = false;
+            else if (curFA_Pos == Robot::fA_Pos::right)
+              leftRight = true;
+            m_swerve.DriveWithJoystick(.7*m_controller1.GetLeftY(), leftRight ? .7*m_controller1.GetLeftY() : -.7*m_controller1.GetLeftY() , validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
+          }
+          // sin45 (cos) * j_x, left -y, right +y
+          if (curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top) {
+            tx = table->GetNumber("tx", 0.0);
+            tx *= .05;
+          }
+          m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
+        }
       }
-  m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
   } else {
       // Drive w joystick 0 with 50% speed if left bumper is pressed
       m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetLeftBumper() ? true : false);
