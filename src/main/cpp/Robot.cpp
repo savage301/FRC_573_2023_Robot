@@ -140,12 +140,15 @@ void Robot::TeleopPeriodic(){
     }
     avg[0] /= (.5 * i);
     avg[1] /= (.5 * i);
+    frc::SmartDashboard::PutNumber("avg x", avg[0]);
+    frc::SmartDashboard::PutNumber("avg y", avg[1]);
     for (i = 0; i < length; i += 2)
     {
       double tmpIdxFA = sqrt(pow((coneCornerXy[i] - avg[0]),2) + pow((coneCornerXy[i + 1] - avg[1]),2));
       if (tmpIdxFA >= idxFA)
         idxFA = tmpIdxFA;
     }
+    frc::SmartDashboard::PutNumber("index of FA", idxFA);
     for (i = 0; i < length; i += 2)
     {
       double x, y;
@@ -172,6 +175,10 @@ void Robot::TeleopPeriodic(){
         curFA_Pos = Robot::fA_Pos::right;
       else if (!x_)
         curFA_Pos = Robot::fA_Pos::left;
+    }
+    for (uint i = 0; i < x_orien.size(); i++) {
+    frc::SmartDashboard::PutBoolean(("x_bool"+ std::to_string(i)), x_orien[i]);
+    frc::SmartDashboard::PutBoolean(("y_bool"+ std::to_string(i)), y_orien[i]);
     }
   }
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
