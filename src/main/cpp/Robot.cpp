@@ -161,15 +161,17 @@ void Robot::TeleopPeriodic(){
     // if x all true, right
     // x all false, left
     // y all false, bot
+    for (bool y_ : y_orien) {
+      if (y_)
+        curFA_Pos = Robot::fA_Pos::top;
+      else if (!y_)
+        curFA_Pos = Robot::fA_Pos::bot;
+    }
     for (bool x_ : x_orien) {
       if (x_)
         curFA_Pos = Robot::fA_Pos::right;
       else if (!x_)
         curFA_Pos = Robot::fA_Pos::left;
-    }
-    for (bool y_ : y_orien) {
-      if (!y_)
-        curFA_Pos = Robot::fA_Pos::bot;
     }
   }
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
