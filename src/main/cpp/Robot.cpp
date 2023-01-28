@@ -119,6 +119,9 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic(){
+  frc::AnalogInput a_Input = frc::AnalogInput(0);
+  frc::SmartDashboard::PutNumber("AnalogInput", a_Input.GetValue());
+
   std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
 
   int validTarFnd = validTarget.Get();
