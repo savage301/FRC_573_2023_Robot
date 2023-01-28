@@ -98,6 +98,7 @@ class Robot : public frc::TimedRobot {
   nt::IntegerSubscriber validTarget;
   nt::DoubleArraySubscriber cornerXy;
 
+
   std::shared_ptr<nt::NetworkTable> table;
 
 #define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))

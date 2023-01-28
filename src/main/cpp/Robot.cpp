@@ -19,6 +19,7 @@ void Robot::RobotInit() {
   validTarget = table->GetIntegerTopic("tv").Subscribe({});
   cornerXy = table->GetDoubleArrayTopic("tcornxy").Subscribe({});
 
+
   table->PutNumber("ledMode", 0);
   table->PutNumber("camMode", 0);
 
@@ -215,11 +216,16 @@ void Robot::TeleopPeriodic(){
       curFA_Pos = Robot::fA_Pos::left;
     }
 
+  // For edge case
+  double tHor_ =  table->GetNumber("thor", 0);
+  double tVert_ = table->GetNumber("tvert", 0);
 
-    for (uint i = 0; i < x_orien.size(); i++) {
-    frc::SmartDashboard::PutBoolean(("x_bool"+ std::to_string(i)), x_orien[i]);
-    frc::SmartDashboard::PutBoolean(("y_bool"+ std::to_string(i)), y_orien[i]);
-    }
+  if(curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top){
+    if (abs(tHor_ - tVert_) < 5)
+      curFA_Pos = Robot::fA_Pos::left;
+
+  }
+
   }
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
