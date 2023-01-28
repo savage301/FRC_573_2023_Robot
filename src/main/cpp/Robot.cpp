@@ -334,7 +334,7 @@ void Robot::TeleopPeriodic(){
               leftRight = false;
             else if (curFA_Pos == Robot::fA_Pos::right)
               leftRight = true;
-            m_swerve.DriveWithJoystick(.7*m_controller1.GetLeftY(), leftRight ? -.7*m_controller1.GetLeftY() : .7*m_controller1.GetLeftY() , validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
+            m_swerve.DriveWithJoystick(0, leftRight ? -1*m_controller1.GetLeftY() : 1*m_controller1.GetLeftY() , validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
           }
           // sin45 (cos) * j_x, left -y, right +y
           if (curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top) {
