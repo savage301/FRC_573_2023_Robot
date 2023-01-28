@@ -322,7 +322,7 @@ void Robot::TeleopPeriodic(){
         } else if (curFA_Pos == Robot::fA_Pos::left || curFA_Pos == Robot::fA_Pos::right) {
           // drive around idk how
           double ta = table->GetNumber("ta", 0.0);
-          if (ta < 2) {
+          if (ta < 1) {
             tx = table->GetNumber("tx", 0.0);
             tx *= .05;
             m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
