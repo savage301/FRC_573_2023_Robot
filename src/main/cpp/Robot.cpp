@@ -14,9 +14,10 @@ void Robot::RobotInit() {
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
-  std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
+  table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
   botPose = table->GetDoubleArrayTopic("botpose").Subscribe({});
   validTarget = table->GetIntegerTopic("tv").Subscribe({});
+  cornerXy = table->GetDoubleArrayTopic("tcornxy").Subscribe({});
 
   table->PutNumber("ledMode", 0);
   table->PutNumber("camMode", 0);
@@ -122,9 +123,56 @@ void Robot::TeleopPeriodic(){
   frc::AnalogInput a_Input = frc::AnalogInput(0);
   frc::SmartDashboard::PutNumber("AnalogInput", a_Input.GetValue());
 
-  std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
-
   int validTarFnd = validTarget.Get();
+
+  if (validTarFnd)
+  {
+    std::vector<double> coneCornerXy = cornerXy.Get();
+    std::vector<bool> x_orien, y_orien;
+    int length = coneCornerXy.size();
+    std::vector<double> avg = {0.0, 0.0};
+    int i;
+    int idxFA = 0; // furtherest away
+    for (i = 0; i < length; i += 2)
+    {
+      avg[0] += coneCornerXy[i];
+      avg[1] += coneCornerXy[i + 1];
+    }
+    avg[0] /= (.5 * i);
+    avg[1] /= (.5 * i);
+    for (i = 0; i < length; i += 2)
+    {
+      double tmpIdxFA = sqrt(pow((coneCornerXy[i] - avg[0]),2) + pow((coneCornerXy[i + 1] - avg[1]),2));
+      if (tmpIdxFA >= idxFA)
+        idxFA = tmpIdxFA;
+    }
+    for (i = 0; i < length; i += 2)
+    {
+      double x, y;
+      if (i != idxFA)
+      {
+        x = coneCornerXy[i] - coneCornerXy[idxFA];
+        y = coneCornerXy[i + 1] - coneCornerXy[idxFA + 1];
+        
+        x_orien.push_back(x>0);
+        y_orien.push_back(y>0);
+      }
+    }
+    // if x all true, right
+    // x all false, left
+    // y all false, bot
+    for (bool x_ : x_orien) {
+      if (x_)
+        curFA_Pos = Robot::fA_Pos::right;
+      else if (!x_)
+        curFA_Pos = Robot::fA_Pos::left;
+    }
+    for (bool y_ : y_orien) {
+      if (!y_)
+        curFA_Pos = Robot::fA_Pos::bot;
+    }
+  }
+  frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   if (m_controller2.GetBackButton())
     tarGamePiece = GamePiece::cone;

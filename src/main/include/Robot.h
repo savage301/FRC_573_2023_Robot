@@ -96,6 +96,9 @@ class Robot : public frc::TimedRobot {
 
   nt::DoubleArraySubscriber botPose;  
   nt::IntegerSubscriber validTarget;
+  nt::DoubleArraySubscriber cornerXy;
+
+  std::shared_ptr<nt::NetworkTable> table;
 
 #define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
 #define poseRed(y) pose1(6.84_m,y)
@@ -142,4 +145,12 @@ class Robot : public frc::TimedRobot {
   int tarGamePiece;
 
   bool hasGamePiece;
+
+  enum fA_Pos {
+    top,
+    left,
+    right,
+    bot
+  };
+  int curFA_Pos;
 };
