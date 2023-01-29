@@ -114,6 +114,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  // Initalize variable used in teleop.
   hasGamePiece = false;
   isBlue = false;
   tarGrid = Grid::humanLeft;
@@ -121,22 +122,26 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic(){
-  frc::AnalogInput a_Input = frc::AnalogInput(0);
-  frc::SmartDashboard::PutNumber("AnalogInput", a_Input.GetValue());
+
+  // This was just for testing
+  //frc::AnalogInput a_Input = frc::AnalogInput(0);
+  //frc::SmartDashboard::PutNumber("AnalogInput", a_Input.GetValue());
 
   int validTarFnd = validTarget.Get();
 
-  if (validTarFnd)
-  {
+  if (validTarFnd){
+
+    // ------------- Cone Orientation Code -------------------------- 
+    //This should get moved to its own function
     std::vector<double> coneCornerXy = cornerXy.Get();
     std::vector<bool> x_orien, y_orien;
     int length = coneCornerXy.size();
     frc::SmartDashboard::PutNumber("Corner Arr Length", length);
     std::vector<double> avg = {0.0, 0.0};
     int i;
-    int idxFA = 0; // furtherest away
+    int idxFA = 0; // furtherest away point index
     double FADist =0;
-    for (i = 0; i < length; i += 2)
+    for (i = 0; i < length; i += 2) // Calculate avg point location from cornerXy
     {
       avg[0] += coneCornerXy[i];
       avg[1] += coneCornerXy[i + 1];
@@ -145,7 +150,7 @@ void Robot::TeleopPeriodic(){
     avg[1] /= (.5 * i);
     frc::SmartDashboard::PutNumber("avg x", avg[0]);
     frc::SmartDashboard::PutNumber("avg y", avg[1]);
-    for (i = 0; i < length; i += 2)
+    for (i = 0; i < length; i += 2) // Determine point in cornerXy furthest from the average point location in cornerXy
     {
       double tmpDistFA = sqrt(pow((coneCornerXy[i] - avg[0]),2) + pow((coneCornerXy[i + 1] - avg[1]),2));
       if (tmpDistFA >= FADist){
@@ -154,7 +159,7 @@ void Robot::TeleopPeriodic(){
       }
     }
     frc::SmartDashboard::PutNumber("index of FA", idxFA);
-    for (i = 0; i < length; i += 2)
+    for (i = 0; i < length; i += 2) // Determine if furthest away point is + or - from all other points in x and y in cornerXy
     {
       double x, y;
       if (i != idxFA)
@@ -166,83 +171,72 @@ void Robot::TeleopPeriodic(){
         y_orien.push_back(y>0);
       }
     }
-    // if x all true, right
-    // x all false, left
-    // y all false, bot
-    /*for (bool y_ : y_orien) {
-      if (y_)
-        curFA_Pos = Robot::fA_Pos::bot;
-      else if (!y_)
-        curFA_Pos = Robot::fA_Pos::top;
-    }*/
-
-    /*if (std::all_of(x_orien.begin(),x_orien.end(), [](bool j){return j;}))
-      curFA_Pos = Robot::fA_Pos::left;
-    if (std::all_of(x_orien.begin(),x_orien.end(), [](bool j){return j;}))
-      curFA_Pos = Robot::fA_Pos::right;
-      */
-
-     uint y_true = 0;
-     uint y_false = 0;
-     uint j;
-    for (j = 0; j < y_orien.size(); j++){
+    uint y_true = 0;
+    uint y_false = 0;
+    uint j;
+    for (j = 0; j < y_orien.size(); j++){ // Determine if the furthest point is above or below all other points in Y direction in cornerXy
       if (y_orien[j] == true)
         y_true ++;
       else if (y_orien[j] == false)
         y_false ++;
     }
 
-    if(y_false == y_orien.size()){
+    if(y_false == y_orien.size()){ // If furthest point is always lt 0 then it is on the bottom
       curFA_Pos = Robot::fA_Pos::bot;
     }
 
-    if(y_true == y_orien.size()){
+    if(y_true == y_orien.size()){ // If furthest point is always gt 0 then it is on the top
       curFA_Pos = Robot::fA_Pos::top;
     }
 
-     uint x_true = 0;
-     uint x_false = 0;
-    for (j = 0; j < x_orien.size(); j++){
+    uint x_true = 0;
+    uint x_false = 0;
+    for (j = 0; j < x_orien.size(); j++){ // Determine if the furthest point is to the left or the right of all other points in X direction in cornerXy
       if (x_orien[j] == true)
         x_true ++;
       else if (x_orien[j] == false)
         x_false ++;
     }
 
-    if(x_false == x_orien.size()){
+    if(x_false == x_orien.size()){ // If furthest point is always lt 0 then it is on the right
       curFA_Pos = Robot::fA_Pos::right;
     }
 
-    if(x_true == x_orien.size()){
+    if(x_true == x_orien.size()){ // If furthest point is always gt 0 then it is on the left
       curFA_Pos = Robot::fA_Pos::left;
     }
 
-  // For edge case
+  // For edge case. 
+  // This sort of works. When rotating to the left form this state there is a bit of an issue when just starting to be able to see the tip of the cone.
   double tHor_ =  table->GetNumber("thor", 0);
   double tVert_ = table->GetNumber("tvert", 0);
 
   if(curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top){
-    if (abs(tHor_ - tVert_) < 5)
-      curFA_Pos = Robot::fA_Pos::left;
+    if (abs(tHor_ - tVert_) < 5) // If measured horz and vert sides are within 5px we assume its a square is only happens if the cone is facing the wrong way
+      curFA_Pos = Robot::fA_Pos::left; // Set to left to handle this edge case
 
   }
+
+  // ------------- End Cone Orientation Code -------------------------- 
 
   }
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
+  // Set target piece status variable
   if (m_controller2.GetBackButton())
     tarGamePiece = GamePiece::cone;
   else if (m_controller2.GetStartButton())
     tarGamePiece = GamePiece::cube;
 
-  hasGamePiece = false;// update to ultrasnd
-  table -> PutNumber("pipeline", hasGamePiece ? 0 : tarGamePiece);
+  hasGamePiece = false;// update to determine state based on ultrasnd on claw once it is written
+  table -> PutNumber("pipeline", hasGamePiece ? 0 : tarGamePiece); // Sets limelight pipeline (0 for April Tag, 1 for cone, 2 for cube)
 
-  // Send Field2d to SmartDashboard.
+  // Create Pose to offset all poses by to output correctly to dashboard. This can be moved to header file.
   frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
 
+  // ------------------ Drive Code --------------------------------------
+  // Target Grid selection code for auto path following
   int dPadAng = m_controller1.GetPOV();
-
   if (dPadAng>75&&dPadAng<105) {
     tarGrid = Grid::humanRight;
   } else if (dPadAng>165&&dPadAng<195) {
@@ -252,26 +246,20 @@ void Robot::TeleopPeriodic(){
   }
   frc::SmartDashboard::PutNumber("Grid",tarGrid);
 
-  isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue);
+  isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue); // Get Driverstation color
 
   if (m_controller1.GetAButton()||m_controller1.GetBButton()||m_controller1.GetXButton()) {
-    if (m_controller1.GetAButtonPressed()||m_controller1.GetBButtonPressed()||m_controller1.GetXButtonPressed()) {
+    // This section is for path following code to each scoring location.
+    if (m_controller1.GetAButtonPressed()||m_controller1.GetBButtonPressed()||m_controller1.GetXButtonPressed()) { 
+      // This if statement is only run first time through loop, or once each time the button is pressed.
      int lmr = 0;
      if (m_controller1.GetAButton())
       lmr = 1;
      else if (m_controller1.GetBButton())
       lmr = 2;
 
-     int slot = 3 * tarGrid + lmr;
-      /*m_swerve.setTrajCon();
-      // select color
-      trajectory_ = frc::TrajectoryGenerator::GenerateTrajectory(
-      // Start at the origin facing the +X direction
-      std::vector<frc::Pose2d> {m_swerve.GetPose(), redPose[1]},
-      // Pass the config
-      m_swerve.auto_traj);*/
-
-      // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    int slot = 3 * tarGrid + lmr;
+    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
     pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
     pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
     pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
@@ -279,111 +267,105 @@ void Robot::TeleopPeriodic(){
     ));
 
     trajectory_ = trajectoryPP_.asWPILibTrajectory();
-    // Send our generated trajectory to Field2d.
+
+    // Send our generated trajectory to Dashboard Field Object
     field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
 
-      m_timer.Reset();
-      // Start the timer.
-      m_timer.Start();
+    // Start the timer for trajectory following.
+    m_timer.Reset();
+    m_timer.Start();
       
     }
+
     if (m_timer.Get() < trajectory_.TotalTime()) {
-    // Get the desired pose from the trajectory.
-      auto desiredState = trajectory_.Sample(m_timer.Get());
-    // Get the reference chassis speeds from the Ramsete Controller.
+      
+      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
     
-      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));
-        //m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
-     
+      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
  
-    // Set the linear and angular speeds.
+      // Set the linear and angular speeds.
       m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
-      } 
-      else {
+    } 
+    else {
+      // When trajectory is completed if button is still pressed this stops the robot
       m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
-      }
+    }
   } else if (m_controller1.GetYButton()) {
-      double tx;
-      if (tarGamePiece == Robot::GamePiece::cube)
-      {
-        if (validTarFnd)
-        {
-          tx = table->GetNumber("tx", 0.0);
-          tx *= .05;
-        }
-        // bot / top ^
-        // left / right until its bot / top
+    // This section is for the auto game piece tracking code.
+    double tx;
+    if (tarGamePiece == Robot::GamePiece::cube) { // Cube tracking code
+      if (validTarFnd){
+        tx = table->GetNumber("tx", 0.0);
+        tx *= .05;
+      }
+      m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
+
+    } else if (tarGamePiece == Robot::GamePiece::cone) { // Cone Tracking section
+      if (curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top) { // Cone upright or tip facing robot correctly
+        tx = table->GetNumber("tx", 0.0);
+        tx *= .05;
         m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
-      } else if (tarGamePiece == Robot::GamePiece::cone) {
-        if (curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top) {
+      } else if (curFA_Pos == Robot::fA_Pos::left || curFA_Pos == Robot::fA_Pos::right) { // Cone tipped over, but no oriented correctly.
+        // This section drives towards the tipped cone until it is a certian size in the camera then rotates around the cone.
+        double ta = table->GetNumber("ta", 0.0);
+        if (ta < 1) { // Approach the cone until it is a certain size in image.
           tx = table->GetNumber("tx", 0.0);
           tx *= .05;
           m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
-        } else if (curFA_Pos == Robot::fA_Pos::left || curFA_Pos == Robot::fA_Pos::right) {
-          // drive around idk how
-          double ta = table->GetNumber("ta", 0.0);
-          if (ta < 1) {
-            tx = table->GetNumber("tx", 0.0);
-            tx *= .05;
-            m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
-          } else {
-            bool leftRight = false;
-            tx = table->GetNumber("tx", 0.0);
-            tx *= .05;
-            if (curFA_Pos == Robot::fA_Pos::left)
-              leftRight = false;
-            else if (curFA_Pos == Robot::fA_Pos::right)
-              leftRight = true;
-            m_swerve.DriveWithJoystick(0, leftRight ? -1*m_controller1.GetLeftY() : 1*m_controller1.GetLeftY() , validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
-          }
-          // sin45 (cos) * j_x, left -y, right +y
-          if (curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top) {
-            tx = table->GetNumber("tx", 0.0);
-            tx *= .05;
-          }
-          m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
+        } else { // Rotate around the cone either left or right.
+          bool leftRight = false;
+          tx = table->GetNumber("tx", 0.0);
+          tx *= .05;
+          if (curFA_Pos == Robot::fA_Pos::left)
+            leftRight = false;
+          else if (curFA_Pos == Robot::fA_Pos::right)
+            leftRight = true;
+          m_swerve.DriveWithJoystick(0, leftRight ? -1*m_controller1.GetLeftY() : 1*m_controller1.GetLeftY() , validTarFnd ? tx : 0, false, m_controller1.GetLeftBumper() ? true : false);
         }
       }
+    }
   } else {
-      // Drive w joystick 0 with 50% speed if left bumper is pressed
-      m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetLeftBumper() ? true : false);
+    // Default joystick driving. This is done if no other buttons are pressed on driver controller
+    m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetLeftBumper() ? true : false);
   }
+
+  // ---- End Drive Code -----------------------------------------------
+
+  // ---- Robot Pose Generation Code -----------------------------------
   if (hasGamePiece) {
+    // If robot has game piece use April tags to attempt to localize robot
     std::vector<double> robotPose = botPose.Get();
       if (validTarFnd == 1 && robotPose.size()>0) {
-          
-              
-              frc::SmartDashboard::PutNumber("robotPoseX",robotPose[0]);
-              frc::SmartDashboard::PutNumber("robotPoseY",robotPose[1]);
-              frc::SmartDashboard::PutNumber("robotPoseYaw",robotPose[5]);
+        // If robot can see atleast 1 april tag and has a returned botPose from the limelight it localizes base on botPose
+        frc::SmartDashboard::PutNumber("robotPoseX",robotPose[0]);
+        frc::SmartDashboard::PutNumber("robotPoseY",robotPose[1]);
+        frc::SmartDashboard::PutNumber("robotPoseYaw",robotPose[5]);
 
-              frc::Translation2d tmp2d = frc::Translation2d(units::meter_t(robotPose[0]), units::meter_t(robotPose[1]));
-              frc::Rotation2d tmpAng = frc::Rotation2d(units::degree_t(robotPose[5]));
-              frc::Pose2d fldPose = frc::Pose2d(tmp2d, tmpAng);
+        frc::Translation2d tmp2d = frc::Translation2d(units::meter_t(robotPose[0]), units::meter_t(robotPose[1]));
+        frc::Rotation2d tmpAng = frc::Rotation2d(units::degree_t(robotPose[5]));
+        frc::Pose2d fldPose = frc::Pose2d(tmp2d, tmpAng);
 
-              m_field.SetRobotPose(fldPose);
-              m_swerve.ResetOdometry(fldPose);
+        m_field.SetRobotPose(fldPose);
+        m_swerve.ResetOdometry(fldPose);
 
       } else {
-      // ----------- Update robot pose and send it to field object on DS ----------------------------- 
-        // Update robot position on Field2d.
+        // No April tags can be seen the robot updates Pose based on wheel odometry.
           m_swerve.UpdateOdometry();
           m_field.SetRobotPose(m_swerve.GetPose());
       }
-      // ----------------------------------------------------------------------------------------
   } else {
-    // ----------- Update robot pose and send it to field object on DS ----------------------------- 
-      // Update robot position on Field2d.
+    // When robot doesn't have a game piece robot updates Pose based on wheel odometry, because camera will be using wrong pipeline
         m_swerve.UpdateOdometry();
         m_field.SetRobotPose(m_swerve.GetPose());
   }
 
-  
-  //frc::SmartDashboard::PutData(&m_field);
-  
+  // Send pose data to DS  
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
   frc::SmartDashboard::PutData(&field_off);
 
+  // ---------------- End Robot Pose Generation Code -----------------
+
+  // ---------------- Appendage Code ---------------------------------
   // Claw
   if (m_controller2.GetAButtonPressed()) {
     m_appendage.backRollerIn();
@@ -406,7 +388,10 @@ void Robot::TeleopPeriodic(){
   
   // Shoulder
   m_appendage.shoulder(m_controller2.GetRightY());
-}
+
+  // ----------- End Appendage Code -----------------------------------
+
+} // End of Teleop Periodic
 
 void Robot::DisabledInit() {}
 
