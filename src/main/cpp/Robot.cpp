@@ -394,11 +394,18 @@ void Robot::TeleopPeriodic(){
   }
 
   // Arm
-  m_appendage.arm(m_controller2.GetLeftY());
+  // if going up and is closer to the lim
+  if (m_appendage.calculateDistanceToLim() <= 2 && (m_controller2.GetLeftY() < 0))
+    m_appendage.arm(0);
+  else
+    m_appendage.arm(m_controller2.GetLeftY());
   
   // Shoulder
-  m_appendage.shoulder(m_controller2.GetRightY());
-
+  // if going up and is closer to the lim
+  if (m_appendage.calculateDistanceToLim() <= 2 && (m_controller2.GetRightY() < 0))
+    m_appendage.shoulder(0);
+  else
+    m_appendage.shoulder(m_controller2.GetRightY());
   // ----------- End Appendage Code -----------------------------------
 
 } // End of Teleop Periodic

@@ -89,3 +89,15 @@ void Appendage::armPID(double tar) {
     out = 0;
   m_armMotor->Set(out);
 }
+
+double Appendage::calculateDistanceToLim() {
+  double distanceToLim;
+  double curPos = arm_Encoder->GetPosition();
+  double curAng = shoulder_Encoder->GetDistance();
+  int gearRatioArm = 1, gearRatioShoulder = 1; // update to real
+  // num * enc
+  double armLength = gearRatioArm * curPos + 30; // default unextended arm length
+  double shoulderAng = gearRatioShoulder * curAng;
+  distanceToLim = 78 - sin(shoulderAng) * armLength - 20.5;
+  return distanceToLim; // neg = exceed the limit
+}

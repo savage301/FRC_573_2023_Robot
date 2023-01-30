@@ -27,10 +27,12 @@ class Appendage {
   void arm(double d);
   void armPID(double tar);
 
-
   // Shoulder
   void shoulder(double d);
   void shoulderPID(double tar);
+
+  // Arm + Shoulder
+  double calculateDistanceToLim();
 
  private:
   // Claw Motors
