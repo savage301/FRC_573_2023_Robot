@@ -393,19 +393,37 @@ void Robot::TeleopPeriodic(){
     m_appendage.frontRollerOff();
   }
 
-  // Arm
-  // if going up and is closer to the lim
-  if (m_appendage.calculateDistanceToLim() <= 2 && (m_controller2.GetLeftY() < 0))
-    m_appendage.arm(0);
+  if (m_controller2.GetAButton())
+  {
+    m_appendage.armPID(1);
+    m_appendage.shoulderPID(1); // bot
+  }
+  else if (m_controller2.GetBButton())
+  {
+    m_appendage.armPID(1);
+    m_appendage.shoulderPID(1); // mid
+  }
+  else if (m_controller2.GetYButton())
+  {
+    m_appendage.armPID(1);
+    m_appendage.shoulderPID(1); // top
+  }
   else
-    m_appendage.arm(m_controller2.GetLeftY());
-  
-  // Shoulder
-  // if going up and is closer to the lim
-  if (m_appendage.calculateDistanceToLim() <= 2 && (m_controller2.GetRightY() < 0))
-    m_appendage.shoulder(0);
-  else
-    m_appendage.shoulder(m_controller2.GetRightY());
+  {
+    // Arm
+    // if going up and is closer to the lim
+    if (m_appendage.calculateDistanceToLim() <= 2 && (m_controller2.GetLeftY() < 0))
+          m_appendage.arm(0);
+    else
+          m_appendage.arm(m_controller2.GetLeftY());
+
+    // Shoulder
+    // if going up and is closer to the lim
+    if (m_appendage.calculateDistanceToLim() <= 2 && (m_controller2.GetRightY() < 0))
+          m_appendage.shoulder(0);
+    else
+          m_appendage.shoulder(m_controller2.GetRightY());
+  }
   // ----------- End Appendage Code -----------------------------------
 
 } // End of Teleop Periodic
