@@ -154,4 +154,5 @@ class Robot : public frc::TimedRobot {
     bot
   };
   int curFA_Pos;
+  int curFA_Pos_Latch;
 };
