@@ -24,6 +24,9 @@ Appendage::Appendage() {
   int m_backRollerId = 15;
   int m_armId = 16;
   int m_shoulderId = 17;
+  int p_backRollerId_a = 0;
+  int p_backRollerId_b = 1;
+
   m_frontRollerMotor =
       new rev::CANSparkMax{m_frontRollerId, rev::CANSparkMax::MotorType::kBrushless};
   m_backRollerMotor =
@@ -38,6 +41,8 @@ Appendage::Appendage() {
 
   lim_top = new frc::DigitalInput(6);
   lim_bot = new frc::DigitalInput(7);
+
+  p_backRollerCylinder = new frc::DoubleSolenoid(frc::PneumaticsModuleType::CTREPCM, p_backRollerId_a, p_backRollerId_b);
 }
 
 void Appendage::frontRollerIn() {
@@ -62,6 +67,14 @@ void Appendage::backRollerOut() {
 
 void Appendage::backRollerOff() {
   m_backRollerMotor->Set(0);
+}
+
+void Appendage::pneumaticsIn() {
+  p_backRollerCylinder->Set(frc::DoubleSolenoid::kForward);
+}
+
+void Appendage::pneumaticsOut() {
+  p_backRollerCylinder->Set(frc::DoubleSolenoid::kReverse);
 }
 
 void Appendage::arm(double d){

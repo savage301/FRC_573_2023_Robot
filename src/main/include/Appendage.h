@@ -9,6 +9,7 @@
 #include <frc2/command/PIDCommand.h>
 #include <frc/Encoder.h>
 #include <frc/DigitalInput.h>
+#include <frc/DoubleSolenoid.h>
 
 class Appendage {
  public:
@@ -22,6 +23,8 @@ class Appendage {
   void backRollerIn();
   void backRollerOut();
   void backRollerOff();
+  void pneumaticsIn();
+  void pneumaticsOut();
 
   // Telescoping Arm
   void arm(double d);
@@ -48,6 +51,9 @@ class Appendage {
   // Shoulder Motor
   rev::CANSparkMax* m_shoulderMotor;
   frc::Encoder* shoulder_Encoder;
+
+  // Claw Rear Roller Cylinder
+  frc::DoubleSolenoid* p_backRollerCylinder;
 
   double remapVal(double i, double threshold);
 

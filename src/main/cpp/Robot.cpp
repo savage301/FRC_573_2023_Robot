@@ -377,20 +377,38 @@ void Robot::TeleopPeriodic(){
 
   // ---------------- Appendage Code ---------------------------------
   // Claw
-  if (m_controller2.GetAButtonPressed()) {
-    m_appendage.backRollerIn();
-  } else if (m_controller2.GetYButtonPressed()) {
-    m_appendage.backRollerOut();  
-  } else {
-    m_appendage.backRollerOff();
+  if (tarGamePiece == Robot::GamePiece::cube) {
+    m_appendage.pneumaticsIn();
+    if (m_controller2.GetLeftTriggerAxis() > .5) {
+      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn();
+    } else if (m_controller2.GetRightTriggerAxis() > .5) {
+      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut();
+    } else {
+      m_appendage.frontRollerOff();
+      m_appendage.backRollerOff();
+    }
   }
 
-  if (m_controller2.GetBButtonPressed()) {
-    m_appendage.frontRollerIn();
-  } else if (m_controller2.GetXButtonPressed()) {
-    m_appendage.frontRollerOut();  
-  } else {
-    m_appendage.frontRollerOff();
+  if (tarGamePiece == Robot::GamePiece::cone) {
+    if (m_controller2.GetLeftTriggerAxis() > .5) {
+      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn();
+      m_appendage.pneumaticsOut();
+    } else if (m_controller2.GetRightTriggerAxis() > .5) {
+      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut();
+      m_appendage.pneumaticsOut();
+    } else if (m_controller2.GetLeftBumper()){
+      m_appendage.backRollerIn();
+      m_appendage.frontRollerOff();
+      m_appendage.pneumaticsIn();
+    } else {
+      m_appendage.frontRollerOff();
+      m_appendage.backRollerOff();
+      m_appendage.pneumaticsOut();
+    }
   }
 
   if (m_controller2.GetAButton())
