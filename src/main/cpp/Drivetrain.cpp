@@ -84,11 +84,32 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
   void Drivetrain::autoBalance()
   {
     double gV[3];
+    std::vector<double> curGV;
+    // change these two
+    double upTheRampZ = 0;
+    double downTheRampZ = 0;
+    double balancedZ = 0.99;
     if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
     {
       // vector towards the ground
-      frc::SmartDashboard::PutNumber("GV Gravity Vector X", gV[0]);
-      frc::SmartDashboard::PutNumber("GV Gravity Vector Y", gV[1]);
+      // frc::SmartDashboard::PutNumber("GV Gravity Vector X", gV[0]);
+      // frc::SmartDashboard::PutNumber("GV Gravity Vector Y", gV[1]);
       frc::SmartDashboard::PutNumber("GV Gravity Vector Z", gV[2]);
+    }
+    if (!onRamp) // start on the floor - drive forward
+      DriveWithJoystick(.7, 0, 0, true, false);
+    if (gV[2] < upTheRampZ) // on the upward ramp
+    {
+      onRamp = true;
+    }
+    else if (gV[2] > balancedZ) // balanced
+    {
+      DriveWithJoystick(0, 0, 0, true, false);
+      onRamp = false;
+    }
+    else if (gV[2] < downTheRampZ) // on the downward ramp
+    {
+      onRamp = true;
+      DriveWithJoystick(-.7, 0, 0, true, false);
     }
   }

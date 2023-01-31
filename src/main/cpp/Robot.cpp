@@ -339,7 +339,13 @@ void Robot::TeleopPeriodic(){
     m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),m_controller1.GetLeftX(),m_controller1.GetRightX(),true, m_controller1.GetLeftBumper() ? true : false);
   }
 
-  m_swerve.autoBalance();
+  if (m_controller1.GetBackButton()) {
+    if (m_controller1.GetBackButtonPressed()) {
+      m_swerve.onRamp = false;
+      m_swerve.autoBalance();
+    }
+    m_swerve.autoBalance();
+  }
   // ---- End Drive Code -----------------------------------------------
 
   // ---- Robot Pose Generation Code -----------------------------------
