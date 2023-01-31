@@ -81,3 +81,14 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
     auto_traj.SetKinematics(m_kinematics);
   }
 
+  void Drivetrain::autoBalance()
+  {
+    double gV[3];
+    if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
+    {
+      // vector towards the ground
+      frc::SmartDashboard::PutNumber("GV Gravity Vector X", gV[0]);
+      frc::SmartDashboard::PutNumber("GV Gravity Vector Y", gV[1]);
+      frc::SmartDashboard::PutNumber("GV Gravity Vector Z", gV[2]);
+    }
+  }
