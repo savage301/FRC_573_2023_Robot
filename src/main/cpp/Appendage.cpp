@@ -95,6 +95,12 @@ void Appendage::shoulder(double d){
 void Appendage::shoulderPID(double tar) {
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
+
+  double softStopMinLim = 0;
+  double softStopMaxLim = 1;
+  if ((cur < softStopMinLim && out < 0) || (cur > softStopMaxLim && out > 0))
+    out = 0;
+
   m_shoulderMotor->Set(out);
 }
 
