@@ -37,6 +37,9 @@ class Appendage {
   // Arm + Shoulder
   double calculateDistanceToLim();
 
+  // Wrist
+  void wristPID(double tar);
+
  private:
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;
@@ -52,6 +55,10 @@ class Appendage {
   rev::CANSparkMax* m_shoulderMotor;
   frc::Encoder* shoulder_Encoder;
 
+  // Wrist Motor
+  rev::CANSparkMax* m_wristMotor;
+  frc::Encoder* wrist_Encoder;
+
   // Claw Rear Roller Cylinder
   frc::DoubleSolenoid* p_backRollerCylinder;
 
@@ -59,5 +66,6 @@ class Appendage {
 
   frc2::PIDController Arm_PIDController{1.0, 0, 0};
   frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
+  frc2::PIDController Wrist_PIDController{1.0, 0, 0};
 
 };

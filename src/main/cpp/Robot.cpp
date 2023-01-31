@@ -409,8 +409,10 @@ void Robot::TeleopPeriodic(){
       m_appendage.backRollerOff();
       m_appendage.pneumaticsOut();
     }
+    if (curFA_Pos != Robot::fA_Pos::top)
+      m_appendage.wristPID(1); // angle the wrist when the cone is tipped
   }
-
+  
   if (m_controller2.GetAButton())
   {
     m_appendage.armPID(1);

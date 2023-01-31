@@ -26,6 +26,7 @@ Appendage::Appendage() {
   int m_shoulderId = 17;
   int p_backRollerId_a = 0;
   int p_backRollerId_b = 1;
+  int m_wristMotorId = 18;
 
   m_frontRollerMotor =
       new rev::CANSparkMax{m_frontRollerId, rev::CANSparkMax::MotorType::kBrushless};
@@ -43,6 +44,8 @@ Appendage::Appendage() {
   lim_bot = new frc::DigitalInput(7);
 
   p_backRollerCylinder = new frc::DoubleSolenoid(frc::PneumaticsModuleType::CTREPCM, p_backRollerId_a, p_backRollerId_b);
+
+  m_wristMotor = new rev::CANSparkMax(m_wristMotorId, rev::CANSparkMax::MotorType::kBrushless);
 }
 
 void Appendage::frontRollerIn() {
@@ -113,4 +116,10 @@ double Appendage::calculateDistanceToLim() {
   double shoulderAng = gearRatioShoulder * curAng;
   distanceToLim = 78 - sin(shoulderAng) * armLength - 20.5;
   return distanceToLim; // neg = exceed the limit
+}
+
+void Appendage::wristPID(double tar) {
+  double cur = wrist_Encoder->GetDistance();
+  double out = Wrist_PIDController.Calculate(cur, tar);
+  m_wristMotor->Set(out);
 }
