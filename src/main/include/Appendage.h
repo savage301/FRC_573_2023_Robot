@@ -40,6 +40,9 @@ class Appendage {
   // Wrist
   bool wristPID(double tar);
 
+  // err = cur - tar
+  bool checkLim(double err, double lim);
+
  private:
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;

@@ -92,6 +92,13 @@ void Appendage::shoulder(double d){
   m_shoulderMotor->Set(d);
 }
 
+bool Appendage::checkLim(double err, double lim) {
+  if (abs(err) > lim)
+    return false;
+  else
+    return true;
+}
+
 bool Appendage::shoulderPID(double tar) {
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
@@ -102,7 +109,7 @@ bool Appendage::shoulderPID(double tar) {
     out = 0;
 
   m_shoulderMotor->Set(out);
-  if  (cur == out)
+  if (checkLim(cur - out, 10))
       return true;
   return false;
 }
@@ -114,7 +121,7 @@ bool Appendage::armPID(double tar) {
     out = 0;
   m_armMotor->Set(out);
 
-  if (cur == out)
+  if (checkLim(cur - out, 10))
     return true;
   return false;
 }
@@ -135,7 +142,8 @@ bool Appendage::wristPID(double tar) {
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
   m_wristMotor->Set(out);
-  if (cur == out)
+
+  if (checkLim(cur - out, 10))
       return true;
   return false;
 }
