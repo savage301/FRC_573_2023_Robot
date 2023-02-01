@@ -130,7 +130,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic(){
-  m_appendage.print();
+
   // This was just for testing
   //frc::AnalogInput a_Input = frc::AnalogInput(0);
   //frc::SmartDashboard::PutNumber("AnalogInput", a_Input.GetValue());
