@@ -31,6 +31,9 @@
 
 #include <frc/controller/HolonomicDriveController.h>
 
+#include <frc/DataLogManager.h>
+#include <wpi/DataLog.h>
+
 class Robot : public frc::TimedRobot {
  public:
   Drivetrain m_swerve;

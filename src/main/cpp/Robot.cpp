@@ -9,6 +9,9 @@
 #include <frc/MathUtil.h>
 #include <frc/TimedRobot.h>
 
+#define frcLog frc::DataLogManager::DataLogManager
+wpi::log::StringLogEntry m_log;
+
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -26,6 +29,10 @@ void Robot::RobotInit() {
   // -----------PIPELINE STUFF-----------//
       
   table -> PutNumber("pipeline", 0);
+
+  frcLog::Start();
+
+  frc::DriverStation::StartDataLog(frcLog::GetLog());
 }
 
 /**
