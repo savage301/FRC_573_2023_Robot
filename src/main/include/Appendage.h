@@ -14,6 +14,7 @@
 class Appendage {
  public:
   Appendage();
+  void print();
 
   // Claw - front
   void frontRollerIn();
@@ -41,6 +42,10 @@ class Appendage {
   void wristPID(double tar);
 
  private:
+
+  rev::CANSparkMax* testMotor;
+  rev::RelativeEncoder* testEncoder;
+
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;
   rev::CANSparkMax* m_frontRollerMotor;

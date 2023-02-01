@@ -28,6 +28,12 @@ Appendage::Appendage() {
   int p_backRollerId_b = 1;
   int m_wristMotorId = 18;
 
+
+  testMotor =
+      new rev::CANSparkMax{1, rev::CANSparkMax::MotorType::kBrushless};
+  testEncoder = 
+      new rev::SparkMaxRelativeEncoder{testMotor->GetEncoder(rev::SparkMaxRelativeEncoder::Type::kHallSensor,42)};
+
   m_frontRollerMotor =
       new rev::CANSparkMax{m_frontRollerId, rev::CANSparkMax::MotorType::kBrushless};
   m_backRollerMotor =
@@ -128,4 +134,9 @@ void Appendage::wristPID(double tar) {
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
   m_wristMotor->Set(out);
+}
+#include <frc/smartdashboard/SmartDashboard.h>
+
+void Appendage::print() {
+  frc::SmartDashboard::PutNumber("test",testEncoder->GetPosition());
 }
