@@ -29,17 +29,17 @@ class Appendage {
 
   // Telescoping Arm
   void arm(double d);
-  void armPID(double tar);
+  bool armPID(double tar);
 
   // Shoulder
   void shoulder(double d);
-  void shoulderPID(double tar);
+  bool shoulderPID(double tar);
 
   // Arm + Shoulder
   double calculateDistanceToLim();
 
   // Wrist
-  void wristPID(double tar);
+  bool wristPID(double tar);
 
  private:
 

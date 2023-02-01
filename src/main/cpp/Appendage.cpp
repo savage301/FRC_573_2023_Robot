@@ -98,7 +98,7 @@ void Appendage::shoulder(double d){
   m_shoulderMotor->Set(d);
 }
 
-void Appendage::shoulderPID(double tar) {
+bool Appendage::shoulderPID(double tar) {
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
 
@@ -108,14 +108,21 @@ void Appendage::shoulderPID(double tar) {
     out = 0;
 
   m_shoulderMotor->Set(out);
+  if  (cur == out)
+      return true;
+  return false;
 }
 
-void Appendage::armPID(double tar) {
+bool Appendage::armPID(double tar) {
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
   if ((lim_top->Get() && out > 0) || (lim_bot->Get() && out < 0))
     out = 0;
   m_armMotor->Set(out);
+
+  if (cur == out)
+    return true;
+  return false;
 }
 
 double Appendage::calculateDistanceToLim() {
@@ -130,10 +137,13 @@ double Appendage::calculateDistanceToLim() {
   return distanceToLim; // neg = exceed the limit
 }
 
-void Appendage::wristPID(double tar) {
+bool Appendage::wristPID(double tar) {
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
   m_wristMotor->Set(out);
+  if (cur == out)
+      return true;
+  return false;
 }
 #include <frc/smartdashboard/SmartDashboard.h>
 
