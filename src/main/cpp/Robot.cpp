@@ -130,6 +130,9 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic(){
+  // pump out sensor values to dashboard for diagnostics
+  m_appendage.pumpOutSensorVal();
+  m_swerve.pumpOutSensorVal();
 
   // This was just for testing
   //frc::AnalogInput a_Input = frc::AnalogInput(0);

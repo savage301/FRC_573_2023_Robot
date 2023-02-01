@@ -84,7 +84,6 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
   void Drivetrain::autoBalance()
   {
     double gV[3];
-    std::vector<double> curGV;
     // change these two
     double upTheRampZ = 0;
     double downTheRampZ = 0;
@@ -113,3 +112,15 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy, bool f
       DriveWithJoystick(-.7, 0, 0, true, false);
     }
   }
+
+  
+#include <frc/smartdashboard/SmartDashboard.h>
+#define pumpOut frc::SmartDashboard::PutNumber
+void Drivetrain::pumpOutSensorVal() {
+  double curGyro = m_gyro.GetAngle();
+  double gV[3];
+
+  pumpOut("Gyro angle", curGyro);
+  if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
+    pumpOut("GV Gravity Vector Z", gV[2]);
+}

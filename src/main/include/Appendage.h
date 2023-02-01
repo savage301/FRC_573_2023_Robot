@@ -43,6 +43,8 @@ class Appendage {
   // err = cur - tar
   bool checkLim(double err, double lim);
 
+  void pumpOutSensorVal();
+
  private:
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;

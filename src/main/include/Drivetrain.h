@@ -59,6 +59,8 @@ class Drivetrain {
 
     bool onRamp = false;
 
+    void pumpOutSensorVal();
+
  private:
   frc::Translation2d m_frontLeftLocation{+0.305_m, +0.305_m};
   frc::Translation2d m_frontRightLocation{+0.305_m, -0.305_m};
