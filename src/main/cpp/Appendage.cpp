@@ -43,6 +43,8 @@ Appendage::Appendage() {
   lim_top = new frc::DigitalInput(6);
   lim_bot = new frc::DigitalInput(7);
 
+  a_Input = new frc::AnalogInput(0);
+
   p_backRollerCylinder = new frc::DoubleSolenoid(frc::PneumaticsModuleType::CTREPCM, p_backRollerId_a, p_backRollerId_b);
 
   m_wristMotor = new rev::CANSparkMax(m_wristMotorId, rev::CANSparkMax::MotorType::kBrushless);
@@ -138,6 +140,11 @@ double Appendage::calculateDistanceToLim() {
   return distanceToLim; // neg = exceed the limit
 }
 
+void Appendage::wrist(double d){
+  d=remapVal(d,.7);
+  m_wristMotor->Set(d);
+}
+
 bool Appendage::wristPID(double tar) {
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
@@ -154,8 +161,18 @@ void Appendage::pumpOutSensorVal() {
   double armCur = arm_Encoder->GetPosition();
   double wristCur = wrist_Encoder->GetDistance();
   double shoulderCur = shoulder_Encoder->GetDistance();
+  frc::SmartDashboard::PutNumber("AnalogInput", a_Input->GetValue() );
 
   pumpOut("Arm Encoder", armCur);
   pumpOut("Wrist Encoder", wristCur);
   pumpOut("Shoulder Encoder", shoulderCur);
+}
+
+bool Appendage::gamePieceInClaw() {
+  int limUp = 500, limDown = 200;
+
+  if (a_Input->GetValue() >limDown && a_Input->GetValue()<limUp)
+    return true;
+
+  return false;
 }

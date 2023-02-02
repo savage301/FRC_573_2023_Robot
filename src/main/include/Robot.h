@@ -16,7 +16,6 @@
 #include "Drivetrain.h"
 #include "Appendage.h"
 #include "Led.h"
-//#include <frc/AnalogInput.h>
 
 #include "frc/smartdashboard/Smartdashboard.h"
 #include "networktables/NetworkTable.h"
@@ -103,6 +102,8 @@ class Robot : public frc::TimedRobot {
   nt::IntegerSubscriber validTarget;
   nt::DoubleArraySubscriber cornerXy;
 
+  int autoState = 0;
+  bool firstTime;
 
   std::shared_ptr<nt::NetworkTable> table;
 

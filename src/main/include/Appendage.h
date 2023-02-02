@@ -10,7 +10,7 @@
 #include <frc/Encoder.h>
 #include <frc/DigitalInput.h>
 #include <frc/DoubleSolenoid.h>
-
+#include <frc/AnalogInput.h>
 class Appendage {
  public:
   Appendage();
@@ -38,12 +38,17 @@ class Appendage {
   double calculateDistanceToLim();
 
   // Wrist
+  void wrist(double d);
   bool wristPID(double tar);
 
   // err = cur - tar
   bool checkLim(double err, double lim);
 
   void pumpOutSensorVal();
+
+  // Claw UltSnd
+  bool gamePieceInClaw();
+  frc::AnalogInput* a_Input;
 
  private:
   // Claw Motors

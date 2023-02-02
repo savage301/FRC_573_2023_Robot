@@ -13,6 +13,7 @@
 wpi::log::StringLogEntry m_log;
 
 void Robot::RobotInit() {
+  m_appendage.pneumaticsOut();
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -57,6 +58,9 @@ void Robot::RobotPeriodic() {}
  * make sure to add them to the chooser code above as well.
  */
 void Robot::AutonomousInit() {
+  // reset pos based on selector
+  m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 0_rad});//later
+
   /*m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
   //     kAutoNameDefault);
@@ -67,6 +71,15 @@ void Robot::AutonomousInit() {
   } else {
     // Default Auto goes here
   }*/
+    autoState = 0;
+    isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue); // Get Driverstation color
+
+    m_appendage.wrist(0);
+    m_appendage.arm(0);
+    m_appendage.shoulder(0);
+    m_appendage.frontRollerOff();
+    m_appendage.backRollerOff();
+
 
 // ---------------------------------- Trajectory Following Auto Section ---------------------
   // Generate trajectory to follow for autonomous
@@ -91,33 +104,243 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }*/
+  
+  // Create Pose to offset all poses by to output correctly to dashboard. This can be moved to header file.
+  frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
 
-// ---------------------------------- Trajectory Following Auto Section ---------------------
-  // Update odometry.
-    m_swerve.UpdateOdometry();
-
-  // Update robot position on Field2d.
-    m_field.SetRobotPose(m_swerve.GetPose());
-
-  // Send Field2d to SmartDashboard.
-    frc::SmartDashboard::PutData(&m_field);
-
-  if (m_timer.Get() < exampleTrajectory.TotalTime()) {
-  // Get the desired pose from the trajectory.
-    auto desiredPose = exampleTrajectory.Sample(m_timer.Get());
-
-  // Get the reference chassis speeds from the Ramsete Controller.
-    auto refChassisSpeeds =
-      m_ramseteController.Calculate(m_swerve.GetPose(), desiredPose);
-
-  // Set the linear and angular speeds.
-    m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
-    } 
-    else {
-    m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+  switch (autoState)
+  {
+  case 0: {
+    bool wristReady = m_appendage.wristPID(1);
+    bool armReady = m_appendage.armPID(1);
+    bool shoulderReady = m_appendage.shoulderPID(1);
+    if (wristReady&&armReady&&shoulderReady) {
+      m_timer.Reset();
+      m_timer.Start();
+      autoState++;
     }
-  // ----------------------------------------------------------------------------------------
+    break;
+  }
+  case 1:{
+    m_appendage.wrist(0);
+    m_appendage.arm(0);
+    m_appendage.shoulder(0);
+    m_appendage.frontRollerOff();
+    m_appendage.backRollerOff();
+    m_appendage.pneumaticsIn(); // let go
+    if (m_timer.Get().value() > .25) {
+      m_timer.Stop();
+      autoState++;
+      firstTime = true;
+    } 
+    break;
+  }
+  case 2:{
+    if (firstTime) {
+    int slot = 7;
+    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
+    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
+    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
+    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
+    ));
+
+    trajectory_ = trajectoryPP_.asWPILibTrajectory();
+
+    // Send our generated trajectory to Dashboard Field Object
+    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
+
+    // Start the timer for trajectory following.
+    m_timer.Reset();
+    m_timer.Start();
+    }
+    firstTime = false;
+    m_appendage.armPID(-1);
+    if (m_timer.Get() < trajectory_.TotalTime()) {
+      
+      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
     
+      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
+ 
+      // Set the linear and angular speeds.
+      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+    } else {
+      // When trajectory is completed if button is still pressed this stops the robot
+      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+      autoState++;
+      m_timer.Reset();
+      firstTime = true;
+    }
+    break;
+  }
+  case 3:{
+    if (firstTime) {
+    int slot = 7;
+    // put in hardcoded path coord
+    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
+    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
+    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
+    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
+    ));
+
+    trajectory_ = trajectoryPP_.asWPILibTrajectory();
+
+    // Send our generated trajectory to Dashboard Field Object
+    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
+
+    // Start the timer for trajectory following.
+    m_timer.Reset();
+    m_timer.Start();
+    }
+    firstTime = false;
+    m_appendage.armPID(0);
+    m_appendage.shoulderPID(-1);
+    m_appendage.frontRollerIn();
+    m_appendage.backRollerIn();
+    m_appendage.pneumaticsIn();
+    if (m_timer.Get() < trajectory_.TotalTime()) {
+      
+      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
+    
+      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
+ 
+      // Set the linear and angular speeds.
+      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+    } else {
+      // When trajectory is completed if button is still pressed this stops the robot
+      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+      autoState++;
+      m_timer.Reset();
+      firstTime = true;
+    }
+    break;
+  }
+  case 4:{
+    double tx;
+
+      int validTarFnd = validTarget.Get();
+      if (validTarFnd){
+        tx = table->GetNumber("tx", 0.0);
+        tx *= .05;
+      }
+      m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false, false);
+      if (m_appendage.gamePieceInClaw()||m_timer.Get().value()>2) {
+        autoState++;
+        m_timer.Reset();
+        firstTime = true;
+      }
+    break;
+  }
+  case 5:{
+    if (firstTime) {
+    int slot = 7;
+    // put in hardcoded path coord
+    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
+    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
+    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
+    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
+    ));
+
+    trajectory_ = trajectoryPP_.asWPILibTrajectory();
+
+    // Send our generated trajectory to Dashboard Field Object
+    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
+
+    // Start the timer for trajectory following.
+    m_timer.Reset();
+    m_timer.Start();
+    }
+    firstTime = false;
+    m_appendage.armPID(0);
+    m_appendage.shoulderPID(1);
+    m_appendage.frontRollerOff();
+    m_appendage.backRollerOff();
+    m_appendage.pneumaticsIn();
+    if (m_timer.Get() < trajectory_.TotalTime()) {
+      
+      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
+    
+      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
+ 
+      // Set the linear and angular speeds.
+      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+    } else {
+      // When trajectory is completed if button is still pressed this stops the robot
+      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+      autoState++;
+      m_timer.Reset();
+      firstTime = true;
+    }
+    break;
+  }
+  case 6:{
+    if (firstTime) {
+    int slot = 8;
+    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
+    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
+    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
+    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
+    ));
+
+    trajectory_ = trajectoryPP_.asWPILibTrajectory();
+
+    // Send our generated trajectory to Dashboard Field Object
+    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
+
+    // Start the timer for trajectory following.
+    m_timer.Reset();
+    m_timer.Start();
+    }
+    firstTime = false;
+    m_appendage.arm(0);
+    m_appendage.shoulderPID(1);
+    if (m_timer.Get() < trajectory_.TotalTime()) {
+      
+      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
+    
+      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
+ 
+      // Set the linear and angular speeds.
+      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+    } else {
+      // When trajectory is completed if button is still pressed this stops the robot
+      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+      autoState++;
+      m_timer.Reset();
+      firstTime = true;
+    }
+    break;
+  }
+  case 7:{
+    m_swerve.DriveWithJoystick(0,0,0,false,false);
+    if (m_appendage.armPID(1)) {
+      autoState++;
+      m_timer.Reset();
+      firstTime = true;
+    }
+    break;
+  }
+  case 8:{
+    m_appendage.backRollerOut();
+    m_appendage.frontRollerOut();
+    if (m_timer.Get().value()>.5) {
+    m_timer.Reset();
+    m_timer.Start();
+    autoState++;
+    }
+    break;
+  }
+  default:{
+    m_swerve.DriveWithJoystick(0,0,0,false,false);
+    m_appendage.armPID(1);
+    m_appendage.backRollerOff();
+    m_appendage.frontRollerOff();
+    break;
+  }
+  }
 }
 
 void Robot::TeleopInit() {
@@ -133,10 +356,6 @@ void Robot::TeleopPeriodic(){
   // pump out sensor values to dashboard for diagnostics
   m_appendage.pumpOutSensorVal();
   m_swerve.pumpOutSensorVal();
-
-  // This was just for testing
-  //frc::AnalogInput a_Input = frc::AnalogInput(0);
-  //frc::SmartDashboard::PutNumber("AnalogInput", a_Input.GetValue());
 
   int validTarFnd = validTarget.Get();
 
