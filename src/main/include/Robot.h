@@ -111,26 +111,26 @@ class Robot : public frc::TimedRobot {
 #define poseRed(y) pose1(6.84_m,y)
 #define poseBlue(y) pose1(-6.84_m,y)
 
-  std::vector<frc::Pose2d> redPose = {
-      poseRed(-3.5_m),
-      poseRed(-2.94_m),
-      poseRed(-2.38_m),
-      poseRed(-1.82_m),
-      poseRed(-1.26_m),
-      poseRed(-.7_m),
-      poseRed(-.14_m),
-      poseRed(.42_m),
-      poseRed(.98_m)};
-  std::vector<frc::Pose2d> bluePose = {
-      poseBlue(.98_m),
-      poseBlue(.42_m),
-      poseBlue(-.14_m),
-      poseBlue(-.7_m),
-      poseBlue(-1.26_m),
-      poseBlue(-1.82_m),
-      poseBlue(-2.38_m),
-      poseBlue(-2.94_m),
-      poseBlue(-3.5_m)};
+  std::vector<frc::Pose2d> redPose = { // slot num
+      poseRed(-3.5_m), // 0
+      poseRed(-2.94_m), // 1
+      poseRed(-2.38_m), // 2
+      poseRed(-1.82_m), // 3
+      poseRed(-1.26_m), // 4
+      poseRed(-.7_m), // 5
+      poseRed(-.14_m), // 6
+      poseRed(.42_m), // 7
+      poseRed(.98_m)}; // 8
+  std::vector<frc::Pose2d> bluePose = { // slot num
+      poseBlue(.98_m), // 0
+      poseBlue(.42_m), // 1
+      poseBlue(-.14_m), // 2
+      poseBlue(-.7_m), // 3
+      poseBlue(-1.26_m), // 4
+      poseBlue(-1.82_m), // 5
+      poseBlue(-2.38_m), // 6
+      poseBlue(-2.94_m), // 7
+      poseBlue(-3.5_m)}; // 8
 
   enum Grid
   {
