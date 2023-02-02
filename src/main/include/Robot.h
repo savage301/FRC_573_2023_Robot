@@ -163,4 +163,5 @@ class Robot : public frc::TimedRobot {
   int curFA_Pos_Latch;
 
   void pathGenerate(int slot, frc::Pose2d offPose);
+  void driveWithTraj();
 };

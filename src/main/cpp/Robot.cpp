@@ -133,21 +133,7 @@ void Robot::AutonomousPeriodic() {
     }
     firstTime = false;
     m_appendage.armPID(-1);
-    if (m_timer.Get() < trajectory_.TotalTime()) {
-      
-      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
-    
-      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
- 
-      // Set the linear and angular speeds.
-      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
-    } else {
-      // When trajectory is completed if button is still pressed this stops the robot
-      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
-      autoState++;
-      m_timer.Reset();
-      firstTime = true;
-    }
+    driveWithTraj();
     break;
   }
   case 3:{
@@ -161,21 +147,7 @@ void Robot::AutonomousPeriodic() {
     m_appendage.frontRollerIn();
     m_appendage.backRollerIn();
     m_appendage.pneumaticsIn();
-    if (m_timer.Get() < trajectory_.TotalTime()) {
-      
-      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
-    
-      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
- 
-      // Set the linear and angular speeds.
-      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
-    } else {
-      // When trajectory is completed if button is still pressed this stops the robot
-      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
-      autoState++;
-      m_timer.Reset();
-      firstTime = true;
-    }
+    driveWithTraj();
     break;
   }
   case 4:{
@@ -205,21 +177,7 @@ void Robot::AutonomousPeriodic() {
     m_appendage.frontRollerOff();
     m_appendage.backRollerOff();
     m_appendage.pneumaticsIn();
-    if (m_timer.Get() < trajectory_.TotalTime()) {
-      
-      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
-    
-      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
- 
-      // Set the linear and angular speeds.
-      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
-    } else {
-      // When trajectory is completed if button is still pressed this stops the robot
-      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
-      autoState++;
-      m_timer.Reset();
-      firstTime = true;
-    }
+    driveWithTraj();
     break;
   }
   case 6:{
@@ -230,21 +188,7 @@ void Robot::AutonomousPeriodic() {
     firstTime = false;
     m_appendage.arm(0);
     m_appendage.shoulderPID(1);
-    if (m_timer.Get() < trajectory_.TotalTime()) {
-      
-      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
-    
-      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
- 
-      // Set the linear and angular speeds.
-      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
-    } else {
-      // When trajectory is completed if button is still pressed this stops the robot
-      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
-      autoState++;
-      m_timer.Reset();
-      firstTime = true;
-    }
+    driveWithTraj();
     break;
   }
   case 7:{
@@ -654,4 +598,22 @@ void Robot::pathGenerate(int slot, frc::Pose2d offPose) {
     // Start the timer for trajectory following.
     m_timer.Reset();
     m_timer.Start();
+}
+
+void Robot::driveWithTraj() {
+      if (m_timer.Get() < trajectory_.TotalTime()) {
+      
+      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
+    
+      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
+ 
+      // Set the linear and angular speeds.
+      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
+    } else {
+      // When trajectory is completed if button is still pressed this stops the robot
+      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
+      autoState++;
+      m_timer.Reset();
+      firstTime = true;
+    }
 }
