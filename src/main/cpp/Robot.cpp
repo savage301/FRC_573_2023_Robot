@@ -100,124 +100,7 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }*/
-  
-  // Create Pose to offset all poses by to output correctly to dashboard. This can be moved to header file.
-  frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99),units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
-
-  switch (autoState)
-  {
-  case 0: {
-    bool wristReady = m_appendage.wristPID(1);
-    bool armReady = m_appendage.armPID(1);
-    bool shoulderReady = m_appendage.shoulderPID(1);
-    if (wristReady&&armReady&&shoulderReady) {
-      m_timer.Reset();
-      m_timer.Start();
-      autoState++;
-    }
-    break;
-  }
-  case 1:{
-    m_appendage.appendageReset(true);
-    if (m_timer.Get().value() > .25) {
-      m_timer.Stop();
-      autoState++;
-      firstTime = true;
-    } 
-    break;
-  }
-  case 2:{
-    if (firstTime) {
-    int slot = 7; // hardcode for now
-    pathGenerate(slot, offPose);
-    }
-    firstTime = false;
-    m_appendage.armPID(-1);
-    driveWithTraj();
-    break;
-  }
-  case 3:{
-    if (firstTime) {
-      int slot  = 7; // hardcode for now
-      pathGenerate(slot, offPose);
-    }
-    firstTime = false;
-    m_appendage.armPID(0);
-    m_appendage.shoulderPID(-1);
-    m_appendage.frontRollerIn();
-    m_appendage.backRollerIn();
-    m_appendage.pneumaticsIn();
-    driveWithTraj();
-    break;
-  }
-  case 4:{
-    double tx;
-
-      int validTarFnd = validTarget.Get();
-      if (validTarFnd){
-        tx = table->GetNumber("tx", 0.0);
-        tx *= .05;
-      }
-      m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false, false);
-      if (m_appendage.gamePieceInClaw()||m_timer.Get().value()>2) {
-        autoState++;
-        m_timer.Reset();
-        firstTime = true;
-      }
-    break;
-  }
-  case 5:{
-    if (firstTime) {
-      int slot  = 7; // hardcode for now
-      pathGenerate(slot, offPose);
-    }
-    firstTime = false;
-    m_appendage.armPID(0);
-    m_appendage.shoulderPID(1);
-    m_appendage.frontRollerOff();
-    m_appendage.backRollerOff();
-    m_appendage.pneumaticsIn();
-    driveWithTraj();
-    break;
-  }
-  case 6:{
-    if (firstTime) {
-      int slot = 8;
-      pathGenerate(slot, offPose);
-    }
-    firstTime = false;
-    m_appendage.arm(0);
-    m_appendage.shoulderPID(1);
-    driveWithTraj();
-    break;
-  }
-  case 7:{
-    m_swerve.DriveWithJoystick(0,0,0,false,false);
-    if (m_appendage.armPID(1)) {
-      autoState++;
-      m_timer.Reset();
-      firstTime = true;
-    }
-    break;
-  }
-  case 8:{
-    m_appendage.backRollerOut();
-    m_appendage.frontRollerOut();
-    if (m_timer.Get().value()>.5) {
-    m_timer.Reset();
-    m_timer.Start();
-    autoState++;
-    }
-    break;
-  }
-  default:{
-    m_swerve.DriveWithJoystick(0,0,0,false,false);
-    m_appendage.armPID(1);
-    m_appendage.backRollerOff();
-    m_appendage.frontRollerOff();
-    break;
-  }
-  }
+  autonomousPaths(1);
 }
 
 void Robot::TeleopInit() {
@@ -615,5 +498,156 @@ void Robot::driveWithTraj() {
       autoState++;
       m_timer.Reset();
       firstTime = true;
+    }
+}
+
+void Robot::autonomousPaths(int select)
+{
+    switch (select)
+    {
+    case 1:
+    {
+
+      // Create Pose to offset all poses by to output correctly to dashboard. This can be moved to header file.
+      frc::Pose2d offPose = frc::Pose2d(frc::Translation2d(units::meter_t(-7.99), units::meter_t(-4.105)), frc::Rotation2d(units::degree_t(0)));
+
+      switch (autoState)
+      {
+      case 0:
+      {
+          bool wristReady = m_appendage.wristPID(1);
+          bool armReady = m_appendage.armPID(1);
+          bool shoulderReady = m_appendage.shoulderPID(1);
+          if (wristReady && armReady && shoulderReady)
+          {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+          }
+          break;
+      }
+      case 1:
+      {
+          m_appendage.appendageReset(true);
+          if (m_timer.Get().value() > .25)
+          {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+          }
+          break;
+      }
+      case 2:
+      {
+          if (firstTime)
+          {
+        int slot = 7; // hardcode for now
+        pathGenerate(slot, offPose);
+          }
+          firstTime = false;
+          m_appendage.armPID(-1);
+          driveWithTraj();
+          break;
+      }
+      case 3:
+      {
+          if (firstTime)
+          {
+        int slot = 7; // hardcode for now
+        pathGenerate(slot, offPose);
+          }
+          firstTime = false;
+          m_appendage.armPID(0);
+          m_appendage.shoulderPID(-1);
+          m_appendage.frontRollerIn();
+          m_appendage.backRollerIn();
+          m_appendage.pneumaticsIn();
+          driveWithTraj();
+          break;
+      }
+      case 4:
+      {
+          double tx;
+          int validTarFnd = validTarget.Get();
+          if (validTarFnd)
+          {
+        tx = table->GetNumber("tx", 0.0);
+        tx *= .05;
+          }
+          m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false, false);
+          if (m_appendage.gamePieceInClaw() || m_timer.Get().value() > 2)
+          {
+        autoState++;
+        m_timer.Reset();
+        firstTime = true;
+          }
+          break;
+      }
+      case 5:
+      {
+          if (firstTime)
+          {
+        int slot = 7; // hardcode for now
+        pathGenerate(slot, offPose);
+          }
+          firstTime = false;
+          m_appendage.armPID(0);
+          m_appendage.shoulderPID(1);
+          m_appendage.frontRollerOff();
+          m_appendage.backRollerOff();
+          m_appendage.pneumaticsIn();
+          driveWithTraj();
+          break;
+      }
+      case 6:
+      {
+          if (firstTime)
+          {
+        int slot = 8;
+        pathGenerate(slot, offPose);
+          }
+          firstTime = false;
+          m_appendage.arm(0);
+          m_appendage.shoulderPID(1);
+          driveWithTraj();
+          break;
+      }
+      case 7:
+      {
+          m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+          if (m_appendage.armPID(1))
+          {
+        autoState++;
+        m_timer.Reset();
+        firstTime = true;
+          }
+          break;
+      }
+      case 8:
+      {
+          m_appendage.backRollerOut();
+          m_appendage.frontRollerOut();
+          if (m_timer.Get().value() > .5)
+          {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+          }
+          break;
+      }
+      default:
+      {
+          m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+          m_appendage.armPID(1);
+          m_appendage.backRollerOff();
+          m_appendage.frontRollerOff();
+          break;
+      }
+      }
+
+      break;
+    }
+    default:
+      break;
     }
 }
