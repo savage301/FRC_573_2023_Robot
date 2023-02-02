@@ -128,22 +128,8 @@ void Robot::AutonomousPeriodic() {
   }
   case 2:{
     if (firstTime) {
-    int slot = 7;
-    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
-    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
-    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
-    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
-    ));
-
-    trajectory_ = trajectoryPP_.asWPILibTrajectory();
-
-    // Send our generated trajectory to Dashboard Field Object
-    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-
-    // Start the timer for trajectory following.
-    m_timer.Reset();
-    m_timer.Start();
+    int slot = 7; // hardcode for now
+    pathGenerate(slot, offPose);
     }
     firstTime = false;
     m_appendage.armPID(-1);
@@ -166,23 +152,8 @@ void Robot::AutonomousPeriodic() {
   }
   case 3:{
     if (firstTime) {
-    int slot = 7;
-    // put in hardcoded path coord
-    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
-    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
-    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
-    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
-    ));
-
-    trajectory_ = trajectoryPP_.asWPILibTrajectory();
-
-    // Send our generated trajectory to Dashboard Field Object
-    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-
-    // Start the timer for trajectory following.
-    m_timer.Reset();
-    m_timer.Start();
+      int slot  = 7; // hardcode for now
+      pathGenerate(slot, offPose);
     }
     firstTime = false;
     m_appendage.armPID(0);
@@ -225,23 +196,8 @@ void Robot::AutonomousPeriodic() {
   }
   case 5:{
     if (firstTime) {
-    int slot = 7;
-    // put in hardcoded path coord
-    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
-    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
-    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
-    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
-    ));
-
-    trajectory_ = trajectoryPP_.asWPILibTrajectory();
-
-    // Send our generated trajectory to Dashboard Field Object
-    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-
-    // Start the timer for trajectory following.
-    m_timer.Reset();
-    m_timer.Start();
+      int slot  = 7; // hardcode for now
+      pathGenerate(slot, offPose);
     }
     firstTime = false;
     m_appendage.armPID(0);
@@ -268,22 +224,8 @@ void Robot::AutonomousPeriodic() {
   }
   case 6:{
     if (firstTime) {
-    int slot = 8;
-    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
-    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
-    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
-    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
-    ));
-
-    trajectory_ = trajectoryPP_.asWPILibTrajectory();
-
-    // Send our generated trajectory to Dashboard Field Object
-    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-
-    // Start the timer for trajectory following.
-    m_timer.Reset();
-    m_timer.Start();
+      int slot = 8;
+      pathGenerate(slot, offPose);
     }
     firstTime = false;
     m_appendage.arm(0);
@@ -485,22 +427,8 @@ void Robot::TeleopPeriodic(){
       lmr = 2;
 
     int slot = 3 * tarGrid + lmr;
-    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
-    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
-    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
-    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
-    ));
+    pathGenerate(slot, offPose);
 
-    trajectory_ = trajectoryPP_.asWPILibTrajectory();
-
-    // Send our generated trajectory to Dashboard Field Object
-    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-
-    // Start the timer for trajectory following.
-    m_timer.Reset();
-    m_timer.Start();
-      
     }
 
     if (m_timer.Get() < trajectory_.TotalTime()) {
@@ -709,3 +637,21 @@ int main() {
   return frc::StartRobot<Robot>();
 }
 #endif
+
+void Robot::pathGenerate(int slot, frc::Pose2d offPose) {
+    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
+    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
+    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
+    pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
+    ));
+
+    trajectory_ = trajectoryPP_.asWPILibTrajectory();
+
+    // Send our generated trajectory to Dashboard Field Object
+    field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
+
+    // Start the timer for trajectory following.
+    m_timer.Reset();
+    m_timer.Start();
+}
