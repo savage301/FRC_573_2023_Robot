@@ -176,3 +176,18 @@ bool Appendage::gamePieceInClaw() {
 
   return false;
 }
+
+void Appendage::appendageReset(bool isPneumaticsIn)
+{
+  wrist(Appendage::wristOff);
+  arm(Appendage::armOff);
+  shoulder(Appendage::shoulderOff);
+
+  frontRollerOff();
+  backRollerOff();
+
+  if (isPneumaticsIn)
+    pneumaticsIn(); // let go
+  else
+    pneumaticsOut();
+}

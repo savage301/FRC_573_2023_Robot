@@ -74,11 +74,7 @@ void Robot::AutonomousInit() {
     autoState = 0;
     isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue); // Get Driverstation color
 
-    m_appendage.wrist(0);
-    m_appendage.arm(0);
-    m_appendage.shoulder(0);
-    m_appendage.frontRollerOff();
-    m_appendage.backRollerOff();
+    m_appendage.appendageReset(false);
 
 
 // ---------------------------------- Trajectory Following Auto Section ---------------------
@@ -122,12 +118,7 @@ void Robot::AutonomousPeriodic() {
     break;
   }
   case 1:{
-    m_appendage.wrist(0);
-    m_appendage.arm(0);
-    m_appendage.shoulder(0);
-    m_appendage.frontRollerOff();
-    m_appendage.backRollerOff();
-    m_appendage.pneumaticsIn(); // let go
+    m_appendage.appendageReset(true);
     if (m_timer.Get().value() > .25) {
       m_timer.Stop();
       autoState++;

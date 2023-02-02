@@ -50,6 +50,27 @@ class Appendage {
   bool gamePieceInClaw();
   frc::AnalogInput* a_Input;
 
+
+  enum armVals {
+    armDown =-1,
+    armOff = 0,
+    armUp=1
+  };
+
+  enum wristVals {
+    wristDown =-1,
+    wristOff = 0,
+    wristUp=1
+  };
+
+  enum shoulderVals {
+    shoulderDown =-1,
+    shoulderOff = 0,
+    shoulderUp=1
+  };
+
+  void appendageReset(bool isPneumaticsIn);
+
  private:
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;
