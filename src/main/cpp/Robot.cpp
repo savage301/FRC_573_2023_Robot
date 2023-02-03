@@ -12,10 +12,13 @@
 #define frcLog frc::DataLogManager::DataLogManager
 wpi::log::StringLogEntry m_log;
 
+#define addToChooser(x) m_chooser.AddOption(x, x);
+
 void Robot::RobotInit() {
   m_appendage.pneumaticsOut();
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+  addToChooser(kAutoNameCustom);
+  addToChooser(kAutonPaths1);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
@@ -61,20 +64,14 @@ void Robot::AutonomousInit() {
   // reset pos based on selector
   m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 0_rad});//later
 
-  /*m_autoSelected = m_chooser.GetSelected();
-  // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-  //     kAutoNameDefault);
-  fmt::print("Auto selected: {}\n", m_autoSelected);
+  m_autoSelected = m_chooser.GetSelected();
+  m_autoSelected = frc::SmartDashboard::GetString("Auto Selector",
+       kAutoNameDefault);
+  //fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }*/
-    autoState = 0;
-    isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue); // Get Driverstation color
-
-    m_appendage.appendageReset(false);
+  autoState = 0;
+  isBlue = (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue); // Get Driverstation color
+  m_appendage.appendageReset(false);
 
 
 // ---------------------------------- Trajectory Following Auto Section ---------------------
@@ -100,6 +97,7 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }*/
+  if (m_autoSelected == kAutonPaths1)
   autonomousPaths(1);
 }
 
