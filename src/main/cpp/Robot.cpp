@@ -254,7 +254,7 @@ void Robot::TeleopPeriodic(){
       lmr = 2;
 
     int slot = 3 * tarGrid + lmr;
-    pathGenerate(slot, offPose);
+    pathGenerate(slot);
 
     }
 
@@ -465,14 +465,28 @@ int main() {
 }
 #endif
 
-void Robot::pathGenerate(int slot, frc::Pose2d offPose) {
+pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
     // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
-    pathplanner::PathPlannerTrajectory trajectoryPP_ = pathplanner::PathPlanner::generatePath(
+    trajectoryPP_ = pathplanner::PathPlanner::generatePath(
     pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
     pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
     pathplanner::PathPoint(isBlue ? bluePose[slot].Translation(): redPose[slot].Translation(),isBlue ? bluePose[slot].Rotation(): redPose[slot].Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
     ));
+    return trajectoryPP_;
+}
 
+pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
+    // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    trajectoryPP_ = pathplanner::PathPlanner::generatePath(
+    pathplanner::PathConstraints(m_swerve.kMaxSpeed, m_swerve.kMaxAcceleration), 
+    pathplanner::PathPoint(m_swerve.GetPose().Translation(),m_swerve.GetPose().Rotation(), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
+    pathplanner::PathPoint(tarPose.Translation(),tarPose.Rotation(), frc::Rotation2d(0_deg) // position, heading(direction of travel) holonomic rotation
+    ));
+    return trajectoryPP_;
+}
+
+void Robot::driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_, frc::Pose2d offPose) {
+  
     trajectory_ = trajectoryPP_.asWPILibTrajectory();
 
     // Send our generated trajectory to Dashboard Field Object
@@ -481,9 +495,6 @@ void Robot::pathGenerate(int slot, frc::Pose2d offPose) {
     // Start the timer for trajectory following.
     m_timer.Reset();
     m_timer.Start();
-}
-
-void Robot::driveWithTraj() {
       if (m_timer.Get() < trajectory_.TotalTime()) {
       
       auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
@@ -542,11 +553,11 @@ void Robot::autonomousPaths(int select)
           if (firstTime)
           {
         int slot = 7; // hardcode for now
-        pathGenerate(slot, offPose);
+        trajectoryPP_ = pathGenerate(slot);
           }
           firstTime = false;
           m_appendage.armPID(-1);
-          driveWithTraj();
+          driveWithTraj(trajectoryPP_, offPose);
           break;
       }
       case 3:
@@ -554,7 +565,7 @@ void Robot::autonomousPaths(int select)
           if (firstTime)
           {
         int slot = 7; // hardcode for now
-        pathGenerate(slot, offPose);
+        trajectoryPP_ = pathGenerate(slot);
           }
           firstTime = false;
           m_appendage.armPID(0);
@@ -562,7 +573,7 @@ void Robot::autonomousPaths(int select)
           m_appendage.frontRollerIn();
           m_appendage.backRollerIn();
           m_appendage.pneumaticsIn();
-          driveWithTraj();
+          driveWithTraj(trajectoryPP_, offPose);
           break;
       }
       case 4:
@@ -588,7 +599,7 @@ void Robot::autonomousPaths(int select)
           if (firstTime)
           {
         int slot = 7; // hardcode for now
-        pathGenerate(slot, offPose);
+        trajectoryPP_ = pathGenerate(slot);
           }
           firstTime = false;
           m_appendage.armPID(0);
@@ -596,7 +607,7 @@ void Robot::autonomousPaths(int select)
           m_appendage.frontRollerOff();
           m_appendage.backRollerOff();
           m_appendage.pneumaticsIn();
-          driveWithTraj();
+          driveWithTraj(trajectoryPP_, offPose);
           break;
       }
       case 6:
@@ -604,12 +615,12 @@ void Robot::autonomousPaths(int select)
           if (firstTime)
           {
         int slot = 8;
-        pathGenerate(slot, offPose);
+        trajectoryPP_ = pathGenerate(slot);
           }
           firstTime = false;
           m_appendage.arm(0);
           m_appendage.shoulderPID(1);
-          driveWithTraj();
+          driveWithTraj(trajectoryPP_, offPose);
           break;
       }
       case 7:
