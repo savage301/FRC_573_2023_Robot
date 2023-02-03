@@ -165,5 +165,6 @@ class Robot : public frc::TimedRobot {
   pathplanner::PathPlannerTrajectory pathGenerate(int slot);
   pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d tarPose);
   void driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_, frc::Pose2d offPose);
+  void driveWithTraj();
   void autonomousPaths(int select);
 };

@@ -257,20 +257,7 @@ void Robot::TeleopPeriodic(){
     pathGenerate(slot);
 
     }
-
-    if (m_timer.Get() < trajectory_.TotalTime()) {
-      
-      auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
-    
-      auto refChassisSpeeds = m_holonmicController.Calculate(m_swerve.GetPose(), desiredState,frc::Rotation2d(0_deg));    
- 
-      // Set the linear and angular speeds.
-      m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy, refChassisSpeeds.omega,false);
-    } 
-    else {
-      // When trajectory is completed if button is still pressed this stops the robot
-      m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0), units::radians_per_second_t(0), false); 
-    }
+    driveWithTraj();
   } else if (m_controller1.GetYButton()) {
 
     if (m_controller1.GetYButtonPressed()){
@@ -495,6 +482,10 @@ void Robot::driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_, frc:
     // Start the timer for trajectory following.
     m_timer.Reset();
     m_timer.Start();
+    driveWithTraj();
+}
+
+void Robot::driveWithTraj() {
       if (m_timer.Get() < trajectory_.TotalTime()) {
       
       auto desiredState = trajectory_.Sample(m_timer.Get()); // Get the desired pose from the trajectory.
