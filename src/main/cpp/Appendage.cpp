@@ -39,6 +39,7 @@ Appendage::Appendage() {
   arm_Encoder = 
       new rev::SparkMaxRelativeEncoder{m_armMotor->GetEncoder(rev::SparkMaxRelativeEncoder::Type::kHallSensor,42)};
   shoulder_Encoder = new frc::Encoder(2, 3, false);
+  wrist_Encoder = new frc::Encoder(8, 9, false);
 
   lim_top = new frc::DigitalInput(6);
   lim_bot = new frc::DigitalInput(7);
