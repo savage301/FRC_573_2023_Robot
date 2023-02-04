@@ -32,6 +32,7 @@
 
 #include <frc/DataLogManager.h>
 #include <wpi/DataLog.h>
+#include <frc/Compressor.h>
 
 #include <frc/controller/BangBangController.h>
 
@@ -103,6 +104,8 @@ class Robot : public frc::TimedRobot {
   nt::DoubleArraySubscriber botPose;  
   nt::IntegerSubscriber validTarget;
   nt::DoubleArraySubscriber cornerXy;
+
+  frc::Compressor compressor = new frc::Compressor(19, frc::PneumaticsModuleType::CTREPCM);
 
   int autoState = 0;
   bool firstTime;

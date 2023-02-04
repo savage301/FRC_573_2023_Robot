@@ -37,6 +37,8 @@ void Robot::RobotInit() {
   frcLog::Start();
 
   frc::DriverStation::StartDataLog(frcLog::GetLog());
+
+  compressor.EnableDigital();
 }
 
 /**
