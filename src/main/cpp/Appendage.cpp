@@ -48,11 +48,11 @@ Appendage::Appendage() {
 }
 
 void Appendage::frontRollerIn() {
-  m_frontRollerMotor->Set(1);
+  m_frontRollerMotor->Set(0.50);
 }
 
 void Appendage::frontRollerOut() {
-  m_frontRollerMotor->Set(-1);
+  m_frontRollerMotor->Set(-0.50);
 }
 
 void Appendage::frontRollerOff() {
@@ -60,11 +60,11 @@ void Appendage::frontRollerOff() {
 }
 
 void Appendage::backRollerIn() {
-  m_backRollerMotor->Set(1);
+  m_backRollerMotor->Set(-0.50);
 }
 
 void Appendage::backRollerOut() {
-  m_backRollerMotor->Set(-1);
+  m_backRollerMotor->Set(0.50);
 }
 
 void Appendage::backRollerOff() {
@@ -149,7 +149,7 @@ bool Appendage::wristPID(double tar) {
   m_wristMotor->Set(out);
 
   if (checkLim(cur - out, 10))
-    return true;
+   return true;
   return false;
 }
 

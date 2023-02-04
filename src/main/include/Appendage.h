@@ -63,8 +63,8 @@ class Appendage {
   void appendageReset(bool isPneumaticsIn);
 
  private:
-  int m_frontRollerId = 14;
-  int m_backRollerId = 15;
+  int m_frontRollerId = 15;
+  int m_backRollerId = 14;
   int m_armId = 16;
   int m_shoulderId = 17;
   int p_backRollerId_a = 0;
