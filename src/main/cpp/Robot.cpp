@@ -412,6 +412,7 @@ void Robot::TeleopPeriodic(){
           m_appendage.shoulder(m_controller2.GetRightY());
   }
   // ----------- End Appendage Code -----------------------------------
+  handleLedModes(validTarFnd,hasGamePiece,tarGamePiece, m_appendage.checkEdge());
 
 } // End of Teleop Periodic
 
@@ -499,6 +500,28 @@ void Robot::driveWithTraj() {
       m_timer.Reset();
       firstTime = true;
     }
+}
+
+#define setLeds(x) m_leds.led_control(x)
+void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired, int tarGamePiece, bool isEdgeClose)
+{
+    if (isEdgeClose)
+    {
+      if (isGamePieceAcquired)
+      {
+          setLeds("Green");
+          if (isGamePiece)
+          {
+        setLeds("White");
+        if (tarGamePiece == Robot::GamePiece::cone)
+          setLeds("Yellow");
+        else if (tarGamePiece == Robot::GamePiece::cube)
+          setLeds("Purple");
+          }
+      }
+    }
+    else
+      setLeds("Black");
 }
 
 void Robot::autonomousPaths(int select)

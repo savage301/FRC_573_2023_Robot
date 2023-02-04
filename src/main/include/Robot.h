@@ -39,6 +39,7 @@ class Robot : public frc::TimedRobot {
  public:
   Drivetrain m_swerve;
   Appendage m_appendage;
+  Led m_leds;
   frc::XboxController m_controller1{0};
   frc::XboxController m_controller2{1};
 
@@ -168,4 +169,6 @@ class Robot : public frc::TimedRobot {
   void driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_, frc::Pose2d offPose);
   void driveWithTraj();
   void autonomousPaths(int select);
+
+  void handleLedModes(bool isGamePiece, bool isGamePieceAcquired,int tarGamePiece, bool isEdgeClose);
 };

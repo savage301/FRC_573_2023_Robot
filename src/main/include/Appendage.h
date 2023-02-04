@@ -48,8 +48,12 @@ class Appendage {
 
   // Claw UltSnd
   bool gamePieceInClaw();
-  frc::AnalogInput* a_Input;
+  frc::AnalogInput* claw1_a_input;
 
+  // edge on chassis
+  frc::AnalogInput* edge1_a_input; 
+  frc::AnalogInput* edge2_a_input; 
+  bool checkEdge();
 
   enum armVals {
     armDown =-1,

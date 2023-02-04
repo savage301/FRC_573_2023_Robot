@@ -44,7 +44,9 @@ Appendage::Appendage() {
   lim_top = new frc::DigitalInput(6);
   lim_bot = new frc::DigitalInput(7);
 
-  a_Input = new frc::AnalogInput(0);
+  claw1_a_input = new frc::AnalogInput(0);
+  edge1_a_input = new frc::AnalogInput(1);
+  edge2_a_input = new frc::AnalogInput(2);
 
   p_backRollerCylinder = new frc::DoubleSolenoid(frc::PneumaticsModuleType::CTREPCM, p_backRollerId_a, p_backRollerId_b);
 
@@ -162,8 +164,9 @@ void Appendage::pumpOutSensorVal() {
   double armCur = arm_Encoder->GetPosition();
   double wristCur = wrist_Encoder->GetDistance();
   double shoulderCur = shoulder_Encoder->GetDistance();
-  frc::SmartDashboard::PutNumber("AnalogInput", a_Input->GetValue() );
-
+  pumpOut("Claw 1 AnalogInput", claw1_a_input->GetValue() );
+  pumpOut("edge 1 AnalogInput", edge1_a_input->GetValue() );
+  pumpOut("edge 2 AnalogInput", edge2_a_input->GetValue() );
   pumpOut("Arm Encoder", armCur);
   pumpOut("Wrist Encoder", wristCur);
   pumpOut("Shoulder Encoder", shoulderCur);
@@ -172,7 +175,7 @@ void Appendage::pumpOutSensorVal() {
 bool Appendage::gamePieceInClaw() {
   int limUp = 500, limDown = 200;
 
-  if (a_Input->GetValue() >limDown && a_Input->GetValue()<limUp)
+  if (claw1_a_input->GetValue() >limDown && claw1_a_input->GetValue()<limUp)
     return true;
 
   return false;
@@ -191,4 +194,12 @@ void Appendage::appendageReset(bool isPneumaticsIn)
     pneumaticsIn(); // let go
   else
     pneumaticsOut();
+}
+
+bool Appendage::checkEdge() {
+  double lim = 500;
+  if (edge1_a_input->GetValue()>lim||edge2_a_input->GetValue()>lim)
+  return true;
+
+  return false;
 }

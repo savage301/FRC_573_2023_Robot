@@ -48,6 +48,13 @@ void Led::led_control(std::string input){
     else if(input=="Rainbow"){
         m_leds->Set(-0.99);
     }
+
+    else if (input == "Purple") {
+        m_leds->Set(0.91); // violet
+
+    } else if (input == "Yellow")  {
+        m_leds->Set(0.69);
+    }
     else{
         m_leds->Set(0.99);
     }
