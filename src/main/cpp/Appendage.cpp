@@ -48,7 +48,7 @@ Appendage::Appendage() {
   edge1_a_input = new frc::AnalogInput(1);
   edge2_a_input = new frc::AnalogInput(2);
 
-  p_backRollerCylinder = new frc::DoubleSolenoid(frc::PneumaticsModuleType::CTREPCM, p_backRollerId_a, p_backRollerId_b);
+  p_backRollerCylinder = new frc::DoubleSolenoid(19, frc::PneumaticsModuleType::CTREPCM, p_backRollerId_a, p_backRollerId_b);
 
   m_wristMotor = new rev::CANSparkMax(m_wristMotorId, rev::CANSparkMax::MotorType::kBrushless);
 }
