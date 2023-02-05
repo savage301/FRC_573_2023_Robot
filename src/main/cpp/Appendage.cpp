@@ -1,22 +1,19 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+// Copyright (c) 2023 FRC Team 573
 
 #include "Appendage.h"
-
 
 /*
  * Remaps a number
  */
-double Appendage::remapVal(double i, double threshold)
-{
-    if (abs(i) > threshold)
-    {
-        i = i/abs(i) * threshold;
-    }
+double Appendage::remapVal(double i, double threshold) {
+  if (std::abs(i) > threshold) {
+    i = i / std::abs(i) * threshold;
+  }
 
-    return i;
+  return i;
 }
 
 Appendage::Appendage() {
@@ -28,16 +25,16 @@ Appendage::Appendage() {
   int p_backRollerId_b = 1;
   int m_wristMotorId = 18;
 
-  m_frontRollerMotor =
-      new rev::CANSparkMax{m_frontRollerId, rev::CANSparkMax::MotorType::kBrushless};
-  m_backRollerMotor =
-      new rev::CANSparkMax{m_backRollerId, rev::CANSparkMax::MotorType::kBrushless};
+  m_frontRollerMotor = new rev::CANSparkMax{
+      m_frontRollerId, rev::CANSparkMax::MotorType::kBrushless};
+  m_backRollerMotor = new rev::CANSparkMax{
+      m_backRollerId, rev::CANSparkMax::MotorType::kBrushless};
   m_armMotor =
       new rev::CANSparkMax{m_armId, rev::CANSparkMax::MotorType::kBrushless};
-  m_shoulderMotor =
-      new rev::CANSparkMax{m_shoulderId, rev::CANSparkMax::MotorType::kBrushless};
-  arm_Encoder = 
-      new rev::SparkMaxRelativeEncoder{m_armMotor->GetEncoder(rev::SparkMaxRelativeEncoder::Type::kHallSensor,42)};
+  m_shoulderMotor = new rev::CANSparkMax{
+      m_shoulderId, rev::CANSparkMax::MotorType::kBrushless};
+  arm_Encoder = new rev::SparkMaxRelativeEncoder{m_armMotor->GetEncoder(
+      rev::SparkMaxRelativeEncoder::Type::kHallSensor, 42)};
   shoulder_Encoder = new frc::Encoder(2, 3, false);
   wrist_Encoder = new frc::Encoder(8, 9, false);
 
@@ -48,9 +45,12 @@ Appendage::Appendage() {
   edge1_a_input = new frc::AnalogInput(1);
   edge2_a_input = new frc::AnalogInput(2);
 
-  p_backRollerCylinder = new frc::DoubleSolenoid(19, frc::PneumaticsModuleType::CTREPCM, p_backRollerId_a, p_backRollerId_b);
+  p_backRollerCylinder =
+      new frc::DoubleSolenoid(19, frc::PneumaticsModuleType::CTREPCM,
+                              p_backRollerId_a, p_backRollerId_b);
 
-  m_wristMotor = new rev::CANSparkMax(m_wristMotorId, rev::CANSparkMax::MotorType::kBrushless);
+  m_wristMotor = new rev::CANSparkMax(m_wristMotorId,
+                                      rev::CANSparkMax::MotorType::kBrushless);
 }
 
 void Appendage::frontRollerIn() {
@@ -85,20 +85,20 @@ void Appendage::pneumaticsOut() {
   p_backRollerCylinder->Set(frc::DoubleSolenoid::kReverse);
 }
 
-void Appendage::arm(double d){
-  double out=remapVal(d,.7);
+void Appendage::arm(double d) {
+  double out = remapVal(d, .7);
   if ((lim_top->Get() && out > 0) || (lim_bot->Get() && out < 0))
     out = 0;
   m_armMotor->Set(out);
 }
 
-void Appendage::shoulder(double d){
-  d=remapVal(d,.7);
+void Appendage::shoulder(double d) {
+  d = remapVal(d, .7);
   m_shoulderMotor->Set(d);
 }
 
 bool Appendage::checkLim(double err, double lim) {
-  if (abs(err) > lim)
+  if (std::abs(err) > lim)
     return false;
   else
     return true;
@@ -115,7 +115,7 @@ bool Appendage::shoulderPID(double tar) {
 
   m_shoulderMotor->Set(out);
   if (checkLim(cur - out, 10))
-      return true;
+    return true;
   return false;
 }
 
@@ -135,16 +135,17 @@ double Appendage::calculateDistanceToLim() {
   double distanceToLim;
   double curPos = arm_Encoder->GetPosition();
   double curAng = shoulder_Encoder->GetDistance();
-  int gearRatioArm = 1, gearRatioShoulder = 1; // update to real
+  int gearRatioArm = 1, gearRatioShoulder = 1;  // update to real
   // num * enc
-  double armLength = gearRatioArm * curPos + 30; // default unextended arm length
+  double armLength =
+      gearRatioArm * curPos + 30;  // default unextended arm length
   double shoulderAng = gearRatioShoulder * curAng;
-  distanceToLim = 78 - sin(shoulderAng) * armLength - 20.5;
-  return distanceToLim; // neg = exceed the limit
+  distanceToLim = 78 - std::sin(shoulderAng) * armLength - 20.5;
+  return distanceToLim;  // neg = exceed the limit
 }
 
-void Appendage::wrist(double d){
-  d=remapVal(d,.7);
+void Appendage::wrist(double d) {
+  d = remapVal(d, .7);
   m_wristMotor->Set(d);
 }
 
@@ -154,7 +155,7 @@ bool Appendage::wristPID(double tar) {
   m_wristMotor->Set(out);
 
   if (checkLim(cur - out, 10))
-      return true;
+    return true;
   return false;
 }
 
@@ -164,9 +165,9 @@ void Appendage::pumpOutSensorVal() {
   double armCur = arm_Encoder->GetPosition();
   double wristCur = wrist_Encoder->GetDistance();
   double shoulderCur = shoulder_Encoder->GetDistance();
-  pumpOut("Claw 1 AnalogInput", claw1_a_input->GetValue() );
-  pumpOut("edge 1 AnalogInput", edge1_a_input->GetValue() );
-  pumpOut("edge 2 AnalogInput", edge2_a_input->GetValue() );
+  pumpOut("Claw 1 AnalogInput", claw1_a_input->GetValue());
+  pumpOut("edge 1 AnalogInput", edge1_a_input->GetValue());
+  pumpOut("edge 2 AnalogInput", edge2_a_input->GetValue());
   pumpOut("Arm Encoder", armCur);
   pumpOut("Wrist Encoder", wristCur);
   pumpOut("Shoulder Encoder", shoulderCur);
@@ -175,14 +176,13 @@ void Appendage::pumpOutSensorVal() {
 bool Appendage::gamePieceInClaw() {
   int limUp = 500, limDown = 200;
 
-  if (claw1_a_input->GetValue() >limDown && claw1_a_input->GetValue()<limUp)
+  if (claw1_a_input->GetValue() > limDown && claw1_a_input->GetValue() < limUp)
     return true;
 
   return false;
 }
 
-void Appendage::appendageReset(bool isPneumaticsIn)
-{
+void Appendage::appendageReset(bool isPneumaticsIn) {
   wrist(Appendage::wristOff);
   arm(Appendage::armOff);
   shoulder(Appendage::shoulderOff);
@@ -191,15 +191,15 @@ void Appendage::appendageReset(bool isPneumaticsIn)
   backRollerOff();
 
   if (isPneumaticsIn)
-    pneumaticsIn(); // let go
+    pneumaticsIn();  // let go
   else
     pneumaticsOut();
 }
 
 bool Appendage::checkEdge() {
   double lim = 500;
-  if (edge1_a_input->GetValue()>lim||edge2_a_input->GetValue()>lim)
-  return true;
+  if (edge1_a_input->GetValue() > lim || edge2_a_input->GetValue() > lim)
+    return true;
 
   return false;
 }

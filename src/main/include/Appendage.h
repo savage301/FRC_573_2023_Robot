@@ -1,16 +1,19 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+// Copyright (c) 2023 FRC Team 573
 
 #pragma once
 
-#include <rev/CANSparkMax.h>
-#include <numbers>
-#include <frc2/command/PIDCommand.h>
-#include <frc/Encoder.h>
+#include <frc/AnalogInput.h>
 #include <frc/DigitalInput.h>
 #include <frc/DoubleSolenoid.h>
-#include <frc/AnalogInput.h>
+#include <frc/Encoder.h>
+#include <frc2/command/PIDCommand.h>
+#include <rev/CANSparkMax.h>
+
+#include <numbers>
+
 class Appendage {
  public:
   Appendage();
@@ -51,27 +54,15 @@ class Appendage {
   frc::AnalogInput* claw1_a_input;
 
   // edge on chassis
-  frc::AnalogInput* edge1_a_input; 
-  frc::AnalogInput* edge2_a_input; 
+  frc::AnalogInput* edge1_a_input;
+  frc::AnalogInput* edge2_a_input;
   bool checkEdge();
 
-  enum armVals {
-    armDown =-1,
-    armOff = 0,
-    armUp=1
-  };
+  enum armVals { armDown = -1, armOff = 0, armUp = 1 };
 
-  enum wristVals {
-    wristDown =-1,
-    wristOff = 0,
-    wristUp=1
-  };
+  enum wristVals { wristDown = -1, wristOff = 0, wristUp = 1 };
 
-  enum shoulderVals {
-    shoulderDown =-1,
-    shoulderOff = 0,
-    shoulderUp=1
-  };
+  enum shoulderVals { shoulderDown = -1, shoulderOff = 0, shoulderUp = 1 };
 
   void appendageReset(bool isPneumaticsIn);
 
@@ -102,5 +93,4 @@ class Appendage {
   frc2::PIDController Arm_PIDController{1.0, 0, 0};
   frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
   frc2::PIDController Wrist_PIDController{1.0, 0, 0};
-
 };
