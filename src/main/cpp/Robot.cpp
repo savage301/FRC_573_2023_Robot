@@ -41,6 +41,7 @@ void Robot::RobotInit() {
   compressor.EnableDigital();
 
   getPowerDistribution();
+  m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 180_deg}); // flipping the robot for field setup
 }
 
 /**
@@ -109,7 +110,6 @@ void Robot::TeleopInit() {
   hasGamePiece = false;
   isBlue = false;
   tarGrid = Grid::humanLeft;
-  m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 0_rad});
   curFA_Pos_Latch = 0;
 }
 
