@@ -7,6 +7,7 @@
 
 #include <frc/Compressor.h>
 #include <frc/DataLogManager.h>
+#include <frc/PowerDistribution.h>
 #include <frc/TimedRobot.h>
 #include <frc/Timer.h>
 #include <frc/XboxController.h>
@@ -162,4 +163,5 @@ class Robot : public frc::TimedRobot {
 
   void handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
                       int tarGamePiece, bool isEdgeClose);
+  void getPowerDistribution();
 };

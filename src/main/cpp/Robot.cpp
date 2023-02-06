@@ -39,6 +39,8 @@ void Robot::RobotInit() {
   frc::DriverStation::StartDataLog(frcLog::GetLog());
 
   compressor.EnableDigital();
+
+  getPowerDistribution();
 }
 
 /**
@@ -590,6 +592,26 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
   } else {
     setLeds("Black");
   }
+}
+
+#define pumpOut frc::SmartDashboard::PutNumber
+void Robot::getPowerDistribution() {
+  frc::PowerDistribution bd =
+      frc::PowerDistribution(0, frc::PowerDistribution::ModuleType::kRev);
+  pumpOut("intake motor 1 current", bd.GetCurrent(14));
+  pumpOut("intake motor 2 current", bd.GetCurrent(15));
+  pumpOut("arm motor current", bd.GetCurrent(16));
+  pumpOut("shoulder motor current", bd.GetCurrent(17));
+  pumpOut("wrist motor current", bd.GetCurrent(18));
+
+  pumpOut("drive motor 11", bd.GetCurrent(11));
+  pumpOut("drive motor 10", bd.GetCurrent(10));
+  pumpOut("drive motor 7", bd.GetCurrent(7));
+  pumpOut("drive motor 8", bd.GetCurrent(8));
+  pumpOut("drive motor 5", bd.GetCurrent(5));
+  pumpOut("drive motor 4", bd.GetCurrent(4));
+  pumpOut("drive motor 1", bd.GetCurrent(1));
+  pumpOut("drive motor 2", bd.GetCurrent(2));
 }
 
 void Robot::autonomousPaths(int select) {

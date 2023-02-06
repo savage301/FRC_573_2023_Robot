@@ -149,7 +149,7 @@ bool Appendage::wristPID(double tar) {
   m_wristMotor->Set(out);
 
   if (checkLim(cur - out, 10))
-   return true;
+    return true;
   return false;
 }
 
