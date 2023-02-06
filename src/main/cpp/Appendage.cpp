@@ -17,25 +17,22 @@ double Appendage::remapVal(double i, double threshold) {
 }
 
 Appendage::Appendage() {
-  int m_frontRollerId = 14;
-  int m_backRollerId = 15;
-  int m_armId = 16;
-  int m_shoulderId = 17;
-  int p_backRollerId_a = 0;
-  int p_backRollerId_b = 1;
-  int m_wristMotorId = 18;
-
   m_frontRollerMotor = new rev::CANSparkMax{
       m_frontRollerId, rev::CANSparkMax::MotorType::kBrushless};
   m_backRollerMotor = new rev::CANSparkMax{
       m_backRollerId, rev::CANSparkMax::MotorType::kBrushless};
+
   m_armMotor =
       new rev::CANSparkMax{m_armId, rev::CANSparkMax::MotorType::kBrushless};
-  m_shoulderMotor = new rev::CANSparkMax{
-      m_shoulderId, rev::CANSparkMax::MotorType::kBrushless};
   arm_Encoder = new rev::SparkMaxRelativeEncoder{m_armMotor->GetEncoder(
       rev::SparkMaxRelativeEncoder::Type::kHallSensor, 42)};
+
+  m_shoulderMotor = new rev::CANSparkMax{
+      m_shoulderId, rev::CANSparkMax::MotorType::kBrushless};
   shoulder_Encoder = new frc::Encoder(2, 3, false);
+
+  m_wristMotor = new rev::CANSparkMax(m_wristMotorId,
+                                      rev::CANSparkMax::MotorType::kBrushless);
   wrist_Encoder = new frc::Encoder(8, 9, false);
 
   lim_top = new frc::DigitalInput(6);
@@ -46,11 +43,8 @@ Appendage::Appendage() {
   edge2_a_input = new frc::AnalogInput(2);
 
   p_backRollerCylinder =
-      new frc::DoubleSolenoid(19, frc::PneumaticsModuleType::CTREPCM,
+      new frc::DoubleSolenoid(p_pcmId, frc::PneumaticsModuleType::CTREPCM,
                               p_backRollerId_a, p_backRollerId_b);
-
-  m_wristMotor = new rev::CANSparkMax(m_wristMotorId,
-                                      rev::CANSparkMax::MotorType::kBrushless);
 }
 
 void Appendage::frontRollerIn() {

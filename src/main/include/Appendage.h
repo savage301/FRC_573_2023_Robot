@@ -22,6 +22,7 @@ class Appendage {
   void frontRollerIn();
   void frontRollerOut();
   void frontRollerOff();
+
   // Claw - back
   void backRollerIn();
   void backRollerOut();
@@ -51,11 +52,6 @@ class Appendage {
 
   // Claw UltSnd
   bool gamePieceInClaw();
-  frc::AnalogInput* claw1_a_input;
-
-  // edge on chassis
-  frc::AnalogInput* edge1_a_input;
-  frc::AnalogInput* edge2_a_input;
   bool checkEdge();
 
   enum armVals { armDown = -1, armOff = 0, armUp = 1 };
@@ -67,6 +63,15 @@ class Appendage {
   void appendageReset(bool isPneumaticsIn);
 
  private:
+  int m_frontRollerId = 14;
+  int m_backRollerId = 15;
+  int m_armId = 16;
+  int m_shoulderId = 17;
+  int p_backRollerId_a = 0;
+  int p_backRollerId_b = 1;
+  int m_wristMotorId = 18;
+  int p_pcmId = 19;
+
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;
   rev::CANSparkMax* m_frontRollerMotor;
@@ -87,6 +92,13 @@ class Appendage {
 
   // Claw Rear Roller Cylinder
   frc::DoubleSolenoid* p_backRollerCylinder;
+
+  // Claw UltSnd
+  frc::AnalogInput* claw1_a_input;
+
+  // edge on chassis
+  frc::AnalogInput* edge1_a_input;
+  frc::AnalogInput* edge2_a_input;
 
   double remapVal(double i, double threshold);
 
