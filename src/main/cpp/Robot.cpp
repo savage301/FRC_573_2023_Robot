@@ -39,8 +39,6 @@ void Robot::RobotInit() {
   frc::DriverStation::StartDataLog(frcLog::GetLog());
 
   compressor.EnableDigital();
-
-  getPowerDistribution();
   m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 180_deg}); // flipping the robot for field setup
 }
 
@@ -117,6 +115,7 @@ void Robot::TeleopPeriodic() {
   // pump out sensor values to dashboard for diagnostics
   m_appendage.pumpOutSensorVal();
   m_swerve.pumpOutSensorVal();
+  getPowerDistribution();
 
   int validTarFnd = validTarget.Get();
 
@@ -597,7 +596,7 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
 #define pumpOut frc::SmartDashboard::PutNumber
 void Robot::getPowerDistribution() {
   frc::PowerDistribution bd =
-      frc::PowerDistribution(0, frc::PowerDistribution::ModuleType::kRev);
+      frc::PowerDistribution(0, frc::PowerDistribution::ModuleType::kCTRE); // change to rev on the real robot
   pumpOut("intake motor 1 current", bd.GetCurrent(14));
   pumpOut("intake motor 2 current", bd.GetCurrent(15));
   pumpOut("arm motor current", bd.GetCurrent(16));
