@@ -12,6 +12,7 @@
 #include <frc/trajectory/TrajectoryConfig.h>
 
 #include <numbers>
+#include <vector>
 
 #include "SwerveModule.h"
 
@@ -62,6 +63,8 @@ class Drivetrain {
 
   void pumpOutSensorVal();
 
+  bool isGyroWorking();
+
  private:
   frc::Translation2d m_frontLeftLocation{+0.305_m, +0.305_m};
   frc::Translation2d m_frontRightLocation{+0.305_m, -0.305_m};
@@ -84,4 +87,6 @@ class Drivetrain {
       m_gyro.GetRotation2d(),
       {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
        m_backLeft.GetPosition(), m_backRight.GetPosition()}};
+
+  double last = 0;
 };

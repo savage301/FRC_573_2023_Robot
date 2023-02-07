@@ -209,3 +209,42 @@ bool Appendage::checkEdge() {
 
   return false;
 }
+
+bool Appendage::isArmEncoderWorking() {
+  double cur = 0;
+  if (std::abs(m_armMotor->GetOutputCurrent()) > 1) {
+    cur = arm_Encoder->GetPosition();
+    if (cur != lastArm) {
+      lastArm = cur;
+      return true;
+    }
+  }
+  lastArm = cur;
+  return false;
+}
+
+bool Appendage::isShoulderEncoderWorking() {
+  double cur = 0;
+  if (std::abs(m_shoulderMotor->GetOutputCurrent()) > 1) {
+    cur = shoulder_Encoder->GetDistance();
+    if (cur != lastShoulder) {
+      lastShoulder = cur;
+      return true;
+    }
+  }
+  lastShoulder = cur;
+  return false;
+}
+
+bool Appendage::isWristEncoderWorking() {
+  double cur = 0;
+  if (std::abs(m_wristMotor->GetOutputCurrent()) > 1) {
+    cur = wrist_Encoder->GetDistance();
+    if (cur != lastWrist) {
+      lastWrist = cur;
+      return true;
+    }
+  }
+  lastWrist = cur;
+  return false;
+}

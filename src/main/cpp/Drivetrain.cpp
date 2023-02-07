@@ -118,3 +118,14 @@ void Drivetrain::pumpOutSensorVal() {
   if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
     pumpOut("GV Gravity Vector Z", gV[2]);
 }
+
+bool Drivetrain::isGyroWorking() {
+  double cur;
+  cur = m_gyro.GetAngle();
+  if (cur != last) {  // current is not equal to previous
+    last = cur;
+    return true;
+  }
+  last = cur;
+  return false;
+}

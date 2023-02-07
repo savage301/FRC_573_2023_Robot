@@ -9,9 +9,10 @@
 #include <frc/DigitalInput.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/Encoder.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/PIDCommand.h>
 #include <rev/CANSparkMax.h>
-#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <numbers>
 
 class Appendage {
@@ -62,6 +63,10 @@ class Appendage {
 
   void appendageReset(bool isPneumaticsIn);
 
+  bool isArmEncoderWorking();
+  bool isShoulderEncoderWorking();
+  bool isWristEncoderWorking();
+
  private:
   int m_frontRollerId = 15;
   int m_backRollerId = 14;
@@ -105,4 +110,8 @@ class Appendage {
   frc2::PIDController Arm_PIDController{1.0, 0, 0};
   frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
   frc2::PIDController Wrist_PIDController{1.0, 0, 0};
+
+  double lastArm = 0;
+  double lastShoulder = 0;
+  double lastWrist = 0;
 };
