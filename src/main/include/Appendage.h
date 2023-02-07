@@ -11,7 +11,7 @@
 #include <frc/Encoder.h>
 #include <frc2/command/PIDCommand.h>
 #include <rev/CANSparkMax.h>
-
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <numbers>
 
 class Appendage {
