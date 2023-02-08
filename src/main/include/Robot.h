@@ -167,4 +167,6 @@ class Robot : public frc::TimedRobot {
   void handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
                       int tarGamePiece, bool isEdgeClose);
   void getPowerDistribution();
+  void selectGamePiece();
+  void selectScoringGrid();
 };

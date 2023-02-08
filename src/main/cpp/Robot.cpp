@@ -118,7 +118,7 @@ void Robot::TeleopPeriodic() {
   m_swerve.pumpOutSensorVal();
   getPowerDistribution();
 
-  int validTarFnd = validTarget.Get();
+  bool validTarFnd = validTarget.Get() > 0;
 
   if (validTarFnd) {
     // ------------- Cone Orientation Code --------------------------
@@ -237,12 +237,7 @@ void Robot::TeleopPeriodic() {
   }
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
-  // Set target piece status variable
-  if (m_controller2.GetBackButton())
-    tarGamePiece = GamePiece::cone;
-  else if (m_controller2.GetStartButton())
-    tarGamePiece = GamePiece::cube;
-
+  selectGamePiece();
   hasGamePiece = m_appendage.isGamePieceInClaw();
   table->PutNumber(
       "pipeline",
@@ -250,17 +245,7 @@ void Robot::TeleopPeriodic() {
                                          // Tag, 1 for cone, 2 for cube)
 
   // ------------------ Drive Code --------------------------------------
-  // Target Grid selection code for auto path following
-  int dPadAng = m_controller1.GetPOV();
-  if (dPadAng > 75 && dPadAng < 105) {
-    tarGrid = Grid::humanRight;
-  } else if (dPadAng > 165 && dPadAng < 195) {
-    tarGrid = Grid::humanCenter;
-  } else if (dPadAng > 255 && dPadAng < 285) {
-    tarGrid = Grid::humanLeft;
-  }
-  frc::SmartDashboard::PutNumber("Grid", tarGrid);
-
+  selectScoringGrid();
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
 
@@ -358,7 +343,7 @@ void Robot::TeleopPeriodic() {
   if (hasGamePiece) {
     // If robot has game piece use April tags to attempt to localize robot
     std::vector<double> robotPose = botPose.Get();
-    if (validTarFnd == 1 && robotPose.size() > 0) {
+    if (validTarFnd && robotPose.size() > 0) {
       // If robot can see atleast 1 april tag and has a returned botPose from
       // the limelight it localizes base on botPose
       frc::SmartDashboard::PutNumber("robotPoseX", robotPose[0]);
@@ -608,6 +593,27 @@ void Robot::getPowerDistribution() {
   pumpOut("drive motor 2", bd.GetCurrent(2));
 }
 
+void Robot::selectGamePiece() {
+  // Set target piece status variable
+  if (m_controller2.GetBackButton())
+    tarGamePiece = GamePiece::cone;
+  else if (m_controller2.GetStartButton())
+    tarGamePiece = GamePiece::cube;
+}
+
+void Robot::selectScoringGrid() {
+  // Target Grid selection code for auto path following
+  int dPadAng = m_controller1.GetPOV();
+  if (dPadAng > 75 && dPadAng < 105) {
+    tarGrid = Grid::humanRight;
+  } else if (dPadAng > 165 && dPadAng < 195) {
+    tarGrid = Grid::humanCenter;
+  } else if (dPadAng > 255 && dPadAng < 285) {
+    tarGrid = Grid::humanLeft;
+  }
+  frc::SmartDashboard::PutNumber("Grid", tarGrid);
+}
+
 void Robot::autonomousPaths(int select) {
   switch (select) {
     case 1: {
@@ -658,7 +664,7 @@ void Robot::autonomousPaths(int select) {
         }
         case 4: {
           double tx;
-          int validTarFnd = validTarget.Get();
+          bool validTarFnd = validTarget.Get() > 0;
           if (validTarFnd) {
             tx = table->GetNumber("tx", 0.0);
             tx *= .05;
