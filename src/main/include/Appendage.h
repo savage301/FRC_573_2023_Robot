@@ -62,10 +62,13 @@ class Appendage {
   enum shoulderVals { shoulderDown = -1, shoulderOff = 0, shoulderUp = 1 };
 
   void appendageReset(bool isPneumaticsIn);
-
-  bool isArmEncoderWorking();
-  bool isShoulderEncoderWorking();
-  bool isWristEncoderWorking();
+  bool isSensorWorking(rev::CANSparkMax* canMotor,
+                       rev::RelativeEncoder* canEncoder, double last);
+  bool isSensorWorking(rev::CANSparkMax* canMotor, frc::Encoder* frcEncoder,
+                       double last);
+  bool getArmWorking();
+  bool getShoulderWorking();
+  bool getWristWorking();
 
  private:
   int m_frontRollerId = 15;

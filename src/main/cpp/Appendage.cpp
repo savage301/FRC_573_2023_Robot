@@ -210,41 +210,38 @@ bool Appendage::checkEdge() {
   return false;
 }
 
-bool Appendage::isArmEncoderWorking() {
+/*
+ * checks if a sensor is working
+ * @param canMotor - name of the can motor
+ *        canEncoder - name of the can encoder
+ *        last - last value to check
+ * @return true - if last is NOT equal to current
+ *         false - if last is equal to current
+ */
+bool Appendage::isSensorWorking(rev::CANSparkMax* canMotor,
+                                rev::RelativeEncoder* canEncoder, double last) {
   double cur = 0;
-  if (std::abs(m_armMotor->GetOutputCurrent()) > 1) {
-    cur = arm_Encoder->GetPosition();
-    if (cur != lastArm) {
-      lastArm = cur;
+  if (std::abs(canMotor->GetOutputCurrent()) > 1) {
+    cur = canEncoder->GetPosition();
+    if (cur != last) {
+      last = cur;
       return true;
     }
   }
-  lastArm = cur;
+  last = cur;
   return false;
 }
 
-bool Appendage::isShoulderEncoderWorking() {
+bool Appendage::isSensorWorking(rev::CANSparkMax* canMotor,
+                                frc::Encoder* frcEncoder, double last) {
   double cur = 0;
-  if (std::abs(m_shoulderMotor->GetOutputCurrent()) > 1) {
-    cur = shoulder_Encoder->GetDistance();
-    if (cur != lastShoulder) {
-      lastShoulder = cur;
+  if (std::abs(canMotor->GetOutputCurrent()) > 1) {
+    cur = frcEncoder->GetDistance();
+    if (cur != last) {
+      last = cur;
       return true;
     }
   }
-  lastShoulder = cur;
-  return false;
-}
-
-bool Appendage::isWristEncoderWorking() {
-  double cur = 0;
-  if (std::abs(m_wristMotor->GetOutputCurrent()) > 1) {
-    cur = wrist_Encoder->GetDistance();
-    if (cur != lastWrist) {
-      lastWrist = cur;
-      return true;
-    }
-  }
-  lastWrist = cur;
+  last = cur;
   return false;
 }
