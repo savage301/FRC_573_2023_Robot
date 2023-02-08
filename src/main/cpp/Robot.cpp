@@ -249,12 +249,6 @@ void Robot::TeleopPeriodic() {
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
                                          // Tag, 1 for cone, 2 for cube)
 
-  // Create Pose to offset all poses by to output correctly to dashboard. This
-  // can be moved to header file.
-  frc::Pose2d offPose = frc::Pose2d(
-      frc::Translation2d(units::meter_t(-7.99), units::meter_t(-4.105)),
-      frc::Rotation2d(units::degree_t(0)));
-
   // ------------------ Drive Code --------------------------------------
   // Target Grid selection code for auto path following
   int dPadAng = m_controller1.GetPOV();
@@ -617,12 +611,6 @@ void Robot::getPowerDistribution() {
 void Robot::autonomousPaths(int select) {
   switch (select) {
     case 1: {
-      // Create Pose to offset all poses by to output correctly to dashboard.
-      // This can be moved to header file.
-      frc::Pose2d offPose = frc::Pose2d(
-          frc::Translation2d(units::meter_t(-7.99), units::meter_t(-4.105)),
-          frc::Rotation2d(units::degree_t(0)));
-
       switch (autoState) {
         case 0: {
           bool wristReady = m_appendage.wristPID(1);

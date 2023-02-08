@@ -153,6 +153,9 @@ class Robot : public frc::TimedRobot {
   enum fA_Pos { top, left, right, bot };
   int curFA_Pos;
   int curFA_Pos_Latch;
+  frc::Pose2d offPose = frc::Pose2d(
+      frc::Translation2d(units::meter_t(-7.99), units::meter_t(-4.105)),
+      frc::Rotation2d(units::degree_t(0)));
 
   pathplanner::PathPlannerTrajectory pathGenerate(int slot);
   pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d tarPose);
