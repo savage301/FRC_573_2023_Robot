@@ -179,7 +179,7 @@ void Appendage::pumpOutSensorVal() {
   pumpOut("Shoulder Encoder", shoulderCur);
 }
 
-bool Appendage::gamePieceInClaw() {
+bool Appendage::isGamePieceInClaw() {
   int limUp = 500, limDown = 200;
 
   if (claw1_a_input->GetValue() > limDown && claw1_a_input->GetValue() < limUp)

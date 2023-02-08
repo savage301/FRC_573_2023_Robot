@@ -243,8 +243,7 @@ void Robot::TeleopPeriodic() {
   else if (m_controller2.GetStartButton())
     tarGamePiece = GamePiece::cube;
 
-  hasGamePiece = false;  // update to determine state based on ultrasnd on claw
-                         // once it is written
+  hasGamePiece = m_appendage.isGamePieceInClaw();
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
@@ -678,7 +677,7 @@ void Robot::autonomousPaths(int select) {
           }
           m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false,
                                      false);
-          if (m_appendage.gamePieceInClaw() || m_timer.Get().value() > 2) {
+          if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2) {
             autoState++;
             m_timer.Reset();
             firstTime = true;
