@@ -98,10 +98,10 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
-  const std::string kAutonPaths1 = "Red Right 8";
-  const std::string kAutonPaths2 = "Red Left 1";
-  const std::string kAutonPaths3 = "Blue Right 8";
-  const std::string kAutonPaths4 = "Blue Left 1";
+  const std::string kAutonPaths1 = "Red Right 6 to 7";
+  const std::string kAutonPaths2 = "Red Left 2 to 1";
+  const std::string kAutonPaths3 = "Blue Right 6 to 7";
+  const std::string kAutonPaths4 = "Blue Left 2 to 1";
   std::string m_autoSelected;
 
   nt::DoubleArraySubscriber botPose;

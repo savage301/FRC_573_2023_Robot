@@ -69,8 +69,15 @@ void Robot::RobotPeriodic() {}
  */
 void Robot::AutonomousInit() {
   // reset pos based on selector
-  m_swerve.ResetOdometry(frc::Pose2d{5_m, 5_m, 0_rad});  // later
-
+  if (m_autoSelected == kAutonPaths1)
+    // start with 6 / 2
+    m_swerve.ResetOdometry(redPose[6]);
+  else if (m_autoSelected == kAutonPaths2)
+    m_swerve.ResetOdometry(redPose[2]);
+  else if (m_autoSelected == kAutonPaths3)
+    m_swerve.ResetOdometry(bluePose[6]);
+  else if (m_autoSelected == kAutonPaths4)
+    m_swerve.ResetOdometry(bluePose[2]);
   m_autoSelected = m_chooser.GetSelected();
   m_autoSelected =
       frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
@@ -103,7 +110,7 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }*/
-  if (m_autoSelected == kAutonPaths1)
+  if (m_autoSelected == kAutonPaths1)  // update init pose?
     autonomousPaths(1);
   else if (m_autoSelected == kAutonPaths2)
     autonomousPaths(2);
@@ -737,7 +744,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
 void Robot::autonomousPaths(int select) {
   switch (select) {
     case 1: {  // red right
-      autonomousPaths(false, 8, redRightMidPose, redRightcube);
+      autonomousPaths(false, 7, redRightMidPose, redRightcube);
       break;
     }
     case 2: {  // red left
@@ -745,7 +752,7 @@ void Robot::autonomousPaths(int select) {
       break;
     }
     case 3: {  // blue right
-      autonomousPaths(false, 8, blueRightMidPose, blueRightcube);
+      autonomousPaths(false, 7, blueRightMidPose, blueRightcube);
       break;
     }
     case 4: {  // blue left
