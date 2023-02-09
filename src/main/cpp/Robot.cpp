@@ -614,123 +614,133 @@ void Robot::selectScoringGrid() {
   frc::SmartDashboard::PutNumber("Grid", tarGrid);
 }
 
+void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
+                            frc::Pose2d poseCube) {
+  switch (autoState) {
+    case 0: {
+      bool wristReady = m_appendage.wristPID(1);
+      bool armReady = m_appendage.armPID(1);
+      bool shoulderReady = m_appendage.shoulderPID(1);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 1: {
+      m_appendage.appendageReset(true);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(poseMidPoint);  // mid pt
+      }
+      firstTime = false;
+      m_appendage.armPID(-1);
+      driveWithTraj(trajectoryPP_, offPose);
+      break;
+    }
+    case 3: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(poseCube);
+      }
+      firstTime = false;
+      m_appendage.armPID(0);
+      m_appendage.shoulderPID(-1);
+      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn();
+      m_appendage.pneumaticsIn();
+      driveWithTraj(trajectoryPP_, offPose);
+      break;
+    }
+    case 4: {
+      double tx;
+      bool validTarFnd = validTarget.Get() > 0;
+      if (validTarFnd) {
+        tx = table->GetNumber("tx", 0.0);
+        tx *= .05;
+      }
+      m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false, false);
+      if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2) {
+        autoState++;
+        m_timer.Reset();
+        firstTime = true;
+      }
+      break;
+    }
+    case 5: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(poseMidPoint);  // mid pt
+      }
+      firstTime = false;
+      m_appendage.armPID(0);
+      m_appendage.shoulderPID(1);
+      m_appendage.frontRollerOff();
+      m_appendage.backRollerOff();
+      m_appendage.pneumaticsIn();
+      driveWithTraj(trajectoryPP_, offPose);
+      break;
+    }
+    case 6: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(slot);
+      }
+      firstTime = false;
+      m_appendage.arm(0);
+      m_appendage.shoulderPID(1);
+      driveWithTraj(trajectoryPP_, offPose);
+      break;
+    }
+    case 7: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      if (m_appendage.armPID(1)) {
+        autoState++;
+        m_timer.Reset();
+        firstTime = true;
+      }
+      break;
+    }
+    case 8: {
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    default: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_appendage.armPID(1);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      break;
+    }
+  }
+}
 void Robot::autonomousPaths(int select) {
   switch (select) {
-    case 1: {
-      switch (autoState) {
-        case 0: {
-          bool wristReady = m_appendage.wristPID(1);
-          bool armReady = m_appendage.armPID(1);
-          bool shoulderReady = m_appendage.shoulderPID(1);
-          if (wristReady && armReady && shoulderReady) {
-            m_timer.Reset();
-            m_timer.Start();
-            autoState++;
-          }
-          break;
-        }
-        case 1: {
-          m_appendage.appendageReset(true);
-          if (m_timer.Get().value() > .25) {
-            m_timer.Stop();
-            autoState++;
-            firstTime = true;
-          }
-          break;
-        }
-        case 2: {
-          if (firstTime) {
-            int slot = 7;  // hardcode for now
-            trajectoryPP_ = pathGenerate(slot);
-          }
-          firstTime = false;
-          m_appendage.armPID(-1);
-          driveWithTraj(trajectoryPP_, offPose);
-          break;
-        }
-        case 3: {
-          if (firstTime) {
-            int slot = 7;  // hardcode for now
-            trajectoryPP_ = pathGenerate(slot);
-          }
-          firstTime = false;
-          m_appendage.armPID(0);
-          m_appendage.shoulderPID(-1);
-          m_appendage.frontRollerIn();
-          m_appendage.backRollerIn();
-          m_appendage.pneumaticsIn();
-          driveWithTraj(trajectoryPP_, offPose);
-          break;
-        }
-        case 4: {
-          double tx;
-          bool validTarFnd = validTarget.Get() > 0;
-          if (validTarFnd) {
-            tx = table->GetNumber("tx", 0.0);
-            tx *= .05;
-          }
-          m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false,
-                                     false);
-          if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2) {
-            autoState++;
-            m_timer.Reset();
-            firstTime = true;
-          }
-          break;
-        }
-        case 5: {
-          if (firstTime) {
-            int slot = 7;  // hardcode for now
-            trajectoryPP_ = pathGenerate(slot);
-          }
-          firstTime = false;
-          m_appendage.armPID(0);
-          m_appendage.shoulderPID(1);
-          m_appendage.frontRollerOff();
-          m_appendage.backRollerOff();
-          m_appendage.pneumaticsIn();
-          driveWithTraj(trajectoryPP_, offPose);
-          break;
-        }
-        case 6: {
-          if (firstTime) {
-            int slot = 8;
-            trajectoryPP_ = pathGenerate(slot);
-          }
-          firstTime = false;
-          m_appendage.arm(0);
-          m_appendage.shoulderPID(1);
-          driveWithTraj(trajectoryPP_, offPose);
-          break;
-        }
-        case 7: {
-          m_swerve.DriveWithJoystick(0, 0, 0, false, false);
-          if (m_appendage.armPID(1)) {
-            autoState++;
-            m_timer.Reset();
-            firstTime = true;
-          }
-          break;
-        }
-        case 8: {
-          m_appendage.backRollerOut();
-          m_appendage.frontRollerOut();
-          if (m_timer.Get().value() > .5) {
-            m_timer.Reset();
-            m_timer.Start();
-            autoState++;
-          }
-          break;
-        }
-        default: {
-          m_swerve.DriveWithJoystick(0, 0, 0, false, false);
-          m_appendage.armPID(1);
-          m_appendage.backRollerOff();
-          m_appendage.frontRollerOff();
-          break;
-        }
-      }
-
+    case 1: {  // red right
+      autonomousPaths(false, 8, redRightMidPose, redRightcube);
+      break;
+    }
+    case 2: {  // red left
+      autonomousPaths(false, 1, redLeftMidPose, redLeftcube);
+      break;
+    }
+    case 3: {  // blue right
+      autonomousPaths(false, 8, blueRightMidPose, blueRightcube);
+      break;
+    }
+    case 4: {  // blue left
+      autonomousPaths(false, 1, blueLeftMidPose, blueLeftcube);
       break;
     }
     default:
