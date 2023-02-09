@@ -683,7 +683,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
         tx *= .05;
       }
       m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false, false);
-      if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2) {
+      if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2 || isPassCenterLine()) {
         autoState++;
         m_timer.Reset();
         firstTime = true;
@@ -762,4 +762,12 @@ void Robot::autonomousPaths(int select) {
     default:
       break;
   }
+}
+
+bool Robot::isPassCenterLine() {
+  frc::Pose2d curPose = m_swerve.GetPose();
+  double curY = curPose.Y().value();
+  if (abs(curY) < .305)
+    return true;
+  return false;
 }

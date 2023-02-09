@@ -188,4 +188,5 @@ class Robot : public frc::TimedRobot {
   void selectScoringGrid();
   void autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
                        frc::Pose2d poseCube);
+  bool isPassCenterLine();
 };
