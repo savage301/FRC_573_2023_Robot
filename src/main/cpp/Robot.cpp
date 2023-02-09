@@ -20,6 +20,9 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   addToChooser(kAutoNameCustom);
   addToChooser(kAutonPaths1);
+  addToChooser(kAutonPaths2);
+  addToChooser(kAutonPaths3);
+  addToChooser(kAutonPaths4);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
@@ -102,6 +105,12 @@ void Robot::AutonomousPeriodic() {
   }*/
   if (m_autoSelected == kAutonPaths1)
     autonomousPaths(1);
+  else if (m_autoSelected == kAutonPaths2)
+    autonomousPaths(2);
+  else if (m_autoSelected == kAutonPaths3)
+    autonomousPaths(3);
+  else if (m_autoSelected == kAutonPaths4)
+    autonomousPaths(4);
 }
 
 void Robot::TeleopInit() {
