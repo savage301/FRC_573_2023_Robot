@@ -17,6 +17,7 @@ wpi::log::StringLogEntry m_log;
 
 void Robot::RobotInit() {
   m_appendage.pneumaticsOut();
+  chargeStationClaws(true);
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   addToChooser(kAutoNameCustom);
   addToChooser(kAutonPaths1);
@@ -133,7 +134,10 @@ void Robot::TeleopPeriodic() {
   m_appendage.pumpOutSensorVal();
   m_swerve.pumpOutSensorVal();
   getPowerDistribution();
-
+  if (m_controller1.GetLeftBumperPressed())
+    chargeStationClaws(false);
+  else if (m_controller1.GetRightBumperPressed())
+    chargeStationClaws(true);
   bool validTarFnd = validTarget.Get() > 0;
 
   if (validTarFnd) {
@@ -683,7 +687,8 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
         tx *= .05;
       }
       m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false, false);
-      if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2 || isPassCenterLine()) {
+      if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2 ||
+          isPassCenterLine()) {
         autoState++;
         m_timer.Reset();
         firstTime = true;
@@ -767,7 +772,14 @@ void Robot::autonomousPaths(int select) {
 bool Robot::isPassCenterLine() {
   frc::Pose2d curPose = m_swerve.GetPose();
   double curY = curPose.Y().value();
-  if (abs(curY) < .305)
+  if (std::abs(curY) < .305)
     return true;
   return false;
+}
+
+void Robot ::chargeStationClaws(bool down) {
+  if (down)
+    m_appendage.pneumaticsIn();
+  else
+    m_appendage.pneumaticsOut();
 }

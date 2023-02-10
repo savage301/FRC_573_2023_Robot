@@ -189,4 +189,6 @@ class Robot : public frc::TimedRobot {
   void autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
                        frc::Pose2d poseCube);
   bool isPassCenterLine();
+
+  void chargeStationClaws(bool down);
 };
