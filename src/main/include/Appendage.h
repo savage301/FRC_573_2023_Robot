@@ -97,8 +97,6 @@ class Appendage {
   // Telescoping Arm Motor
   rev::CANSparkMax* m_armMotor;
   rev::RelativeEncoder* arm_Encoder;
-  frc::DigitalInput* lim_top;
-  frc::DigitalInput* lim_bot;
 
   // Shoulder Motor
   rev::CANSparkMax* m_shoulderMotor;

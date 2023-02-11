@@ -35,9 +35,6 @@ Appendage::Appendage() {
                                       rev::CANSparkMax::MotorType::kBrushless);
   wrist_Encoder = new frc::Encoder(8, 9, false);
 
-  lim_top = new frc::DigitalInput(6);
-  lim_bot = new frc::DigitalInput(7);
-
   claw1_a_input = new frc::AnalogInput(0);
   edge1_a_input = new frc::AnalogInput(1);
   edge2_a_input = new frc::AnalogInput(2);
@@ -95,8 +92,6 @@ void Appendage::clawPneumaticsOut() {
 
 void Appendage::arm(double d) {
   double out = remapVal(d, .7);
-  if ((lim_top->Get() && out > 0) || (lim_bot->Get() && out < 0))
-    out = 0;
   m_armMotor->Set(out);
 }
 
@@ -138,8 +133,6 @@ bool Appendage::armPID(double tar) {
   Arm_PIDController.SetPID(p, i, d);
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
-  if ((lim_top->Get() && out > 0) || (lim_bot->Get() && out < 0))
-    out = 0;
   m_armMotor->Set(out);
 
   if (checkLim(cur - out, 10))
