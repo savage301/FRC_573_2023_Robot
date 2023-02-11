@@ -36,7 +36,7 @@ class Drivetrain {
   frc::Pose2d GetPose() const;
 
   static constexpr units::meters_per_second_t kMaxSpeed =
-      3_mps;  // 3 meters per second
+      4.5_mps;  // 3 meters per second
   static constexpr units::radians_per_second_t kMaxAngularSpeed{
       std::numbers::pi * 2};  // 1/2 rotation per second
 

@@ -22,9 +22,9 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
       m_turningEncoder(turningEncoderChannel) {
   m_driveEncoder.SetPositionConversionFactor(
       2 * std::numbers::pi * kWheelRadius /
-      kDriveEncoderResolution);  // Conversion from rot to m
+      kDriveGearRatio);  // Conversion from rot to m
   m_driveEncoder.SetVelocityConversionFactor(
-      (2 * std::numbers::pi * kWheelRadius / kDriveEncoderResolution) /
+      (2 * std::numbers::pi * kWheelRadius / kDriveGearRatio) /
       60);  // Converstion from rpm to to m/s
 
   // Limit the PID Controller's input range between -pi and pi and set the input
@@ -64,19 +64,10 @@ void SwerveModule::SetDesiredState(
 
   // Set the motor outputs. Flip directions as needed to get modules to spin
   // proper direction.
-  if (m_driveMotor.GetDeviceId() == 1 || m_driveMotor.GetDeviceId() == 7 ||
-      m_driveMotor.GetDeviceId() == 4) {
-    m_driveMotor.SetVoltage(
-        units::volt_t{-driveOutput});  //+ driveFeedforward);
-  } else {
-    m_driveMotor.SetVoltage(units::volt_t{driveOutput});  //+ driveFeedforward);
-  }
-  if (m_turningMotor.GetDeviceId() == 5 || m_turningMotor.GetDeviceId() == 11) {
-    m_turningMotor.SetVoltage(
-        units::volt_t{-turnOutput});  //+ turnFeedforward);
-  } else {
-    m_turningMotor.SetVoltage(units::volt_t{turnOutput});  //+ turnFeedforward);
-  }
+
+  // inverted motor id 1, 2, and 8 thru rev hw client via flipping kInverted in advanced
+  m_turningMotor.SetVoltage(units::volt_t{turnOutput});  //+ turnFeedforward);
+  m_driveMotor.SetVoltage(units::volt_t{driveOutput});  //+ driveFeedforward);
 
   // 1, 4. 7. 10
   int driveMotorId = m_driveMotor.GetDeviceId();
@@ -84,6 +75,8 @@ void SwerveModule::SetDesiredState(
     case 1:
       pumpOut("Drive Encoder FL", m_driveEncoder.GetPosition());
       pumpOut("Turn Encoder FL", m_turningEncoder.GetPosition());
+      pumpOut("fl vol output", driveOutput);
+      pumpOut("fl measured speed", m_driveEncoder.GetVelocity());
       break;
     case 4:
       pumpOut("Drive Encoder FR", m_driveEncoder.GetPosition());
