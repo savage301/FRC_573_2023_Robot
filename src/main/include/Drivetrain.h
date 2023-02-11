@@ -65,11 +65,13 @@ class Drivetrain {
 
   bool isGyroWorking();
 
+  void resetGyro();
+
  private:
-  frc::Translation2d m_frontLeftLocation{+0.305_m, +0.305_m};
-  frc::Translation2d m_frontRightLocation{+0.305_m, -0.305_m};
-  frc::Translation2d m_backLeftLocation{-0.305_m, +0.305_m};
-  frc::Translation2d m_backRightLocation{-0.305_m, -0.305_m};
+  frc::Translation2d m_frontLeftLocation{+0.3175_m, +0.27305_m};
+  frc::Translation2d m_frontRightLocation{+0.3175_m, -0.27305_m};
+  frc::Translation2d m_backLeftLocation{-0.3175_m, +0.27305_m};
+  frc::Translation2d m_backRightLocation{-0.3175_m, -0.27305_m};
 
   SwerveModule m_frontLeft{1, 2, 3};
   SwerveModule m_frontRight{4, 5, 6};

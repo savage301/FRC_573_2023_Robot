@@ -41,7 +41,8 @@ void Robot::RobotInit() {
   frcLog::Start();
 
   frc::DriverStation::StartDataLog(frcLog::GetLog());
-
+  
+  m_swerve.resetGyro();
   compressor.EnableDigital();
   m_swerve.ResetOdometry(
       frc::Pose2d{5_m, 5_m, 180_deg});  // flipping the robot for field setup
@@ -595,8 +596,7 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
 #define pumpOut frc::SmartDashboard::PutNumber
 void Robot::getPowerDistribution() {
   frc::PowerDistribution bd = frc::PowerDistribution(
-      0, frc::PowerDistribution::ModuleType::kCTRE);  // change to rev on the
-                                                      // real robot
+      20, frc::PowerDistribution::ModuleType::kRev);
   pumpOut("intake motor 1 current", bd.GetCurrent(14));
   pumpOut("intake motor 2 current", bd.GetCurrent(15));
   pumpOut("arm motor current", bd.GetCurrent(16));

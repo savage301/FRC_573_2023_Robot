@@ -129,3 +129,7 @@ bool Drivetrain::isGyroWorking() {
   last = cur;
   return false;
 }
+
+void Drivetrain::resetGyro() {
+  m_gyro.SetYaw(180, 0);
+}
