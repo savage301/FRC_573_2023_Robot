@@ -191,4 +191,7 @@ class Robot : public frc::TimedRobot {
   bool isPassCenterLine();
 
   void chargeStationClaws(bool down);
+
+  void EstimatePose();
+  void EstimatePose(int camera_pipline);
 };
