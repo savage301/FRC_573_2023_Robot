@@ -92,12 +92,23 @@ void Appendage::clawPneumaticsOut() {
 
 void Appendage::arm(double d) {
   double out = remapVal(d, .7);
+  double cur = arm_Encoder->GetPosition();
+
+  if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
+    out = 0;
+
   m_armMotor->Set(out);
 }
 
 void Appendage::shoulder(double d) {
-  d = remapVal(d, .7);
-  m_shoulderMotor->Set(d);
+  
+  double out = remapVal(d, .7);
+  double cur = shoulder_Encoder->GetDistance();
+
+  if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
+    out = 0;
+
+  m_shoulderMotor->Set(out);
 }
 
 bool Appendage::checkLim(double err, double lim) {
@@ -115,13 +126,11 @@ bool Appendage::shoulderPID(double tar) {
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
 
-  double softStopMinLim = 0;
-  double softStopMaxLim = 1;
-  if ((cur < softStopMinLim && out < 0) || (cur > softStopMaxLim && out > 0))
+  if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
     out = 0;
 
   m_shoulderMotor->Set(out);
-  if (checkLim(cur - out, 10))
+  if (checkLim(cur - tar, 10))
     return true;
   return false;
 }
@@ -133,9 +142,13 @@ bool Appendage::armPID(double tar) {
   Arm_PIDController.SetPID(p, i, d);
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
+
+  if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
+    out = 0;
+
   m_armMotor->Set(out);
 
-  if (checkLim(cur - out, 10))
+  if (checkLim(cur - tar, 10))
     return true;
   return false;
 }
@@ -154,7 +167,12 @@ double Appendage::calculateDistanceToLim() {
 }
 
 void Appendage::wrist(double d) {
-  d = remapVal(d, .7);
+  double out = remapVal(d, .7);
+  double cur = wrist_Encoder->GetDistance();
+
+  if ((cur < wrist_min&& out < 0) || (cur > wrist_max && out > 0))
+    out = 0;
+
   m_wristMotor->Set(d);
 }
 
@@ -165,9 +183,12 @@ bool Appendage::wristPID(double tar) {
   Wrist_PIDController.SetPID(p, i, d);
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
+
+  if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
+    out = 0;
   m_wristMotor->Set(out);
 
-  if (checkLim(cur - out, 10))
+  if (checkLim(cur - tar, 10))
     return true;
   return false;
 }

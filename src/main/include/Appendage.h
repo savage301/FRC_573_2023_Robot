@@ -90,6 +90,16 @@ class Appendage {
   int m_wristMotorId = 18;
   int p_pcmId = 19;
 
+  //Appendage Encoder Limits
+  double shoulder_max = 1000.0;
+  double shoulder_min = -1000.0;
+
+  double arm_max = 1000.0;
+  double arm_min = -1000.0;
+
+  double wrist_max = 1000.0;
+  double wrist_min = -1000.0;
+
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;
   rev::CANSparkMax* m_frontRollerMotor;
