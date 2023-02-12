@@ -125,7 +125,8 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
   // Initalize variable used in teleop.
   hasGamePiece = false;
-  isBlue = false;
+  isBlue = (frc::DriverStation::GetAlliance() ==
+            frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
   tarGrid = Grid::humanLeft;
   curFA_Pos_Latch = 0;
 }
@@ -259,7 +260,8 @@ void Robot::TeleopPeriodic() {
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   selectGamePiece();
-  hasGamePiece = m_appendage.isGamePieceInClaw();
+  //hasGamePiece = m_appendage.isGamePieceInClaw();
+  hasGamePiece = true;
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
@@ -267,9 +269,6 @@ void Robot::TeleopPeriodic() {
 
   // ------------------ Drive Code --------------------------------------
   selectScoringGrid();
-  isBlue = (frc::DriverStation::GetAlliance() ==
-            frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
-
   if (m_controller1.GetAButton() || m_controller1.GetBButton() ||
       m_controller1.GetXButton()) {
     // This section is for path following code to each scoring location.
@@ -285,9 +284,9 @@ void Robot::TeleopPeriodic() {
         lmr = 2;
 
       int slot = 3 * tarGrid + lmr;
-      pathGenerate(slot);
+      driveWithTraj(pathGenerate(slot),offPose);
     }
-    driveWithTraj();
+    driveWithTraj(false);
   } else if (m_controller1.GetYButton()) {
     if (m_controller1.GetYButtonPressed()) {
       curFA_Pos_Latch = 0;
@@ -342,6 +341,11 @@ void Robot::TeleopPeriodic() {
         }
       }
     }
+  } else if (m_controller1.GetBackButton()) {
+    if (m_controller1.GetBackButtonPressed()) {
+      m_swerve.onRamp = false;
+    }
+    m_swerve.autoBalance();
   } else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
@@ -349,14 +353,6 @@ void Robot::TeleopPeriodic() {
                                m_controller1.GetLeftX(),
                                m_controller1.GetRightX(), true,
                                m_controller1.GetLeftBumper() ? true : false);
-  }
-
-  if (m_controller1.GetBackButton()) {
-    if (m_controller1.GetBackButtonPressed()) {
-      m_swerve.onRamp = false;
-      m_swerve.autoBalance();
-    }
-    m_swerve.autoBalance();
   }
   // ---- End Drive Code -----------------------------------------------
 
@@ -545,14 +541,14 @@ void Robot::driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
 
   // Send our generated trajectory to Dashboard Field Object
   field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
+  frc::SmartDashboard::PutData(&field_off);
 
   // Start the timer for trajectory following.
   m_timer.Reset();
   m_timer.Start();
-  driveWithTraj();
 }
 
-void Robot::driveWithTraj() {
+void Robot::driveWithTraj(bool auton) {
   if (m_timer.Get() < trajectory_.TotalTime()) {
     auto desiredState = trajectory_.Sample(
         m_timer.Get());  // Get the desired pose from the trajectory.
@@ -568,9 +564,11 @@ void Robot::driveWithTraj() {
     // robot
     m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0),
                    units::radians_per_second_t(0), false);
+    if (auton){
     autoState++;
     m_timer.Reset();
     firstTime = true;
+    }
   }
 }
 

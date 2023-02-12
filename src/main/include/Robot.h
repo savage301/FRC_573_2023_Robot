@@ -178,7 +178,7 @@ class Robot : public frc::TimedRobot {
   pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d tarPose);
   void driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
                      frc::Pose2d offPose);
-  void driveWithTraj();
+  void driveWithTraj(bool auton);
   void autonomousPaths(int select);
 
   void handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
