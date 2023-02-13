@@ -120,6 +120,8 @@ void Robot::AutonomousPeriodic() {
     autonomousPaths(3);
   else if (m_autoSelected == kAutonPaths4)
     autonomousPaths(4);
+
+  frc::SmartDashboard::PutNumber("m_timer",m_timer.Get().value()) //This will allow us to debug the auto drive code.
 }
 
 void Robot::TeleopInit() {
@@ -136,6 +138,7 @@ void Robot::TeleopPeriodic() {
   m_appendage.pumpOutSensorVal();
   m_swerve.pumpOutSensorVal();
   getPowerDistribution();
+  frc::SmartDashboard::PutNumber("m_timer",m_timer.Get().value()) //This will allow us to debug the auto drive code.
   if (m_controller1.GetLeftBumperPressed())
     chargeStationClaws(false);
   else if (m_controller1.GetRightBumperPressed())
@@ -473,12 +476,12 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
       pathplanner::PathPoint(
           m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
           frc::Rotation2d(0_deg)),  // position, heading(direction of travel),
-                                    // holonomic rotation
+                                    // holonomic rotation, optional velocity in the current heading of travel in mps
       pathplanner::PathPoint(
           isBlue ? bluePose[slot].Translation() : redPose[slot].Translation(),
           isBlue ? bluePose[slot].Rotation() : redPose[slot].Rotation(),
           frc::Rotation2d(0_deg)  // position, heading(direction of travel)
-                                  // holonomic rotation
+                                  // holonomic rotation, optional velocity in the current heading of travel in mps
           ));
   return trajectoryPP_;
 }
@@ -487,17 +490,10 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-      pathplanner::PathConstraints(m_swerve.kMaxSpeed,
-                                   m_swerve.kMaxAcceleration),
-      pathplanner::PathPoint(
-          m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
-          frc::Rotation2d(0_deg)),  // position, heading(direction of travel),
-                                    // holonomic rotation
-      pathplanner::PathPoint(
-          tarPose.Translation(), tarPose.Rotation(),
-          frc::Rotation2d(0_deg)  // position, heading(direction of travel)
-                                  // holonomic rotation
-          ));
+      pathplanner::PathConstraints(m_swerve.kMaxSpeed,m_swerve.kMaxAcceleration),
+      pathplanner::PathPoint(m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),frc::Rotation2d(0_deg)),  // position, heading(direction of travel),holonomic rotation
+      pathplanner::PathPoint(tarPose.Translation(), tarPose.Rotation(),frc::Rotation2d(0_deg)  // position, heading(direction of travel)// holonomic rotation
+      ));
   return trajectoryPP_;
 }
 
