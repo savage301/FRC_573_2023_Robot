@@ -65,9 +65,10 @@ void SwerveModule::SetDesiredState(
   // Set the motor outputs. Flip directions as needed to get modules to spin
   // proper direction.
 
-  // inverted motor id 1, 2, and 8 thru rev hw client via flipping kInverted in advanced
+  // inverted motor id 1, 2, and 8 thru rev hw client via flipping kInverted in
+  // advanced
   m_turningMotor.SetVoltage(units::volt_t{turnOutput});  //+ turnFeedforward);
-  m_driveMotor.SetVoltage(units::volt_t{driveOutput});  //+ driveFeedforward);
+  m_driveMotor.SetVoltage(units::volt_t{driveOutput});   //+ driveFeedforward);
 
   // 1, 4. 7. 10
   int driveMotorId = m_driveMotor.GetDeviceId();

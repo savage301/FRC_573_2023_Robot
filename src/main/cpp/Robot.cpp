@@ -41,7 +41,7 @@ void Robot::RobotInit() {
   frcLog::Start();
 
   frc::DriverStation::StartDataLog(frcLog::GetLog());
-  
+
   m_swerve.resetGyro();
   compressor.EnableDigital();
   m_swerve.ResetOdometry(
@@ -121,7 +121,10 @@ void Robot::AutonomousPeriodic() {
   else if (m_autoSelected == kAutonPaths4)
     autonomousPaths(4);
 
-  frc::SmartDashboard::PutNumber("m_timer",m_timer.Get().value()) //This will allow us to debug the auto drive code.
+  frc::SmartDashboard::PutNumber(
+      "m_timer",
+      m_timer.Get()
+          .value());  // This will allow us to debug the auto drive code.
 }
 
 void Robot::TeleopInit() {
@@ -138,7 +141,10 @@ void Robot::TeleopPeriodic() {
   m_appendage.pumpOutSensorVal();
   m_swerve.pumpOutSensorVal();
   getPowerDistribution();
-  frc::SmartDashboard::PutNumber("m_timer",m_timer.Get().value()) //This will allow us to debug the auto drive code.
+  frc::SmartDashboard::PutNumber(
+      "m_timer",
+      m_timer.Get()
+          .value());  // This will allow us to debug the auto drive code.
   if (m_controller1.GetLeftBumperPressed())
     chargeStationClaws(false);
   else if (m_controller1.GetRightBumperPressed())
@@ -263,7 +269,7 @@ void Robot::TeleopPeriodic() {
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   selectGamePiece();
-  //hasGamePiece = m_appendage.isGamePieceInClaw();
+  // hasGamePiece = m_appendage.isGamePieceInClaw();
   hasGamePiece = true;
   table->PutNumber(
       "pipeline",
@@ -287,7 +293,7 @@ void Robot::TeleopPeriodic() {
         lmr = 2;
 
       int slot = 3 * tarGrid + lmr;
-      driveWithTraj(pathGenerate(slot),offPose);
+      driveWithTraj(pathGenerate(slot), offPose);
     }
     driveWithTraj(false);
   } else if (m_controller1.GetYButton()) {
@@ -360,7 +366,7 @@ void Robot::TeleopPeriodic() {
   // ---- End Drive Code -----------------------------------------------
 
   // ---- Robot Pose Generation Code -----------------------------------
-    EstimatePose();
+  EstimatePose();
   // ---------------- End Robot Pose Generation Code -----------------
 
   // ---------------- Appendage Code ---------------------------------
@@ -476,12 +482,14 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
       pathplanner::PathPoint(
           m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
           frc::Rotation2d(0_deg)),  // position, heading(direction of travel),
-                                    // holonomic rotation, optional velocity in the current heading of travel in mps
+                                    // holonomic rotation, optional velocity in
+                                    // the current heading of travel in mps
       pathplanner::PathPoint(
           isBlue ? bluePose[slot].Translation() : redPose[slot].Translation(),
           isBlue ? bluePose[slot].Rotation() : redPose[slot].Rotation(),
           frc::Rotation2d(0_deg)  // position, heading(direction of travel)
-                                  // holonomic rotation, optional velocity in the current heading of travel in mps
+                                  // holonomic rotation, optional velocity in
+                                  // the current heading of travel in mps
           ));
   return trajectoryPP_;
 }
@@ -490,10 +498,17 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-      pathplanner::PathConstraints(m_swerve.kMaxSpeed,m_swerve.kMaxAcceleration),
-      pathplanner::PathPoint(m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),frc::Rotation2d(0_deg)),  // position, heading(direction of travel),holonomic rotation
-      pathplanner::PathPoint(tarPose.Translation(), tarPose.Rotation(),frc::Rotation2d(0_deg)  // position, heading(direction of travel)// holonomic rotation
-      ));
+      pathplanner::PathConstraints(m_swerve.kMaxSpeed,
+                                   m_swerve.kMaxAcceleration),
+      pathplanner::PathPoint(
+          m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
+          frc::Rotation2d(0_deg)),  // position, heading(direction of
+                                    // travel),holonomic rotation
+      pathplanner::PathPoint(
+          tarPose.Translation(), tarPose.Rotation(),
+          frc::Rotation2d(0_deg)  // position, heading(direction of travel)//
+                                  // holonomic rotation
+          ));
   return trajectoryPP_;
 }
 
@@ -526,10 +541,10 @@ void Robot::driveWithTraj(bool auton) {
     // robot
     m_swerve.Drive(units::meters_per_second_t(0), units::meters_per_second_t(0),
                    units::radians_per_second_t(0), false);
-    if (auton){
-    autoState++;
-    m_timer.Reset();
-    firstTime = true;
+    if (auton) {
+      autoState++;
+      m_timer.Reset();
+      firstTime = true;
     }
   }
 }
@@ -555,8 +570,8 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
 
 #define pumpOut frc::SmartDashboard::PutNumber
 void Robot::getPowerDistribution() {
-  frc::PowerDistribution bd = frc::PowerDistribution(
-      20, frc::PowerDistribution::ModuleType::kRev);
+  frc::PowerDistribution bd =
+      frc::PowerDistribution(20, frc::PowerDistribution::ModuleType::kRev);
   pumpOut("intake motor 1 current", bd.GetCurrent(14));
   pumpOut("intake motor 2 current", bd.GetCurrent(15));
   pumpOut("arm motor current", bd.GetCurrent(16));
@@ -598,13 +613,13 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
                             frc::Pose2d poseCube) {
   switch (autoState) {
     case 0: {
-      table->PutNumber("pipeline",0); // April Tag Camera Pipeline
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, false, false);
       EstimatePose(0);
       bool wristReady = m_appendage.wristPID(1);
       bool armReady = m_appendage.armPID(1);
       bool shoulderReady = m_appendage.shoulderPID(1);
-      
+
       if (wristReady && armReady && shoulderReady) {
         m_timer.Reset();
         m_timer.Start();
@@ -632,11 +647,11 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       m_appendage.armPID(-1);
       driveWithTraj(true);
       EstimatePose(0);
-      
+
       break;
     }
     case 3: {
-      table->PutNumber("pipeline",2); // Cube Pipeline
+      table->PutNumber("pipeline", 2);  // Cube Pipeline
       if (firstTime) {
         trajectoryPP_ = pathGenerate(poseCube);
         driveWithTraj(trajectoryPP_, offPose);
@@ -652,7 +667,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 4: {
-      table->PutNumber("pipeline",2); // Cube Pipeline
+      table->PutNumber("pipeline", 2);  // Cube Pipeline
       double tx;
       bool validTarFnd = validTarget.Get() > 0;
       if (validTarFnd) {
@@ -670,7 +685,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 5: {
-      table->PutNumber("pipeline",0); // April Tag Pipeline
+      table->PutNumber("pipeline", 0);  // April Tag Pipeline
       if (firstTime) {
         trajectoryPP_ = pathGenerate(poseMidPoint);  // mid pt
         driveWithTraj(trajectoryPP_, offPose);
@@ -695,7 +710,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       m_appendage.shoulderPID(1);
       driveWithTraj(true);
       EstimatePose(0);
-      
+
       break;
     }
     case 7: {
@@ -718,7 +733,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
         m_timer.Start();
         autoState++;
       }
-      
+
       break;
     }
     default: {
@@ -769,7 +784,7 @@ void Robot ::chargeStationClaws(bool down) {
     m_appendage.pneumaticsOut();
 }
 
-void Robot::EstimatePose(){
+void Robot::EstimatePose() {
   if (hasGamePiece) {
     // If robot has game piece use April tags to attempt to localize robot
     std::vector<double> robotPose = botPose.Get();
@@ -807,7 +822,7 @@ void Robot::EstimatePose(){
   frc::SmartDashboard::PutData(&field_off);
 }
 
-void Robot::EstimatePose(int camera_pipline){
+void Robot::EstimatePose(int camera_pipline) {
   bool validTarFnd = validTarget.Get() > 0;
   if (camera_pipline == 0) {
     // If robot has game piece use April tags to attempt to localize robot

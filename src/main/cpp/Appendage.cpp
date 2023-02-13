@@ -101,7 +101,6 @@ void Appendage::arm(double d) {
 }
 
 void Appendage::shoulder(double d) {
-  
   double out = remapVal(d, .7);
   double cur = shoulder_Encoder->GetDistance();
 
@@ -170,7 +169,7 @@ void Appendage::wrist(double d) {
   double out = remapVal(d, .7);
   double cur = wrist_Encoder->GetDistance();
 
-  if ((cur < wrist_min&& out < 0) || (cur > wrist_max && out > 0))
+  if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
     out = 0;
 
   m_wristMotor->Set(d);

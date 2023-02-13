@@ -90,7 +90,7 @@ class Appendage {
   int m_wristMotorId = 18;
   int p_pcmId = 19;
 
-  //Appendage Encoder Limits
+  // Appendage Encoder Limits
   double shoulder_max = 1000.0;
   double shoulder_min = -1000.0;
 
