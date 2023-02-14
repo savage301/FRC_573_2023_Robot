@@ -578,14 +578,14 @@ void Robot::getPowerDistribution() {
   pumpOut("shoulder motor current", bd.GetCurrent(17));
   pumpOut("wrist motor current", bd.GetCurrent(18));
 
-  pumpOut("drive motor 11", bd.GetCurrent(11));
-  pumpOut("drive motor 10", bd.GetCurrent(10));
-  pumpOut("drive motor 7", bd.GetCurrent(7));
-  pumpOut("drive motor 8", bd.GetCurrent(8));
-  pumpOut("drive motor 5", bd.GetCurrent(5));
-  pumpOut("drive motor 4", bd.GetCurrent(4));
-  pumpOut("drive motor 1", bd.GetCurrent(1));
-  pumpOut("drive motor 2", bd.GetCurrent(2));
+  pumpOut("drive motor BR 1", bd.GetCurrent(11));
+  pumpOut("drive motor BR 2", bd.GetCurrent(10));
+  pumpOut("drive motor BL 1", bd.GetCurrent(7));
+  pumpOut("drive motor BL 2", bd.GetCurrent(8));
+  pumpOut("drive motor FR 1", bd.GetCurrent(5));
+  pumpOut("drive motor FR 2", bd.GetCurrent(4));
+  pumpOut("drive motor FL 1", bd.GetCurrent(1));
+  pumpOut("drive motor FL 2", bd.GetCurrent(2));
 }
 
 void Robot::selectGamePiece() {
