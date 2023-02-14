@@ -36,6 +36,7 @@ Appendage::Appendage() {
   wrist_Encoder = new frc::Encoder(8, 9, false);
 
   claw1_a_input = new frc::AnalogInput(0);
+  claw2_a_input = new frc::AnalogInput(3);
   edge1_a_input = new frc::AnalogInput(1);
   edge2_a_input = new frc::AnalogInput(2);
 #define pneumatics(a, b) \
@@ -203,7 +204,10 @@ void Appendage::pumpOutSensorVal() {
 bool Appendage::isGamePieceInClaw() {
   int limUp = 500, limDown = 200;
 
-  if (claw1_a_input->GetValue() > limDown && claw1_a_input->GetValue() < limUp)
+  if ((claw1_a_input->GetValue() > limDown &&
+       claw1_a_input->GetValue() < limUp) ||
+      (claw2_a_input->GetValue() > limDown &&
+       claw2_a_input->GetValue() < limUp))
     return true;
 
   return false;

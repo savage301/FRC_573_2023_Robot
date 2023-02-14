@@ -118,7 +118,7 @@ class Appendage {
 
   // Claw UltSnd
   frc::AnalogInput* claw1_a_input;
-
+  frc::AnalogInput* claw2_a_input;
   // edge on chassis
   frc::AnalogInput* edge1_a_input;
   frc::AnalogInput* edge2_a_input;
