@@ -131,5 +131,5 @@ bool Drivetrain::isGyroWorking() {
 }
 
 void Drivetrain::resetGyro() {
-  m_gyro.SetYaw(180, 0);
+  m_gyro.SetYaw(0, 0);
 }

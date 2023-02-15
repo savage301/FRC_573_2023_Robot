@@ -42,10 +42,9 @@ void Robot::RobotInit() {
 
   frc::DriverStation::StartDataLog(frcLog::GetLog());
 
-  m_swerve.resetGyro();
   compressor.EnableDigital();
   m_swerve.ResetOdometry(
-      frc::Pose2d{5_m, 5_m, 180_deg});  // flipping the robot for field setup
+      frc::Pose2d{5_m, 5_m, 0_deg});  // flipping the robot for field setup
 }
 
 /**
@@ -134,6 +133,7 @@ void Robot::TeleopInit() {
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
   tarGrid = Grid::humanLeft;
   curFA_Pos_Latch = 0;
+  m_swerve.resetGyro();
 }
 
 void Robot::TeleopPeriodic() {
@@ -350,12 +350,12 @@ void Robot::TeleopPeriodic() {
         }
       }
     }
-  } else if (m_controller1.GetBackButton()) {
+  }/* else if (m_controller1.GetBackButton()) {
     if (m_controller1.GetBackButtonPressed()) {
       m_swerve.onRamp = false;
     }
     m_swerve.autoBalance();
-  } else {
+  }*/ else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
     m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),
@@ -533,6 +533,11 @@ void Robot::driveWithTraj(bool auton) {
     auto refChassisSpeeds = m_holonmicController.Calculate(
         m_swerve.GetPose(), desiredState, frc::Rotation2d(0_deg));
 
+  frc::SmartDashboard::PutNumber("pose x", m_swerve.GetPose().X().value());
+  frc::SmartDashboard::PutNumber("desired pose x", desiredState.pose.X().value());
+
+  frc::SmartDashboard::PutNumber("pose y", m_swerve.GetPose().Y().value());
+  frc::SmartDashboard::PutNumber("desired pose y", desiredState.pose.Y().value());
     // Set the linear and angular speeds.
     m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy,
                    refChassisSpeeds.omega, false);

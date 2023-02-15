@@ -116,9 +116,9 @@ class Robot : public frc::TimedRobot {
 
   std::shared_ptr<nt::NetworkTable> table;
 
-#define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(180_deg))
+#define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
 #define poseCubes(x, y) \
-  frc::Pose2d(x, y, frc::Rotation2d(0_deg))  // facing away from the wall
+  frc::Pose2d(x, y, frc::Rotation2d(180_deg))  // facing away from the wall
 #define poseRed(y) pose1(6.84_m, y)
 #define poseBlue(y) pose1(-6.84_m, y)
 #define poseMid(x) pose1(x, 5.09_m)
