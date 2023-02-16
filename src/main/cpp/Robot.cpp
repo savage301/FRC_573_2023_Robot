@@ -359,7 +359,7 @@ void Robot::driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
 
   // Send our generated trajectory to Dashboard Field Object
   field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-  frc::SmartDashboard::PutData(&field_off);
+  //frc::SmartDashboard::PutData(&field_off);
 
   // Start the timer for trajectory following.
   m_timer.Reset();
@@ -467,68 +467,71 @@ void Robot::EstimatePose() {
       frc::Twist2d poseDiff = m_swerve.GetPose().Log(fldPose);
       double dx = poseDiff.dx();
       double dy = poseDiff.dy();
-      double dTh = poseDiff.dtheta();
+      //double dTh = poseDiff.dtheta();
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 
       if (r < 1) {
-        m_field.SetRobotPose(fldPose);
         m_swerve.ResetOdometry(fldPose);
       } else {
         m_swerve.UpdateOdometry();
-        m_field.SetRobotPose(m_swerve.GetPose());
       }
     } else {
       // No April tags can be seen the robot updates Pose based on wheel
       // odometry.
       m_swerve.UpdateOdometry();
-      m_field.SetRobotPose(m_swerve.GetPose());
     }
   } else {
     // When robot doesn't have a game piece robot updates Pose based on wheel
     // odometry, because camera will be using wrong pipeline
     m_swerve.UpdateOdometry();
-    m_field.SetRobotPose(m_swerve.GetPose());
   }
 
   // Send pose data to DS
+  m_field.SetRobotPose(m_swerve.GetPose());
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
   frc::SmartDashboard::PutData(&field_off);
 }
 
 void Robot::EstimatePose(int camera_pipline) {
-  bool validTarFnd = validTarget.Get() > 0;
-  if (camera_pipline == 0) {
+  if (camera_pipline==0) {
     // If robot has game piece use April tags to attempt to localize robot
     std::vector<double> robotPose = botPose.Get();
+    bool validTarFnd = validTarget.Get() > 0;
     if (validTarFnd && robotPose.size() > 0) {
       // If robot can see atleast 1 april tag and has a returned botPose from
       // the limelight it localizes base on botPose
       frc::SmartDashboard::PutNumber("robotPoseX", robotPose[0]);
       frc::SmartDashboard::PutNumber("robotPoseY", robotPose[1]);
       frc::SmartDashboard::PutNumber("robotPoseYaw", robotPose[5]);
-
       frc::Translation2d tmp2d = frc::Translation2d(
           units::meter_t(robotPose[0]), units::meter_t(robotPose[1]));
       frc::Rotation2d tmpAng = frc::Rotation2d(units::degree_t(robotPose[5]));
       frc::Pose2d fldPose = frc::Pose2d(tmp2d, tmpAng);
 
-      m_field.SetRobotPose(fldPose);
-      m_swerve.ResetOdometry(fldPose);
+      frc::Twist2d poseDiff = m_swerve.GetPose().Log(fldPose);
+      double dx = poseDiff.dx();
+      double dy = poseDiff.dy();
+      //double dTh = poseDiff.dtheta();
+      double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 
+      if (r < 1) {
+        m_swerve.ResetOdometry(fldPose);
+      } else {
+        m_swerve.UpdateOdometry();
+      }
     } else {
       // No April tags can be seen the robot updates Pose based on wheel
       // odometry.
       m_swerve.UpdateOdometry();
-      m_field.SetRobotPose(m_swerve.GetPose());
     }
   } else {
     // When robot doesn't have a game piece robot updates Pose based on wheel
     // odometry, because camera will be using wrong pipeline
     m_swerve.UpdateOdometry();
-    m_field.SetRobotPose(m_swerve.GetPose());
   }
 
   // Send pose data to DS
+  m_field.SetRobotPose(m_swerve.GetPose());
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
   frc::SmartDashboard::PutData(&field_off);
 }
