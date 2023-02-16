@@ -134,13 +134,14 @@ void Robot::TeleopInit() {
   tarGrid = Grid::humanLeft;
   curFA_Pos_Latch = 0;
   m_swerve.resetGyro();
+    m_swerve.ResetOdometry(redPose[1]);
 }
 
 void Robot::TeleopPeriodic() {
   // pump out sensor values to dashboard for diagnostics
   m_appendage.pumpOutSensorVal();
   m_swerve.pumpOutSensorVal();
-  getPowerDistribution();
+ // getPowerDistribution();
   frc::SmartDashboard::PutNumber(
       "m_timer",
       m_timer.Get()
@@ -800,15 +801,23 @@ void Robot::EstimatePose() {
       frc::SmartDashboard::PutNumber("robotPoseX", robotPose[0]);
       frc::SmartDashboard::PutNumber("robotPoseY", robotPose[1]);
       frc::SmartDashboard::PutNumber("robotPoseYaw", robotPose[5]);
-
       frc::Translation2d tmp2d = frc::Translation2d(
           units::meter_t(robotPose[0]), units::meter_t(robotPose[1]));
       frc::Rotation2d tmpAng = frc::Rotation2d(units::degree_t(robotPose[5]));
       frc::Pose2d fldPose = frc::Pose2d(tmp2d, tmpAng);
 
+      frc::Twist2d poseDiff = m_swerve.GetPose().Log(fldPose);
+      double dx = poseDiff.dx();
+      double dy = poseDiff.dy();
+      double dTh = poseDiff.dtheta();
+      double r = sqrt(pow(dx,2)+ pow(dy,2));
+      if (r < 1) {
       m_field.SetRobotPose(fldPose);
       m_swerve.ResetOdometry(fldPose);
-
+      } else {
+       m_swerve.UpdateOdometry();
+      m_field.SetRobotPose(m_swerve.GetPose());
+      }
     } else {
       // No April tags can be seen the robot updates Pose based on wheel
       // odometry.
