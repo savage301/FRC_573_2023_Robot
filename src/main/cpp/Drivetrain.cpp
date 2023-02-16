@@ -28,9 +28,30 @@ void Drivetrain::Drive(units::meters_per_second_t xSpeed,
 }
 
 void Drivetrain::UpdateOdometry() {
-  m_odometry.Update(m_gyro.GetRotation2d(),
-                    {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-                     m_backLeft.GetPosition(), m_backRight.GetPosition()});
+  m_poseEstimator.Update(m_gyro.GetRotation2d(),
+                         {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+                          m_backLeft.GetPosition(), m_backRight.GetPosition()});
+
+  // Also apply vision measurements. We use 0.3 seconds in the past as an
+  // example -- on a real robot, this must be calculated based either on latency
+  // or timestamps.
+  //m_poseEstimator.AddVisionMeasurement(
+  //    ExampleGlobalMeasurementSensor::GetEstimatedGlobalPose(
+  //        m_poseEstimator.GetEstimatedPosition()),
+  //    frc::Timer::GetFPGATimestamp() - 0.3_s);
+
+}
+
+void Drivetrain::UpdateOdometry(frc::Pose2d camerapose) {
+  m_poseEstimator.Update(m_gyro.GetRotation2d(),
+                         {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+                          m_backLeft.GetPosition(), m_backRight.GetPosition()});
+
+  // Also apply vision measurements. We use 0.3 seconds in the past as an
+  // example -- on a real robot, this must be calculated based either on latency
+  // or timestamps.
+  m_poseEstimator.AddVisionMeasurement(camerapose, frc::Timer::GetFPGATimestamp() - 0.3_s);
+
 }
 
 void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
@@ -65,7 +86,7 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
 }
 
 void Drivetrain::ResetOdometry(const frc::Pose2d& pose) {
-  m_odometry.ResetPosition(
+  m_poseEstimator.ResetPosition(
       m_gyro.GetRotation2d(),
       {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
        m_backLeft.GetPosition(), m_backRight.GetPosition()},
@@ -73,7 +94,7 @@ void Drivetrain::ResetOdometry(const frc::Pose2d& pose) {
 }
 
 frc::Pose2d Drivetrain::GetPose() const {
-  return m_odometry.GetPose();
+  return m_poseEstimator.GetEstimatedPosition();
 }
 
 void Drivetrain::setTrajCon() {
