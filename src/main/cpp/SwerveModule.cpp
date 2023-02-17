@@ -53,7 +53,7 @@ void SwerveModule::SetDesiredState(
   const auto driveOutput = m_drivePIDController.Calculate(
       m_driveEncoder.GetVelocity(), state.speed.value());
 
-  // const auto driveFeedforward = m_driveFeedforward.Calculate(state.speed);
+  const auto driveFeedforward = m_driveFeedforward.Calculate(state.speed);
 
   // Calculate the turning motor output from the turning PID controller.
   const auto turnOutput = m_turningPIDController.Calculate(
@@ -68,7 +68,7 @@ void SwerveModule::SetDesiredState(
   // inverted motor id 1, 2, and 8 thru rev hw client via flipping kInverted in
   // advanced
   m_turningMotor.SetVoltage(units::volt_t{turnOutput});  //+ turnFeedforward);
-  m_driveMotor.SetVoltage(units::volt_t{driveOutput});   //+ driveFeedforward);
+  m_driveMotor.SetVoltage(units::volt_t{driveOutput} + driveFeedforward);
 
   // 1, 4. 7. 10
   int driveMotorId = m_driveMotor.GetDeviceId();
