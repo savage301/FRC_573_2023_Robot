@@ -27,8 +27,6 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
       (2 * std::numbers::pi * kWheelRadius / kDriveGearRatio) /
       60);  // Converstion from rpm to to m/s
 
-  frc::SmartDashbord::PutNumber('Drive Position Conversion Factor', m_driveEncoder.GetPositionConversionFactor()); //temp to just confirm should be ~0.04726
-  frc::SmartDashbord::PutNumber('Drive Velocity Conversion Factor', m_driveEncoder.GetVelocityConversionFactor());//temp to just confirm should be ~0.00078771358
   // Limit the PID Controller's input range between -pi and pi and set the input
   // to be continuous.
   m_turningPIDController.EnableContinuousInput(
@@ -80,6 +78,8 @@ void SwerveModule::SetDesiredState(
       pumpOut("Turn Encoder FL", m_turningEncoder.GetPosition());
       pumpOut("fl vol output", driveOutput);
       pumpOut("fl measured speed", m_driveEncoder.GetVelocity());
+      frc::SmartDashboard::PutNumber("DrivePCF", m_driveEncoder.GetPositionConversionFactor()); //temp to just confirm should be ~0.04726
+      frc::SmartDashboard::PutNumber("DriveVCF", m_driveEncoder.GetVelocityConversionFactor());//temp to just confirm should be ~0.00078771358
       break;
     case 4:
       pumpOut("Drive Encoder FR", m_driveEncoder.GetPosition());
