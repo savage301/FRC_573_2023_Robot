@@ -109,8 +109,8 @@ class Robot : public frc::TimedRobot {
   nt::IntegerSubscriber validTarget;
   nt::DoubleArraySubscriber cornerXy;
 
-  //frc::Compressor compressor =
-  //    frc::Compressor(19, frc::PneumaticsModuleType::CTREPCM);
+  frc::Compressor compressor =
+      frc::Compressor(19, frc::PneumaticsModuleType::CTREPCM);
 
   int autoState = 0;
   bool firstTime;
