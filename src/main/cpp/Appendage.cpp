@@ -16,6 +16,14 @@ double Appendage::remapVal(double i, double threshold) {
   return i;
 }
 
+double Appendage::deadband(double i, double threshold) {
+  if (std::abs(i) < threshold) {
+    i = 0;
+  }
+
+  return i;
+}
+
 Appendage::Appendage() {
   m_frontRollerMotor = new rev::CANSparkMax{
       m_frontRollerId, rev::CANSparkMax::MotorType::kBrushless};
@@ -87,6 +95,7 @@ void Appendage::clawPneumaticsOut() {
 
 void Appendage::arm(double d) {
   double out = remapVal(d, .7);
+  out = deadband(out, 0.05);
   double cur = arm_Encoder->GetPosition();
 
   if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
@@ -97,6 +106,7 @@ void Appendage::arm(double d) {
 
 void Appendage::shoulder(double d) {
   double out = remapVal(d, .7);
+  out = deadband(out, 0.05);
   double cur = shoulder_Encoder->GetDistance();
 
   if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
@@ -162,6 +172,7 @@ double Appendage::calculateDistanceToLim() {
 
 void Appendage::wrist(double d) {
   double out = remapVal(d, .7);
+  out = deadband(out, 0.05);
   double cur = wrist_Encoder->GetDistance();
 
   if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
