@@ -42,7 +42,7 @@ class Robot : public frc::TimedRobot {
   Appendage m_appendage;
   Led m_leds;
   frc::XboxController m_controller1{0};
-  //frc::XboxController m_controller2{1};
+  frc::XboxController m_controller2{1};
 
   // -------------- Added for Auto------------------------------
   frc::Trajectory exampleTrajectory =
