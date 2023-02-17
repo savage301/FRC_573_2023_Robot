@@ -38,15 +38,15 @@ class Drivetrain {
   frc::Pose2d GetPose() const;
 
   static constexpr units::meters_per_second_t kMaxSpeed =
-      4.5_mps;  // 3 meters per second
+      4.4_mps;  // 14.5 ft/s to meters per second
   static constexpr units::radians_per_second_t kMaxAngularSpeed{
-      std::numbers::pi * 2};  // 1/2 rotation per second
+      std::numbers::pi * 3.3};  // 2rotation per second
 
   static constexpr auto kMaxAcceleration =
-      units::meters_per_second_squared_t(1);  // meters per second^2
+      units::meters_per_second_squared_t(2.2);  // meters per second^2
 
   static constexpr units::radians_per_second_squared_t kMaxAngularAccel{
-      std::numbers::pi};  // 1/2 rotation per second per second
+      std::numbers::pi * 2};  // 1 rotation per second per second
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
   // to 1.
