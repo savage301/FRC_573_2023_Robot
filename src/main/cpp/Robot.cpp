@@ -599,10 +599,10 @@ void Robot::getPowerDistribution() {
 
 void Robot::selectGamePiece() {
   // Set target piece status variable
-  if (m_controller2.GetBackButton())
+  /*if (m_controller2.GetBackButton())
     tarGamePiece = GamePiece::cone;
   else if (m_controller2.GetStartButton())
-    tarGamePiece = GamePiece::cube;
+    tarGamePiece = GamePiece::cube;*/
 }
 
 void Robot::selectScoringGrid() {
@@ -815,7 +815,7 @@ void Robot::EstimatePose() {
       //double dTh = poseDiff.dtheta();
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
       if (r < 1) {
-        m_swerve.ResetOdometry(fldPose);
+        m_swerve.UpdateOdometry(fldPose);
       } else {
         m_swerve.UpdateOdometry();
       }

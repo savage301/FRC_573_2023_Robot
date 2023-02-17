@@ -28,9 +28,15 @@ void Drivetrain::Drive(units::meters_per_second_t xSpeed,
 }
 
 void Drivetrain::UpdateOdometry() {
+
+  frc::SwerveModulePosition FL = {-m_frontLeft.GetPosition().distance,m_frontLeft.GetPosition().angle};
+  frc::SwerveModulePosition FR = {-m_frontRight.GetPosition().distance,m_frontRight.GetPosition().angle};
+  frc::SwerveModulePosition BL = {-m_backLeft.GetPosition().distance,m_backLeft.GetPosition().angle};
+  frc::SwerveModulePosition BR = {-m_backLeft.GetPosition().distance,m_backRight.GetPosition().angle};
+
   m_poseEstimator.Update(m_gyro.GetRotation2d(),
-                         {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-                          m_backLeft.GetPosition(), m_backRight.GetPosition()});
+                        {FL, FR, BL, BR});
+
 
   // Also apply vision measurements. We use 0.3 seconds in the past as an
   // example -- on a real robot, this must be calculated based either on latency
@@ -43,9 +49,13 @@ void Drivetrain::UpdateOdometry() {
 }
 
 void Drivetrain::UpdateOdometry(frc::Pose2d camerapose) {
+  frc::SwerveModulePosition FL = {-m_frontLeft.GetPosition().distance,m_frontLeft.GetPosition().angle};
+  frc::SwerveModulePosition FR = {-m_frontRight.GetPosition().distance,m_frontRight.GetPosition().angle};
+  frc::SwerveModulePosition BL = {-m_backLeft.GetPosition().distance,m_backLeft.GetPosition().angle};
+  frc::SwerveModulePosition BR = {-m_backLeft.GetPosition().distance,m_backRight.GetPosition().angle};
+
   m_poseEstimator.Update(m_gyro.GetRotation2d(),
-                         {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-                          m_backLeft.GetPosition(), m_backRight.GetPosition()});
+                        {FL, FR, BL, BR});
 
   // Also apply vision measurements. We use 0.3 seconds in the past as an
   // example -- on a real robot, this must be calculated based either on latency
