@@ -41,7 +41,7 @@ frc::SwerveModuleState SwerveModule::GetState() {
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {
-  return {units::meter_t{((m_driveEncoder.GetPosition())) * -1.6},
+  return {units::meter_t{((m_driveEncoder.GetPosition()))},
           units::radian_t{m_turningEncoder.GetPosition()}};
 }
 
