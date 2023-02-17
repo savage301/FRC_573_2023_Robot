@@ -317,6 +317,8 @@ int main() {
 pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
+  auto robotvelo = units::meters_per_second_t(pow(pow(m_swerve.GetRobotVelocity().vx.value(),2) + pow(m_swerve.GetRobotVelocity().vy.value(),2),0.5));
+  
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
       pathplanner::PathConstraints(m_swerve.kMaxSpeed,
                                    m_swerve.kMaxAcceleration),
@@ -338,13 +340,16 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
 pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
+
+  auto robotvelo = units::meters_per_second_t(pow(pow(m_swerve.GetRobotVelocity().vx.value(),2) + pow(m_swerve.GetRobotVelocity().vy.value(),2),0.5));
+
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
       pathplanner::PathConstraints(m_swerve.kMaxSpeed,
                                    m_swerve.kMaxAcceleration),
       pathplanner::PathPoint(
           m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
           frc::Rotation2d(0_deg)),  // position, heading(direction of
-                                    // travel),holonomic rotation
+                                    // travel),holonomic rotation, robot velocity
       pathplanner::PathPoint(
           tarPose.Translation(), tarPose.Rotation(),
           frc::Rotation2d(0_deg)  // position, heading(direction of travel)//
@@ -490,6 +495,13 @@ void Robot::EstimatePose() {
   m_field.SetRobotPose(m_swerve.GetPose());
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
   frc::SmartDashboard::PutData(&field_off);
+
+  frc::ChassisSpeeds robotSpeed = m_swerve.GetRobotVelocity();
+
+  frc::SmartDashboard::PutNumber("Robot Speed X",robotSpeed.vx.value());
+  frc::SmartDashboard::PutNumber("Robot Speed Y",robotSpeed.vy.value());
+  frc::SmartDashboard::PutNumber("Robot Speed Omega",robotSpeed.omega.value());
+
 }
 
 void Robot::EstimatePose(int camera_pipline) {

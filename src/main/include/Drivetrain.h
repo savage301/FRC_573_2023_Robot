@@ -11,6 +11,7 @@
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <frc/kinematics/ChassisSpeeds.h>
 
 #include <numbers>
 #include <vector>
@@ -34,6 +35,7 @@ class Drivetrain {
                          bool fieldRelative, bool lim);
 
   void ResetOdometry(const frc::Pose2d& pose);
+  frc::ChassisSpeeds GetRobotVelocity();
 
   frc::Pose2d GetPose() const;
 

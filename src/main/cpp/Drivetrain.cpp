@@ -64,6 +64,12 @@ void Drivetrain::UpdateOdometry(frc::Pose2d camerapose) {
 
 }
 
+frc::ChassisSpeeds Drivetrain::GetRobotVelocity() {
+
+  return m_kinematics.ToChassisSpeeds({m_frontLeft.GetState(), m_frontRight.GetState(), m_backLeft.GetState(), m_backRight.GetState()});
+ 
+}
+
 void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
                                    bool fieldRelative, bool lim) {
   // Weikai: add bool lim to limit speed to 50%
