@@ -28,9 +28,40 @@ void Drivetrain::Drive(units::meters_per_second_t xSpeed,
 }
 
 void Drivetrain::UpdateOdometry() {
-  m_odometry.Update(m_gyro.GetRotation2d(),
-                    {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-                     m_backLeft.GetPosition(), m_backRight.GetPosition()});
+
+  frc::SwerveModulePosition FL = {-m_frontLeft.GetPosition().distance,m_frontLeft.GetPosition().angle};
+  frc::SwerveModulePosition FR = {-m_frontRight.GetPosition().distance,m_frontRight.GetPosition().angle};
+  frc::SwerveModulePosition BL = {-m_backLeft.GetPosition().distance,m_backLeft.GetPosition().angle};
+  frc::SwerveModulePosition BR = {-m_backLeft.GetPosition().distance,m_backRight.GetPosition().angle};
+
+  m_poseEstimator.Update(m_gyro.GetRotation2d(),
+                        {FL, FR, BL, BR});
+
+
+  // Also apply vision measurements. We use 0.3 seconds in the past as an
+  // example -- on a real robot, this must be calculated based either on latency
+  // or timestamps.
+  //m_poseEstimator.AddVisionMeasurement(
+  //    ExampleGlobalMeasurementSensor::GetEstimatedGlobalPose(
+  //        m_poseEstimator.GetEstimatedPosition()),
+  //    frc::Timer::GetFPGATimestamp() - 0.3_s);
+
+}
+
+void Drivetrain::UpdateOdometry(frc::Pose2d camerapose) {
+  frc::SwerveModulePosition FL = {-m_frontLeft.GetPosition().distance,m_frontLeft.GetPosition().angle};
+  frc::SwerveModulePosition FR = {-m_frontRight.GetPosition().distance,m_frontRight.GetPosition().angle};
+  frc::SwerveModulePosition BL = {-m_backLeft.GetPosition().distance,m_backLeft.GetPosition().angle};
+  frc::SwerveModulePosition BR = {-m_backLeft.GetPosition().distance,m_backRight.GetPosition().angle};
+
+  m_poseEstimator.Update(m_gyro.GetRotation2d(),
+                        {FL, FR, BL, BR});
+
+  // Also apply vision measurements. We use 0.3 seconds in the past as an
+  // example -- on a real robot, this must be calculated based either on latency
+  // or timestamps.
+  m_poseEstimator.AddVisionMeasurement(camerapose, frc::Timer::GetFPGATimestamp() - 0.3_s);
+
 }
 
 void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
@@ -40,14 +71,14 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
   // Get the x speed. We are inverting this because Xbox controllers return
   // negative values when we push forward.
   const auto xSpeed =
-      -Drivetrain::m_xspeedLimiter.Calculate(frc::ApplyDeadband(xJoy, 0.02)) *
+      Drivetrain::m_xspeedLimiter.Calculate(frc::ApplyDeadband(xJoy, 0.02)) *
       Drivetrain::kMaxSpeed;
 
   // Get the y speed or sideways/strafe speed. We are inverting this because
   // we want a positive value when we pull to the left. Xbox controllers
   // return positive values when you pull to the right by default.
   const auto ySpeed =
-      -Drivetrain::m_yspeedLimiter.Calculate(frc::ApplyDeadband(yJoy, 0.02)) *
+      Drivetrain::m_yspeedLimiter.Calculate(frc::ApplyDeadband(yJoy, 0.02)) *
       Drivetrain::kMaxSpeed;
 
   // Get the rate of angular rotation. We are inverting this because we want a
@@ -55,7 +86,7 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
   // mathematics). Xbox controllers return positive values when you pull to
   // the right by default.
   const auto rot =
-      -Drivetrain::m_rotLimiter.Calculate(frc::ApplyDeadband(rJoy, 0.02)) *
+      Drivetrain::m_rotLimiter.Calculate(frc::ApplyDeadband(rJoy, 0.02)) *
       Drivetrain::kMaxAngularSpeed;
 
   Drive(lim ? xSpeed / 2 : xSpeed, lim ? ySpeed / 2 : ySpeed,
@@ -65,7 +96,7 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
 }
 
 void Drivetrain::ResetOdometry(const frc::Pose2d& pose) {
-  m_odometry.ResetPosition(
+  m_poseEstimator.ResetPosition(
       m_gyro.GetRotation2d(),
       {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
        m_backLeft.GetPosition(), m_backRight.GetPosition()},
@@ -73,7 +104,7 @@ void Drivetrain::ResetOdometry(const frc::Pose2d& pose) {
 }
 
 frc::Pose2d Drivetrain::GetPose() const {
-  return m_odometry.GetPose();
+  return m_poseEstimator.GetEstimatedPosition();
 }
 
 void Drivetrain::setTrajCon() {
