@@ -72,6 +72,8 @@ class Appendage {
   void clawPneumaticsIn();
   void clawPneumaticsOut();
 
+  bool unleashThePower = false;
+
  private:
   int m_frontRollerId = 15;
   int m_backRollerId = 14;
