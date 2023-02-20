@@ -10,6 +10,7 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/trajectory/TrajectoryConfig.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
 
 #include <numbers>
 #include <vector>
@@ -27,6 +28,7 @@ class Drivetrain {
              units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
              bool fieldRelative);
   void UpdateOdometry();
+  void UpdateOdometry(frc::Pose2d camerapose);
 
   void DriveWithJoystick(double xJoy, double yJoy, double rJoy,
                          bool fieldRelative, bool lim);
@@ -91,4 +93,15 @@ class Drivetrain {
        m_backLeft.GetPosition(), m_backRight.GetPosition()}};
 
   double last = 0;
+
+// Gains are for example purposes only - must be determined for your own
+  // robot!
+  frc::SwerveDrivePoseEstimator<4> m_poseEstimator{
+      m_kinematics,
+      m_gyro.GetRotation2d(),
+      {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+       m_backLeft.GetPosition(), m_backRight.GetPosition()},
+      frc::Pose2d {0_m,0_m,0_deg},
+      {0.1, 0.1, 0.1},
+      {0.1, 0.1, 0.1}};
 };
