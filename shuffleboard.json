@@ -50,7 +50,8 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false
+              "Visuals/Show Outside Circles": false,
+              "Colors/traj": "#FFFFFFFF"
             }
           },
           "6,0": {
@@ -149,9 +150,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -8.0,
-    "y": -8.0,
-    "width": 1296.0,
-    "height": 680.0
+    "x": -201.7142791748047,
+    "y": 168.57142639160156,
+    "width": 1113.142822265625,
+    "height": 633.1428833007812
   }
 }

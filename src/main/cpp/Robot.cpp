@@ -412,12 +412,19 @@ void Robot::TeleopPeriodic() {
   if (m_controller2.GetAButton()) {
     m_appendage.armPID(1);
     m_appendage.shoulderPID(1);  // bot
+    m_appendage.wristPID(1);
   } else if (m_controller2.GetBButton()) {
     m_appendage.armPID(1);
     m_appendage.shoulderPID(1);  // mid
+    m_appendage.wristPID(1);
   } else if (m_controller2.GetYButton()) {
     m_appendage.armPID(1);
     m_appendage.shoulderPID(1);  // top
+    m_appendage.wristPID(1);
+  } else if (m_controller2.GetXButton()) {
+    m_appendage.armPID(0);
+    m_appendage.shoulderPID(0);  // Stored Position
+    m_appendage.wristPID(0);
   } else {
     // Arm
     // if going up and is closer to the lim
@@ -434,6 +441,8 @@ void Robot::TeleopPeriodic() {
       m_appendage.shoulder(0);
     else
       m_appendage.shoulder(m_controller2.GetRightY());
+    
+    m_appendage.wrist(m_controller2.GetLeftX());
   }
   // ----------- End Appendage Code -----------------------------------
   handleLedModes(validTarFnd, hasGamePiece, tarGamePiece,

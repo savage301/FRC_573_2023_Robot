@@ -124,6 +124,7 @@ class Appendage {
   frc::AnalogInput* edge2_a_input;
 
   double remapVal(double i, double threshold);
+  double deadband(double i, double threshold);
 
   frc2::PIDController Arm_PIDController{1.0, 0, 0};
   frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
