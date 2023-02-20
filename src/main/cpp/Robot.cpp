@@ -148,9 +148,9 @@ void Robot::TeleopPeriodic() {
       "m_timer",
       m_timer.Get()
           .value());  // This will allow us to debug the auto drive code.
-  if (m_controller1.GetLeftBumperPressed())
+  if (m_controller1.GetLeftBumper())
     chargeStationClaws(false);
-  else if (m_controller1.GetRightBumperPressed())
+  else if (m_controller1.GetRightBumper())
     chargeStationClaws(true);
   bool validTarFnd = validTarget.Get() > 0;
 
@@ -811,9 +811,9 @@ bool Robot::isPassCenterLine() {
 
 void Robot ::chargeStationClaws(bool down) {
   if (down)
-    m_appendage.pneumaticsIn();
+    m_appendage.clawPneumaticsIn();
   else
-    m_appendage.pneumaticsOut();
+    m_appendage.clawPneumaticsOut();
 }
 
 void Robot::EstimatePose() {
