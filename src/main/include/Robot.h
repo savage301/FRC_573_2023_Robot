@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-
+#include "Appendage.h"
 #include "Drivetrain.h"
 #include "Led.h"
 #include "frc/smartdashboard/Smartdashboard.h"
@@ -39,7 +39,7 @@
 class Robot : public frc::TimedRobot {
  public:
   Drivetrain m_swerve;
-  
+  Appendage m_appendage;
   Led m_leds;
   frc::XboxController m_controller1{0};
   //frc::XboxController m_controller2{1};
@@ -190,6 +190,8 @@ class Robot : public frc::TimedRobot {
   void autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
                        frc::Pose2d poseCube);
   bool isPassCenterLine();
+
+  void chargeStationClaws(bool down);
 
   void EstimatePose();
   void EstimatePose(int camera_pipline);

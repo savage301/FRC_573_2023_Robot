@@ -16,6 +16,15 @@ wpi::log::StringLogEntry m_log;
 #define addToChooser(x) m_chooser.AddOption(x, x);
 
 void Robot::RobotInit() {
+  m_appendage.pneumaticsOut();
+  chargeStationClaws(true);
+  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
+  addToChooser(kAutoNameCustom);
+  addToChooser(kAutonPaths1);
+  addToChooser(kAutonPaths2);
+  addToChooser(kAutonPaths3);
+  addToChooser(kAutonPaths4);
+  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
   botPose = table->GetDoubleArrayTopic("botpose").Subscribe({});
@@ -28,7 +37,14 @@ void Robot::RobotInit() {
   // -----------PIPELINE STUFF-----------//
 
   table->PutNumber("pipeline", 0);
-  //m_swerve.ResetOdometry(frc::Pose2d{0_m, 0_m, 0_deg}); //Comment back in if this works see if it breaks it.
+
+  frcLog::Start();
+
+  frc::DriverStation::StartDataLog(frcLog::GetLog());
+
+  compressor.EnableDigital();
+  m_swerve.ResetOdometry(
+      frc::Pose2d{5_m, 5_m, 0_deg});  // flipping the robot for field setup
 }
 
 /**
@@ -53,11 +69,61 @@ void Robot::RobotPeriodic() {}
  * make sure to add them to the chooser code above as well.
  */
 void Robot::AutonomousInit() {
- 
+  // reset pos based on selector
+  if (m_autoSelected == kAutonPaths1)
+    // start with 6 / 2
+    m_swerve.ResetOdometry(redPose[6]);
+  else if (m_autoSelected == kAutonPaths2)
+    m_swerve.ResetOdometry(redPose[2]);
+  else if (m_autoSelected == kAutonPaths3)
+    m_swerve.ResetOdometry(bluePose[6]);
+  else if (m_autoSelected == kAutonPaths4)
+    m_swerve.ResetOdometry(bluePose[2]);
+  m_autoSelected = m_chooser.GetSelected();
+  m_autoSelected =
+      frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
+  // fmt::print("Auto selected: {}\n", m_autoSelected);
+
+  autoState = 0;
+  isBlue = (frc::DriverStation::GetAlliance() ==
+            frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
+  m_appendage.appendageReset(false);
+
+  // ---------------------------------- Trajectory Following Auto Section
+  // --------------------- Generate trajectory to follow for autonomous Start
+  // the timer.
+  m_timer.Start();
+
+  // Send Field2d to SmartDashboard.
+  frc::SmartDashboard::PutData(&m_field);
+
+  // Reset the drivetrain's odometry to the starting pose of the trajectory.
+  m_swerve.ResetOdometry(exampleTrajectory.InitialPose());
+
+  // Send our generated trajectory to Field2d.
+  m_field.GetObject("traj")->SetTrajectory(exampleTrajectory);
+  // ----------------------------------------------------------------------------------------
 }
 
 void Robot::AutonomousPeriodic() {
- 
+  /*if (m_autoSelected == kAutoNameCustom) {
+    // Custom Auto goes here
+  } else {
+    // Default Auto goes here
+  }*/
+  if (m_autoSelected == kAutonPaths1)  // update init pose?
+    autonomousPaths(1);
+  else if (m_autoSelected == kAutonPaths2)
+    autonomousPaths(2);
+  else if (m_autoSelected == kAutonPaths3)
+    autonomousPaths(3);
+  else if (m_autoSelected == kAutonPaths4)
+    autonomousPaths(4);
+
+  frc::SmartDashboard::PutNumber(
+      "m_timer",
+      m_timer.Get()
+          .value());  // This will allow us to debug the auto drive code.
 }
 
 void Robot::TeleopInit() {
@@ -72,9 +138,21 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-
+  // pump out sensor values to dashboard for diagnostics
+  m_appendage.pumpOutSensorVal();
+  m_swerve.pumpOutSensorVal();
+  // getPowerDistribution();
+  frc::SmartDashboard::PutNumber(
+      "m_timer",
+      m_timer.Get()
+          .value());  // This will allow us to debug the auto drive code.
+  if (m_controller1.GetLeftBumperPressed())
+    chargeStationClaws(false);
+  else if (m_controller1.GetRightBumperPressed())
+    chargeStationClaws(true);
   bool validTarFnd = validTarget.Get() > 0;
-  if (validTarFnd && tarGamePiece == 1 && ((hasGamePiece ? 0 : tarGamePiece)==1)) { // Added so this doesn't run when it sees a April tag or Cube
+
+  if (validTarFnd) {
     // ------------- Cone Orientation Code --------------------------
     // This should get moved to its own function
     if (curFA_Pos_Latch == 0) {
@@ -293,7 +371,73 @@ void Robot::TeleopPeriodic() {
   EstimatePose();
   // ---------------- End Robot Pose Generation Code -----------------
 
+  // ---------------- Appendage Code ---------------------------------
+  // Claw
+  if (tarGamePiece == Robot::GamePiece::cube) {
+    m_appendage.pneumaticsIn();
+    if (m_controller2.GetLeftTriggerAxis() > .5) {
+      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn();
+    } else if (m_controller2.GetRightTriggerAxis() > .5) {
+      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut();
+    } else {
+      m_appendage.frontRollerOff();
+      m_appendage.backRollerOff();
+    }
+  }
 
+  if (tarGamePiece == Robot::GamePiece::cone) {
+    if (m_controller2.GetLeftTriggerAxis() > .5) {
+      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn();
+      m_appendage.pneumaticsOut();
+    } else if (m_controller2.GetRightTriggerAxis() > .5) {
+      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut();
+      m_appendage.pneumaticsOut();
+    } else if (m_controller2.GetLeftBumper()) {
+      m_appendage.backRollerIn();
+      m_appendage.frontRollerOff();
+      m_appendage.pneumaticsIn();
+    } else {
+      m_appendage.frontRollerOff();
+      m_appendage.backRollerOff();
+      m_appendage.pneumaticsOut();
+    }
+    if (curFA_Pos != Robot::fA_Pos::top)
+      m_appendage.wristPID(1);  // angle the wrist when the cone is tipped
+  }
+
+  if (m_controller2.GetAButton()) {
+    m_appendage.armPID(1);
+    m_appendage.shoulderPID(1);  // bot
+  } else if (m_controller2.GetBButton()) {
+    m_appendage.armPID(1);
+    m_appendage.shoulderPID(1);  // mid
+  } else if (m_controller2.GetYButton()) {
+    m_appendage.armPID(1);
+    m_appendage.shoulderPID(1);  // top
+  } else {
+    // Arm
+    // if going up and is closer to the lim
+    if (m_appendage.calculateDistanceToLim() <= 2 &&
+        (m_controller2.GetLeftY() < 0))
+      m_appendage.arm(0);
+    else
+      m_appendage.arm(m_controller2.GetLeftY());
+
+    // Shoulder
+    // if going up and is closer to the lim
+    if (m_appendage.calculateDistanceToLim() <= 2 &&
+        (m_controller2.GetRightY() < 0))
+      m_appendage.shoulder(0);
+    else
+      m_appendage.shoulder(m_controller2.GetRightY());
+  }
+  // ----------- End Appendage Code -----------------------------------
+  handleLedModes(validTarFnd, hasGamePiece, tarGamePiece,
+                 m_appendage.checkEdge());
 }  // End of Teleop Periodic
 
 void Robot::DisabledInit() {}
@@ -307,6 +451,23 @@ void Robot::TestPeriodic() {}
 void Robot::SimulationInit() {}
 
 void Robot::SimulationPeriodic() {}
+
+void frc::BangBangController::InitSendable(wpi::SendableBuilder& builder) {
+  builder.SetSmartDashboardType("BangBangController");
+  /*builder.AddDoubleProperty(
+      "tolerance", [this] { return GetTolerance(); },
+      [this](double tolerance) { SetTolerance(tolerance); });
+  builder.AddDoubleProperty(
+      "setpoint", [this] { return GetSetpoint(); },
+      [this](double setpoint) { SetSetpoint(setpoint); });
+  builder.AddDoubleProperty(
+      "measurement", [this] { return GetMeasurement(); }, nullptr);
+  builder.AddDoubleProperty(
+      "error", [this] { return GetError(); }, nullptr);
+  builder.AddBooleanProperty(
+      "atSetpoint", [this] { return AtSetpoint(); }, nullptr);
+      */
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
@@ -421,6 +582,25 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
   }
 }
 
+#define pumpOut frc::SmartDashboard::PutNumber
+void Robot::getPowerDistribution() {
+  frc::PowerDistribution bd =
+      frc::PowerDistribution(20, frc::PowerDistribution::ModuleType::kRev);
+  pumpOut("intake motor 1 current", bd.GetCurrent(14));
+  pumpOut("intake motor 2 current", bd.GetCurrent(15));
+  pumpOut("arm motor current", bd.GetCurrent(16));
+  pumpOut("shoulder motor current", bd.GetCurrent(17));
+  pumpOut("wrist motor current", bd.GetCurrent(18));
+
+  pumpOut("drive motor BR 1", bd.GetCurrent(11));
+  pumpOut("drive motor BR 2", bd.GetCurrent(10));
+  pumpOut("drive motor BL 1", bd.GetCurrent(7));
+  pumpOut("drive motor BL 2", bd.GetCurrent(8));
+  pumpOut("drive motor FR 1", bd.GetCurrent(5));
+  pumpOut("drive motor FR 2", bd.GetCurrent(4));
+  pumpOut("drive motor FL 1", bd.GetCurrent(1));
+  pumpOut("drive motor FL 2", bd.GetCurrent(2));
+}
 
 void Robot::selectGamePiece() {
   // Set target piece status variable
@@ -443,6 +623,165 @@ void Robot::selectScoringGrid() {
   frc::SmartDashboard::PutNumber("Grid", tarGrid);
 }
 
+void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
+                            frc::Pose2d poseCube) {
+  switch (autoState) {
+    case 0: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(1);
+      bool armReady = m_appendage.armPID(1);
+      bool shoulderReady = m_appendage.shoulderPID(1);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 1: {
+      m_appendage.appendageReset(true);
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(poseMidPoint);  // mid pt
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      m_appendage.armPID(-1);
+      driveWithTraj(true);
+      EstimatePose(0);
+
+      break;
+    }
+    case 3: {
+      table->PutNumber("pipeline", 2);  // Cube Pipeline
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(poseCube);
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      m_appendage.armPID(0);
+      m_appendage.shoulderPID(-1);
+      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn();
+      m_appendage.pneumaticsIn();
+      driveWithTraj(true);
+      EstimatePose(2);
+      break;
+    }
+    case 4: {
+      table->PutNumber("pipeline", 2);  // Cube Pipeline
+      double tx;
+      bool validTarFnd = validTarget.Get() > 0;
+      if (validTarFnd) {
+        tx = table->GetNumber("tx", 0.0);
+        tx *= .05;
+      }
+      m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false, false);
+      EstimatePose(2);
+      if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2 ||
+          isPassCenterLine()) {
+        autoState++;
+        m_timer.Reset();
+        firstTime = true;
+      }
+      break;
+    }
+    case 5: {
+      table->PutNumber("pipeline", 0);  // April Tag Pipeline
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(poseMidPoint);  // mid pt
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      m_appendage.armPID(0);
+      m_appendage.shoulderPID(1);
+      m_appendage.frontRollerOff();
+      m_appendage.backRollerOff();
+      m_appendage.pneumaticsIn();
+      driveWithTraj(true);
+      EstimatePose(0);
+      break;
+    }
+    case 6: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(slot);
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      m_appendage.arm(0);
+      m_appendage.shoulderPID(1);
+      driveWithTraj(true);
+      EstimatePose(0);
+
+      break;
+    }
+    case 7: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      if (m_appendage.armPID(1)) {
+        autoState++;
+        m_timer.Reset();
+        firstTime = true;
+      }
+      break;
+    }
+    case 8: {
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    default: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      m_appendage.armPID(1);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      break;
+    }
+  }
+}
+void Robot::autonomousPaths(int select) {
+  switch (select) {
+    case 1: {  // red right
+      autonomousPaths(false, 7, redRightMidPose, redRightcube);
+      break;
+    }
+    case 2: {  // red left
+      autonomousPaths(false, 1, redLeftMidPose, redLeftcube);
+      break;
+    }
+    case 3: {  // blue right
+      autonomousPaths(false, 7, blueRightMidPose, blueRightcube);
+      break;
+    }
+    case 4: {  // blue left
+      autonomousPaths(false, 1, blueLeftMidPose, blueLeftcube);
+      break;
+    }
+    default:
+      break;
+  }
+}
 
 bool Robot::isPassCenterLine() {
   frc::Pose2d curPose = m_swerve.GetPose();
@@ -452,6 +791,12 @@ bool Robot::isPassCenterLine() {
   return false;
 }
 
+void Robot ::chargeStationClaws(bool down) {
+  if (down)
+    m_appendage.pneumaticsIn();
+  else
+    m_appendage.pneumaticsOut();
+}
 
 void Robot::EstimatePose() {
   if (hasGamePiece) {
@@ -474,7 +819,6 @@ void Robot::EstimatePose() {
       double dy = poseDiff.dy();
       //double dTh = poseDiff.dtheta();
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
-
       if (r < 1) {
         m_swerve.UpdateOdometry(fldPose);
       } else {
