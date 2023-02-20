@@ -5,13 +5,13 @@
 
 #pragma once
 
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/kinematics/ChassisSpeeds.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/trajectory/TrajectoryConfig.h>
-#include <frc/estimator/SwerveDrivePoseEstimator.h>
-#include <frc/kinematics/ChassisSpeeds.h>
 
 #include <numbers>
 #include <vector>
@@ -96,14 +96,14 @@ class Drivetrain {
 
   double last = 0;
 
-// Gains are for example purposes only - must be determined for your own
+  // Gains are for example purposes only - must be determined for your own
   // robot!
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator{
       m_kinematics,
       m_gyro.GetRotation2d(),
       {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
        m_backLeft.GetPosition(), m_backRight.GetPosition()},
-      frc::Pose2d {0_m,0_m,0_deg},
+      frc::Pose2d{0_m, 0_m, 0_deg},
       {0.1, 0.1, 0.1},
       {0.1, 0.1, 0.1}};
 };

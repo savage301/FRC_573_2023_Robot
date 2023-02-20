@@ -351,13 +351,13 @@ void Robot::TeleopPeriodic() {
         }
       }
     }
-  } /* else if (m_controller1.GetBackButton()) {
-     if (m_controller1.GetBackButtonPressed()) {
-       m_swerve.onRamp = false;
-     }
-     m_swerve.autoBalance();
-   }*/
-  else {
+    /* else if (m_controller1.GetBackButton()) {
+       if (m_controller1.GetBackButtonPressed()) {
+         m_swerve.onRamp = false;
+       }
+       m_swerve.autoBalance();
+     }*/
+  } else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
     m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),
@@ -441,7 +441,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.shoulder(0);
     else
       m_appendage.shoulder(m_controller2.GetRightY());
-    
+
     m_appendage.wrist(m_controller2.GetLeftX());
   }
   // ----------- End Appendage Code -----------------------------------
@@ -487,8 +487,11 @@ int main() {
 pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
-  auto robotvelo = units::meters_per_second_t(pow(pow(m_swerve.GetRobotVelocity().vx.value(),2) + pow(m_swerve.GetRobotVelocity().vy.value(),2),0.5));
-  
+  auto robotvelo = units::meters_per_second_t(
+      std::pow(std::pow(m_swerve.GetRobotVelocity().vx.value(), 2) +
+                   std::pow(m_swerve.GetRobotVelocity().vy.value(), 2),
+               0.5));
+
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
       pathplanner::PathConstraints(m_swerve.kMaxSpeed,
                                    m_swerve.kMaxAcceleration),
@@ -511,15 +514,19 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
 
-  auto robotvelo = units::meters_per_second_t(pow(pow(m_swerve.GetRobotVelocity().vx.value(),2) + pow(m_swerve.GetRobotVelocity().vy.value(),2),0.5));
+  auto robotvelo = units::meters_per_second_t(
+      std::pow(std::pow(m_swerve.GetRobotVelocity().vx.value(), 2) +
+                   std::pow(m_swerve.GetRobotVelocity().vy.value(), 2),
+               0.5));
 
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
       pathplanner::PathConstraints(m_swerve.kMaxSpeed,
                                    m_swerve.kMaxAcceleration),
       pathplanner::PathPoint(
           m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
-          frc::Rotation2d(0_deg)),  // position, heading(direction of
-                                    // travel),holonomic rotation, robot velocity
+          frc::Rotation2d(
+              0_deg)),  // position, heading(direction of
+                        // travel),holonomic rotation, robot velocity
       pathplanner::PathPoint(
           tarPose.Translation(), tarPose.Rotation(),
           frc::Rotation2d(0_deg)  // position, heading(direction of travel)//
@@ -534,7 +541,7 @@ void Robot::driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
 
   // Send our generated trajectory to Dashboard Field Object
   field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-  //frc::SmartDashboard::PutData(&field_off);
+  // frc::SmartDashboard::PutData(&field_off);
 
   // Start the timer for trajectory following.
   m_timer.Reset();
@@ -826,7 +833,7 @@ void Robot::EstimatePose() {
       frc::Twist2d poseDiff = m_swerve.GetPose().Log(fldPose);
       double dx = poseDiff.dx();
       double dy = poseDiff.dy();
-      //double dTh = poseDiff.dtheta();
+      // double dTh = poseDiff.dtheta();
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
       if (r < 1) {
         m_swerve.UpdateOdometry(fldPose);
@@ -851,14 +858,13 @@ void Robot::EstimatePose() {
 
   frc::ChassisSpeeds robotSpeed = m_swerve.GetRobotVelocity();
 
-  frc::SmartDashboard::PutNumber("Robot Speed X",robotSpeed.vx.value());
-  frc::SmartDashboard::PutNumber("Robot Speed Y",robotSpeed.vy.value());
-  frc::SmartDashboard::PutNumber("Robot Speed Omega",robotSpeed.omega.value());
-
+  frc::SmartDashboard::PutNumber("Robot Speed X", robotSpeed.vx.value());
+  frc::SmartDashboard::PutNumber("Robot Speed Y", robotSpeed.vy.value());
+  frc::SmartDashboard::PutNumber("Robot Speed Omega", robotSpeed.omega.value());
 }
 
 void Robot::EstimatePose(int camera_pipline) {
-  if (camera_pipline==0) {
+  if (camera_pipline == 0) {
     // If robot has game piece use April tags to attempt to localize robot
     std::vector<double> robotPose = botPose.Get();
     bool validTarFnd = validTarget.Get() > 0;
@@ -876,7 +882,7 @@ void Robot::EstimatePose(int camera_pipline) {
       frc::Twist2d poseDiff = m_swerve.GetPose().Log(fldPose);
       double dx = poseDiff.dx();
       double dy = poseDiff.dy();
-      //double dTh = poseDiff.dtheta();
+      // double dTh = poseDiff.dtheta();
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 
       if (r < 1) {

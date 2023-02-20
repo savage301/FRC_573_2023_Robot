@@ -78,8 +78,16 @@ void SwerveModule::SetDesiredState(
       pumpOut("Turn Encoder FL", m_turningEncoder.GetPosition());
       pumpOut("fl vol output", driveOutput);
       pumpOut("fl measured speed", m_driveEncoder.GetVelocity());
-      frc::SmartDashboard::PutNumber("DrivePCF", m_driveEncoder.GetPositionConversionFactor()); //temp to just confirm should be ~0.04726
-      frc::SmartDashboard::PutNumber("DriveVCF", m_driveEncoder.GetVelocityConversionFactor());//temp to just confirm should be ~0.00078771358
+      frc::SmartDashboard::PutNumber(
+          "DrivePCF",
+          m_driveEncoder
+              .GetPositionConversionFactor());  // temp to just confirm should
+                                                // be ~0.04726
+      frc::SmartDashboard::PutNumber(
+          "DriveVCF",
+          m_driveEncoder
+              .GetVelocityConversionFactor());  // temp to just confirm should
+                                                // be ~0.00078771358
       break;
     case 4:
       pumpOut("Drive Encoder FR", m_driveEncoder.GetPosition());

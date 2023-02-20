@@ -42,7 +42,7 @@ class Robot : public frc::TimedRobot {
   Appendage m_appendage;
   Led m_leds;
   frc::XboxController m_controller1{0};
-  //frc::XboxController m_controller2{1};
+  // frc::XboxController m_controller2{1};
 
   // -------------- Added for Auto------------------------------
   frc::Trajectory exampleTrajectory =
@@ -65,7 +65,6 @@ class Robot : public frc::TimedRobot {
   frc::Field2d m_field;
 
   frc::Field2d field_off;
-
 
   // The Ramsete Controller to follow the trajectory.
   frc::RamseteController m_ramseteController;
@@ -109,8 +108,8 @@ class Robot : public frc::TimedRobot {
   nt::IntegerSubscriber validTarget;
   nt::DoubleArraySubscriber cornerXy;
 
-  //frc::Compressor compressor =
-  //    frc::Compressor(19, frc::PneumaticsModuleType::CTREPCM);
+  // frc::Compressor compressor =
+  //     frc::Compressor(19, frc::PneumaticsModuleType::CTREPCM);
 
   int autoState = 0;
   bool firstTime;
