@@ -45,6 +45,8 @@ void Robot::RobotInit() {
   compressor.EnableDigital();
   m_swerve.ResetOdometry(
       frc::Pose2d{5_m, 5_m, 0_deg});  // flipping the robot for field setup
+  frc::SmartDashboard::PutBoolean("Ignore appendage limits",
+                                  m_appendage.unleashThePower);
 }
 
 /**
