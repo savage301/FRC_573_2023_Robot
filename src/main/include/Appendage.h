@@ -76,6 +76,8 @@ class Appendage {
   double getClaw1();
   double getClaw2();
 
+  bool getArmExtended();
+
   bool unleashThePower = false;
 
  private:

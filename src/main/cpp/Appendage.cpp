@@ -311,3 +311,7 @@ double Appendage::getClaw1() {
 double Appendage::getClaw2() {
   return analogToDistance(claw2_a_input->GetValue());
 }
+
+bool Appendage::getArmExtended() {
+  return arm_Encoder->GetPosition() > 0;  // update threshold
+}

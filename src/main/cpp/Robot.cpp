@@ -367,10 +367,11 @@ void Robot::TeleopPeriodic() {
   } else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
-    m_swerve.DriveWithJoystick(m_controller1.GetLeftY(),
-                               m_controller1.GetLeftX(),
-                               m_controller1.GetRightX(), true,
-                               m_controller1.GetLeftBumper() ? true : false);
+    m_swerve.DriveWithJoystick(
+        m_controller1.GetLeftY(), m_controller1.GetLeftX(),
+        m_controller1.GetRightX(), true,
+        m_controller1.GetLeftBumper() || m_appendage.getArmExtended() ? true
+                                                                      : false);
   }
   // ---- End Drive Code -----------------------------------------------
 
