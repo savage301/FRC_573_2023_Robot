@@ -502,7 +502,8 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
   auto robotvelo = units::meters_per_second_t(
       std::pow(std::pow(m_swerve.GetRobotVelocity().vx.value(), 2) +
                    std::pow(m_swerve.GetRobotVelocity().vy.value(), 2),
-               0.5));
+               0.5)).value();
+  frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
 
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
       pathplanner::PathConstraints(m_swerve.kMaxSpeed,
@@ -529,8 +530,9 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
   auto robotvelo = units::meters_per_second_t(
       std::pow(std::pow(m_swerve.GetRobotVelocity().vx.value(), 2) +
                    std::pow(m_swerve.GetRobotVelocity().vy.value(), 2),
-               0.5));
+               0.5)).value();
 
+  frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
       pathplanner::PathConstraints(m_swerve.kMaxSpeed,
                                    m_swerve.kMaxAcceleration),
@@ -913,8 +915,7 @@ void Robot::EstimatePose(int camera_pipline) {
 }
 
 double Robot::estimateGamePieceDistanceToCenter() {
-  double claw1 = 0, claw2 = 0, center;
-  center = 0;
+  double claw1 = 0, claw2 = 0;
   if (m_appendage.isGamePieceInClaw()) {
     // calc rel to center
     claw1 = std::abs(m_appendage.getClaw1());
