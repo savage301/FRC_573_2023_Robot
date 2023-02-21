@@ -292,3 +292,16 @@ bool Appendage::isSensorWorking(rev::CANSparkMax* canMotor,
   last = cur;
   return false;
 }
+
+double Appendage::analogToDistance(double i) {
+  // from https://www.openhacks.com/uploadsproductos/wiki_4j.pdf
+  return 2076 / (i - 11);
+}
+
+double Appendage::getClaw1() {
+  return analogToDistance(claw1_a_input->GetValue());
+}
+
+double Appendage::getClaw2() {
+  return analogToDistance(claw2_a_input->GetValue());
+}

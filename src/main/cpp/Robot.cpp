@@ -908,3 +908,17 @@ void Robot::EstimatePose(int camera_pipline) {
   field_off.SetRobotPose(m_field.GetRobotPose().RelativeTo(offPose));
   frc::SmartDashboard::PutData(&field_off);
 }
+
+void Robot::estimateGamePieceDistanceToCenter() {
+  double claw1, claw2, center;
+  center = 0;
+  if (m_appendage.isGamePieceInClaw()) {
+    // calc rel to center
+    claw1 = std::abs(m_appendage.getClaw1() - center);
+    claw2 = std::abs(m_appendage.getClaw2()- center);
+  }
+  // if (claw1 > 80 && claw2 > 80)
+  //  do this
+
+  // else if (claw2)
+}

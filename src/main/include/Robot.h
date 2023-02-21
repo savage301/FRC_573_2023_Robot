@@ -194,4 +194,5 @@ class Robot : public frc::TimedRobot {
 
   void EstimatePose();
   void EstimatePose(int camera_pipline);
+  void estimateGamePieceDistanceToCenter();
 };

@@ -71,6 +71,8 @@ class Appendage {
   bool getWristWorking();
   void clawPneumaticsIn();
   void clawPneumaticsOut();
+  double getClaw1();
+  double getClaw2();
 
   bool unleashThePower = false;
 
@@ -127,6 +129,7 @@ class Appendage {
 
   double remapVal(double i, double threshold);
   double deadband(double i, double threshold);
+  double analogToDistance(double i);
 
   frc2::PIDController Arm_PIDController{1.0, 0, 0};
   frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
