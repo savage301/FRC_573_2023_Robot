@@ -86,13 +86,13 @@ void Appendage::pneumaticsOut() {
   p_backRollerCylinder1->Set(frc::DoubleSolenoid::kReverse);
 }
 
-void Appendage::rearClawPneumaticsIn() {
+void Appendage::backClawPneumaticsIn() {
   p_backCSCylinder->Set(frc::DoubleSolenoid::kForward);
 }
 void Appendage::frontClawPneumaticsIn() {
   p_frontCSCylinder->Set(frc::DoubleSolenoid::kForward);
 }
-void Appendage::rearClawPneumaticsOut() {
+void Appendage::backClawPneumaticsOut() {
   p_backCSCylinder->Set(frc::DoubleSolenoid::kReverse);
 }
 

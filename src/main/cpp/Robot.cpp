@@ -155,9 +155,9 @@ void Robot::TeleopPeriodic() {
     m_appendage.frontClawPneumaticsIn();
 
   if (m_controller1.GetRightBumper())
-    m_appendage.rearClawPneumaticsOut();
+    m_appendage.backClawPneumaticsOut();
   else
-    m_appendage.rearClawPneumaticsIn();
+    m_appendage.backClawPneumaticsIn();
 
   bool validTarFnd = validTarget.Get() > 0;
 
@@ -312,7 +312,7 @@ void Robot::TeleopPeriodic() {
     }
     // This section is for the auto game piece tracking code.
     double tx;
-    double tmp = std::sqrt(std::pow(m_controller1.GetLeftX, 2) +
+    double tmp = std::sqrt(std::pow(m_controller1.GetLeftX(), 2) +
                            std::pow(m_controller1.GetLeftY(), 2));
     if (tarGamePiece == Robot::GamePiece::cube) {  // Cube tracking code
       if (validTarFnd) {
