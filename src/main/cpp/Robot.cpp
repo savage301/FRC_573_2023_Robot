@@ -312,13 +312,14 @@ void Robot::TeleopPeriodic() {
     }
     // This section is for the auto game piece tracking code.
     double tx;
+    double tmp = std::sqrt(std::pow(m_controller1.GetLeftX, 2) +
+                           std::pow(m_controller1.GetLeftY(), 2));
     if (tarGamePiece == Robot::GamePiece::cube) {  // Cube tracking code
       if (validTarFnd) {
         tx = table->GetNumber("tx", 0.0);
         tx *= .05;
       }
-      m_swerve.DriveWithJoystick(m_controller1.GetLeftY(), 0,
-                                 validTarFnd ? tx : 0, false,
+      m_swerve.DriveWithJoystick(tmp, 0, validTarFnd ? tx : 0, false,
                                  m_controller1.GetLeftBumper() ? true : false);
 
     } else if (tarGamePiece ==
@@ -329,7 +330,7 @@ void Robot::TeleopPeriodic() {
         tx = table->GetNumber("tx", 0.0);
         tx *= .05;
         m_swerve.DriveWithJoystick(
-            m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false,
+            tmp, 0, validTarFnd ? tx : 0, false,
             m_controller1.GetLeftBumper() ? true : false);
       } else if (curFA_Pos == Robot::fA_Pos::left ||
                  curFA_Pos == Robot::fA_Pos::right) {  // Cone tipped over, but
@@ -341,7 +342,7 @@ void Robot::TeleopPeriodic() {
           tx = table->GetNumber("tx", 0.0);
           tx *= .05;
           m_swerve.DriveWithJoystick(
-              m_controller1.GetLeftY(), 0, validTarFnd ? tx : 0, false,
+              tmp, 0, validTarFnd ? tx : 0, false,
               m_controller1.GetLeftBumper() ? true : false);
         } else {  // Rotate around the cone either left or right.
           bool leftRight = false;
@@ -352,10 +353,7 @@ void Robot::TeleopPeriodic() {
           else if (curFA_Pos == Robot::fA_Pos::right)
             leftRight = true;
           m_swerve.DriveWithJoystick(
-              0,
-              leftRight ? -1 * m_controller1.GetLeftY()
-                        : 1 * m_controller1.GetLeftY(),
-              validTarFnd ? tx : 0, false,
+              0, leftRight ? -1 * tmp : 1 * tmp, validTarFnd ? tx : 0, false,
               m_controller1.GetLeftBumper() ? true : false);
         }
       }
@@ -419,7 +417,11 @@ void Robot::TeleopPeriodic() {
   }
 
   if (m_controller2.GetAButton()) {
-    m_appendage.armPID(1);
+    if (m_controller2.GetRightBumper()) {
+      m_appendage.armPID(1);
+    } else {
+      m_appendage.armPID(0);
+    }
     m_appendage.shoulderPID(1);  // bot
     m_appendage.wristPID(1);
   } else if (m_controller2.GetBButton()) {
