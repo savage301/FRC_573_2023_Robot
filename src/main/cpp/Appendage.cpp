@@ -179,10 +179,10 @@ double Appendage::calculateDistanceToLim() {
       gearRatioWrist = 1;  // update to real
   // num * enc
   double armLength =
-      gearRatioArm * curPos + 30;  // default unextended arm length
+      gearRatioArm * curPos + 24;  // default unextended arm length
   double shoulderAng = gearRatioShoulder * curAng;
-  double wristLength, wristAngle = gearRatioWrist * curWAng;
-  distanceToLim = 78 - std::sin(shoulderAng) * armLength - 20.5 -
+  double wristLength = 20, wristAngle = gearRatioWrist * curWAng;
+  distanceToLim = 78 - std::sin(shoulderAng) * armLength - 20.75 -
                   wristLength * std::sin(wristAngle);
   return distanceToLim;  // neg = exceed the limit
 }
