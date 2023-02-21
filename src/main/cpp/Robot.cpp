@@ -912,16 +912,18 @@ void Robot::EstimatePose(int camera_pipline) {
   frc::SmartDashboard::PutData(&field_off);
 }
 
-void Robot::estimateGamePieceDistanceToCenter() {
-  double claw1, claw2, center;
+double Robot::estimateGamePieceDistanceToCenter() {
+  double claw1 = 0, claw2 = 0, center;
   center = 0;
   if (m_appendage.isGamePieceInClaw()) {
     // calc rel to center
-    claw1 = std::abs(m_appendage.getClaw1() - center);
-    claw2 = std::abs(m_appendage.getClaw2() - center);
+    claw1 = std::abs(m_appendage.getClaw1());
+    claw2 = std::abs(m_appendage.getClaw2());
+
   }
   // if (claw1 > 80 && claw2 > 80)
   //  do this
 
   // else if (claw2)
+  return claw1-claw2;
 }
