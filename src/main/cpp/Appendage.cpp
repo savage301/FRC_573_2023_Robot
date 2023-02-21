@@ -313,5 +313,5 @@ double Appendage::getClaw2() {
 }
 
 bool Appendage::getArmExtended() {
-  return arm_Encoder->GetPosition() > 0;  // update threshold
+  return arm_Encoder->GetPosition() > 1000;  // update threshold
 }
