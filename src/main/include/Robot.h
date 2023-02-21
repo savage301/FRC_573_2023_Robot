@@ -190,8 +190,6 @@ class Robot : public frc::TimedRobot {
                        frc::Pose2d poseCube);
   bool isPassCenterLine();
 
-  void chargeStationClaws(bool down);
-
   void EstimatePose();
   void EstimatePose(int camera_pipline);
   void estimateGamePieceDistanceToCenter();

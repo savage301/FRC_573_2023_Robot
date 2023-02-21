@@ -69,8 +69,10 @@ class Appendage {
   bool getArmWorking();
   bool getShoulderWorking();
   bool getWristWorking();
-  void clawPneumaticsIn();
-  void clawPneumaticsOut();
+  void frontClawPneumaticsIn();
+  void frontClawPneumaticsOut();
+  void backClawPneumaticsIn();
+  void backClawPneumaticsOut();
   double getClaw1();
   double getClaw2();
 
@@ -84,8 +86,10 @@ class Appendage {
   // roller
   int p_Roller1Id_a = 0;
   int p_Roller1Id_b = 1;
-  int p_Roller2Id_a = 2;
-  int p_Roller2Id_b = 3;
+  int p_RollerB_Id_a = 2;
+  int p_RollerB_Id_b = 3;
+  int p_RollerF_Id_a = 4;
+  int p_RollerF_Id_b = 5;
 
   int m_wristMotorId = 18;
   int p_pcmId = 19;
@@ -118,7 +122,8 @@ class Appendage {
 
   // Claw Rear Roller Cylinder
   frc::DoubleSolenoid* p_backRollerCylinder1;
-  frc::DoubleSolenoid* p_backRollerCylinder2;
+  frc::DoubleSolenoid* p_backCSCylinder;
+  frc::DoubleSolenoid* p_frontCSCylinder;
 
   // Claw UltSnd
   frc::AnalogInput* claw1_a_input;

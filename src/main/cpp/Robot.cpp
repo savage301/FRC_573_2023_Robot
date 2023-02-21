@@ -17,7 +17,8 @@ wpi::log::StringLogEntry m_log;
 
 void Robot::RobotInit() {
   m_appendage.pneumaticsOut();
-  chargeStationClaws(true);
+  m_appendage.frontClawPneumaticsIn();
+  m_appendage.backClawPneumaticsIn();
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   addToChooser(kAutoNameCustom);
   addToChooser(kAutonPaths1);
@@ -149,9 +150,15 @@ void Robot::TeleopPeriodic() {
       m_timer.Get()
           .value());  // This will allow us to debug the auto drive code.
   if (m_controller1.GetLeftBumper())
-    chargeStationClaws(false);
-  else if (m_controller1.GetRightBumper())
-    chargeStationClaws(true);
+    m_appendage.frontClawPneumaticsOut();
+  else
+    m_appendage.frontClawPneumaticsIn();
+
+  if (m_controller1.GetRightBumper())
+    m_appendage.rearClawPneumaticsOut();
+  else
+    m_appendage.rearClawPneumaticsIn();
+
   bool validTarFnd = validTarget.Get() > 0;
 
   if (validTarFnd) {
@@ -809,13 +816,6 @@ bool Robot::isPassCenterLine() {
   return false;
 }
 
-void Robot ::chargeStationClaws(bool down) {
-  if (down)
-    m_appendage.clawPneumaticsIn();
-  else
-    m_appendage.clawPneumaticsOut();
-}
-
 void Robot::EstimatePose() {
   if (hasGamePiece) {
     // If robot has game piece use April tags to attempt to localize robot
@@ -915,7 +915,7 @@ void Robot::estimateGamePieceDistanceToCenter() {
   if (m_appendage.isGamePieceInClaw()) {
     // calc rel to center
     claw1 = std::abs(m_appendage.getClaw1() - center);
-    claw2 = std::abs(m_appendage.getClaw2()- center);
+    claw2 = std::abs(m_appendage.getClaw2() - center);
   }
   // if (claw1 > 80 && claw2 > 80)
   //  do this

@@ -50,7 +50,8 @@ Appendage::Appendage() {
 #define pneumatics(a, b) \
   new frc::DoubleSolenoid(p_pcmId, frc::PneumaticsModuleType::CTREPCM, a, b)
   p_backRollerCylinder1 = pneumatics(p_Roller1Id_a, p_Roller1Id_b);
-  p_backRollerCylinder2 = pneumatics(p_Roller2Id_a, p_Roller2Id_b);
+  p_backCSCylinder = pneumatics(p_RollerB_Id_a, p_RollerB_Id_b);
+  p_frontCSCylinder = pneumatics(p_RollerF_Id_a, p_RollerF_Id_b);
 }
 
 void Appendage::frontRollerIn() {
@@ -85,14 +86,19 @@ void Appendage::pneumaticsOut() {
   p_backRollerCylinder1->Set(frc::DoubleSolenoid::kReverse);
 }
 
-void Appendage::clawPneumaticsIn() {
-  p_backRollerCylinder2->Set(frc::DoubleSolenoid::kForward);
+void Appendage::rearClawPneumaticsIn() {
+  p_backCSCylinder->Set(frc::DoubleSolenoid::kForward);
+}
+void Appendage::frontClawPneumaticsIn() {
+  p_frontCSCylinder->Set(frc::DoubleSolenoid::kForward);
+}
+void Appendage::rearClawPneumaticsOut() {
+  p_backCSCylinder->Set(frc::DoubleSolenoid::kReverse);
 }
 
-void Appendage::clawPneumaticsOut() {
-  p_backRollerCylinder2->Set(frc::DoubleSolenoid::kReverse);
+void Appendage::frontClawPneumaticsOut() {
+  p_frontCSCylinder->Set(frc::DoubleSolenoid::kReverse);
 }
-
 void Appendage::arm(double d) {
   double out = remapVal(d, .7);
   out = deadband(out, 0.05);
