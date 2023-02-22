@@ -102,6 +102,8 @@ class Robot : public frc::TimedRobot {
   const std::string kAutonPaths2 = "Red Left 2 to 1";
   const std::string kAutonPaths3 = "Blue Right 6 to 7";
   const std::string kAutonPaths4 = "Blue Left 2 to 1";
+  const std::string kAutonPaths5 = "Red Left 3 to CS";
+  const std::string kAutonPaths6 = "Blue Left 3 to CS";
   std::string m_autoSelected;
 
   nt::DoubleArraySubscriber botPose;
@@ -155,6 +157,8 @@ class Robot : public frc::TimedRobot {
   frc::Pose2d blueLeftcube = poseCubes_(-.57_m);
   frc::Pose2d blueRightcube = poseCubes_(3.09_m);
 
+  frc::Pose2d redCharge = pose1(5.88_m, -1.29_m);
+  frc::Pose2d blueCharge = pose1(-5.88_m, -1.29_m);
   enum Grid { humanLeft, humanCenter, humanRight };
 
   int tarGrid;
@@ -193,4 +197,6 @@ class Robot : public frc::TimedRobot {
   void EstimatePose();
   void EstimatePose(int camera_pipline);
   double estimateGamePieceDistanceToCenter();
+
+  void driveToCS(bool isBlue);
 };

@@ -82,6 +82,11 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(bluePose[6]);
   else if (m_autoSelected == kAutonPaths4)
     m_swerve.ResetOdometry(bluePose[2]);
+
+  else if (m_autoSelected == kAutonPaths5)
+    m_swerve.ResetOdometry(redPose[3]);
+  else if (m_autoSelected == kAutonPaths6)
+    m_swerve.ResetOdometry(bluePose[3]);
   m_autoSelected = m_chooser.GetSelected();
   m_autoSelected =
       frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
@@ -122,6 +127,11 @@ void Robot::AutonomousPeriodic() {
     autonomousPaths(3);
   else if (m_autoSelected == kAutonPaths4)
     autonomousPaths(4);
+
+  else if (m_autoSelected == kAutonPaths5)
+    driveToCS(false);
+  else if (m_autoSelected == kAutonPaths6)
+    driveToCS(true);
 
   frc::SmartDashboard::PutNumber(
       "m_timer",
@@ -499,10 +509,12 @@ int main() {
 pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
-  auto robotvelo = units::meters_per_second_t(
-      std::pow(std::pow(m_swerve.GetRobotVelocity().vx.value(), 2) +
-                   std::pow(m_swerve.GetRobotVelocity().vy.value(), 2),
-               0.5)).value();
+  auto robotvelo =
+      units::meters_per_second_t(
+          std::pow(std::pow(m_swerve.GetRobotVelocity().vx.value(), 2) +
+                       std::pow(m_swerve.GetRobotVelocity().vy.value(), 2),
+                   0.5))
+          .value();
   frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
 
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
@@ -527,10 +539,12 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
 
-  auto robotvelo = units::meters_per_second_t(
-      std::pow(std::pow(m_swerve.GetRobotVelocity().vx.value(), 2) +
-                   std::pow(m_swerve.GetRobotVelocity().vy.value(), 2),
-               0.5)).value();
+  auto robotvelo =
+      units::meters_per_second_t(
+          std::pow(std::pow(m_swerve.GetRobotVelocity().vx.value(), 2) +
+                       std::pow(m_swerve.GetRobotVelocity().vy.value(), 2),
+                   0.5))
+          .value();
 
   frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
@@ -920,11 +934,65 @@ double Robot::estimateGamePieceDistanceToCenter() {
     // calc rel to center
     claw1 = std::abs(m_appendage.getClaw1());
     claw2 = std::abs(m_appendage.getClaw2());
-
   }
   // if (claw1 > 80 && claw2 > 80)
   //  do this
 
   // else if (claw2)
-  return claw1-claw2;
+  return claw1 - claw2;
+}
+
+void Robot::driveToCS(bool isBlue) {
+  switch (autoState) {
+    case 0: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(1);
+      bool armReady = m_appendage.armPID(1);
+      bool shoulderReady = m_appendage.shoulderPID(1);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 1: {
+      m_appendage.appendageReset(true);
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      if (firstTime) {
+        trajectoryPP_ =
+            pathGenerate(isBlue ? blueCharge : redCharge);  // mid of the cs
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      m_appendage.armPID(-1);
+      driveWithTraj(true);
+      EstimatePose(0);
+      m_appendage.backClawPneumaticsOut();
+      break;
+    }
+    case 3:
+      m_swerve.autoBalance();
+      break;
+    default: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      m_appendage.armPID(1);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      break;
+    }
+  }
 }
