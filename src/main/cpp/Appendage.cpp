@@ -271,6 +271,7 @@ bool Appendage::checkEdge() {
  * checks if a sensor is working
  * @param canMotor - name of the can motor
  *        canEncoder - name of the can encoder
+ *        aInput - name of the analog input
  *        last - last value to check
  * @return true - if last is NOT equal to current
  *         false - if last is equal to current
@@ -278,29 +279,63 @@ bool Appendage::checkEdge() {
 bool Appendage::isSensorWorking(rev::CANSparkMax* canMotor,
                                 rev::RelativeEncoder* canEncoder, double last) {
   double cur = 0;
+  bool ret = false;
   if (std::abs(canMotor->GetOutputCurrent()) > 1) {
     cur = canEncoder->GetPosition();
     if (cur != last) {
-      last = cur;
-      return true;
+      ret = true;
     }
   }
   last = cur;
-  return false;
+  return ret;
 }
 
 bool Appendage::isSensorWorking(rev::CANSparkMax* canMotor,
                                 frc::Encoder* frcEncoder, double last) {
   double cur = 0;
+  bool ret = false;
   if (std::abs(canMotor->GetOutputCurrent()) > 1) {
     cur = frcEncoder->GetDistance();
     if (cur != last) {
-      last = cur;
-      return true;
+      ret = true;
     }
   }
   last = cur;
-  return false;
+  return ret;
+}
+
+bool Appendage::isSensorWorking(frc::AnalogInput* aInput, double last) {
+  double cur = 0;
+  boot ret = false;
+  cur = aInput->GetValue();
+  if (cur != last) {
+    ret = true;
+  }
+  last = cur;
+  return ret;
+}
+
+bool Appendage::getArmWorking() {
+  return isSensorWorking(m_armMotor, arm_Encoder, lastArm);
+}
+
+bool Appendage::getShoulderWorking() {
+  return isSensorWorking(m_shoulderMotor, shoulder_Encoder, lastShoulder);
+}
+
+bool Appendage::getWristWorking() {
+  return isSensorWorking(m_wristMotor, wrist_Encoder, lastWrist);
+}
+
+bool Appendage::getAnalogWorkiong() {
+  bool claw1Working = false, claw2Working = false, ret;
+  claw1Working = isSensorWorking(claw1_a_input, lastClaw1);
+  claw2Working = isSensorWorking(claw2_a_input, lastClaw2);
+  if (claw1Working == true && claw2Working == true)
+    ret = true;
+  if (claw1Working == false || claw2Working == false)
+    ret = false;
+  return ret;
 }
 
 double Appendage::analogToDistance(double i) {

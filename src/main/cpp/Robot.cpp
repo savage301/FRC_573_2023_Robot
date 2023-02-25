@@ -289,7 +289,11 @@ void Robot::TeleopPeriodic() {
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   selectGamePiece();
-  // hasGamePiece = m_appendage.isGamePieceInClaw();
+  if (m_appendage.getAnalogWorkiong())
+    hasGamePiece = m_appendage.isGamePieceInClaw();
+  else
+    hasGamePiece = isGamePieceInClaw();
+  // hardcode for testing
   hasGamePiece = true;
   table->PutNumber(
       "pipeline",
@@ -995,4 +999,11 @@ void Robot::driveToCS(bool isBlue) {
       break;
     }
   }
+}
+
+bool Robot::isGamePieceInClaw() {
+  int dPadAng = m_controller2.GetPOV();
+  if (dPadAng > 75 && dPadAng < 105)
+    return true;
+  return false;
 }

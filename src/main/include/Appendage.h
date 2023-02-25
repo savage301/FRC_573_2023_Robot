@@ -66,9 +66,12 @@ class Appendage {
                        rev::RelativeEncoder* canEncoder, double last);
   bool isSensorWorking(rev::CANSparkMax* canMotor, frc::Encoder* frcEncoder,
                        double last);
+  bool isSensorWorking(frc::AnalogInput* aInput, double last);
   bool getArmWorking();
   bool getShoulderWorking();
   bool getWristWorking();
+  bool getAnalogWorkiong();
+
   void frontClawPneumaticsIn();
   void frontClawPneumaticsOut();
   void backClawPneumaticsIn();
@@ -145,4 +148,6 @@ class Appendage {
   double lastArm = 0;
   double lastShoulder = 0;
   double lastWrist = 0;
+  double lastClaw1 = 0;
+  double lastClaw2 = 0;
 };

@@ -199,4 +199,5 @@ class Robot : public frc::TimedRobot {
   double estimateGamePieceDistanceToCenter();
 
   void driveToCS(bool isBlue);
+  bool isGamePieceInClaw();
 };
