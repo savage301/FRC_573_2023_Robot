@@ -70,7 +70,7 @@ class Appendage {
   bool getArmWorking();
   bool getShoulderWorking();
   bool getWristWorking();
-  bool getAnalogWorkiong();
+  bool getAnalogWorking();
 
   void frontClawPneumaticsIn();
   void frontClawPneumaticsOut();

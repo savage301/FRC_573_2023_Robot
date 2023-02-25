@@ -177,11 +177,10 @@ void Robot::TeleopPeriodic() {
     if (curFA_Pos_Latch == 0) {
       std::vector<double> coneCornerXy = cornerXy.Get();
       std::vector<bool> x_orien, y_orien;
-      int length = coneCornerXy.size();
-      frc::SmartDashboard::PutNumber("Corner Arr Length", length);
       std::vector<double> avg = {0.0, 0.0};
-      int i;
-      int idxFA = 0;  // furtherest away point index
+      int i, idxFA = 0,
+             /* furtherest away point index*/ length = coneCornerXy.size();
+      frc::SmartDashboard::PutNumber("Corner Arr Length", length);
       double FADist = 0;
       for (i = 0; i < length;
            i += 2)  // Calculate avg point location from cornerXy
@@ -219,9 +218,7 @@ void Robot::TeleopPeriodic() {
           y_orien.push_back(y > 0);
         }
       }
-      uint y_true = 0;
-      uint y_false = 0;
-      uint j;
+      uint y_true = 0, y_false = 0, j;
       for (j = 0; j < y_orien.size();
            j++) {  // Determine if the furthest point is above or below all
                    // other points in Y direction in cornerXy
@@ -231,18 +228,15 @@ void Robot::TeleopPeriodic() {
           y_false++;
       }
 
-      if (y_false == y_orien.size()) {  // If furthest point is always lt 0 then
-                                        // it is on the bottom
+      if (y_false == y_orien.size())  // If furthest point is always lt 0 then
+                                      // it is on the bottom
         curFA_Pos = Robot::fA_Pos::bot;
-      }
 
-      if (y_true == y_orien.size()) {  // If furthest point is always gt 0 then
-                                       // it is on the top
+      if (y_true == y_orien.size())  // If furthest point is always gt 0 then
+                                     // it is on the top
         curFA_Pos = Robot::fA_Pos::top;
-      }
 
-      uint x_true = 0;
-      uint x_false = 0;
+      uint x_true = 0, x_false = 0;
       for (j = 0; j < x_orien.size();
            j++) {  // Determine if the furthest point is to the left or the
                    // right of all other points in X direction in cornerXy
@@ -252,22 +246,20 @@ void Robot::TeleopPeriodic() {
           x_false++;
       }
 
-      if (x_false == x_orien.size()) {  // If furthest point is always lt 0 then
-                                        // it is on the right
+      if (x_false == x_orien.size())  // If furthest point is always lt 0 then
+                                      // it is on the right
         curFA_Pos = Robot::fA_Pos::right;
-      }
 
-      if (x_true == x_orien.size()) {  // If furthest point is always gt 0 then
-                                       // it is on the left
+      if (x_true == x_orien.size())  // If furthest point is always gt 0 then
+                                     // it is on the left
         curFA_Pos = Robot::fA_Pos::left;
-      }
 
       // For edge case.
       // This sort of works. When rotating to the left form this state there is
       // a bit of an issue when just starting to be able to see the tip of the
       // cone.
-      double tHor_ = table->GetNumber("thor", 0);
-      double tVert_ = table->GetNumber("tvert", 0);
+      double tHor_ = table->GetNumber("thor", 0),
+             tVert_ = table->GetNumber("tvert", 0);
 
       if (curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top) {
         if (std::abs(tHor_ - tVert_) <
@@ -289,12 +281,11 @@ void Robot::TeleopPeriodic() {
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   selectGamePiece();
-  if (m_appendage.getAnalogWorkiong())
+  if (m_appendage.getAnalogWorking())
     hasGamePiece = m_appendage.isGamePieceInClaw();
   else
-    hasGamePiece = isGamePieceInClaw();
-  // hardcode for testing
-  hasGamePiece = true;
+    updateHasGamePiece();
+  updateHasGamePiece();
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
@@ -325,9 +316,8 @@ void Robot::TeleopPeriodic() {
       curFA_Pos_Latch = 0;
     }
     // This section is for the auto game piece tracking code.
-    double tx;
-    double tmp = std::sqrt(std::pow(m_controller1.GetLeftX(), 2) +
-                           std::pow(m_controller1.GetLeftY(), 2));
+    double tx, tmp = std::sqrt(std::pow(m_controller1.GetLeftX(), 2) +
+                               std::pow(m_controller1.GetLeftY(), 2));
     if (tarGamePiece == Robot::GamePiece::cube) {  // Cube tracking code
       if (validTarFnd) {
         tx = table->GetNumber("tx", 0.0);
@@ -1001,9 +991,10 @@ void Robot::driveToCS(bool isBlue) {
   }
 }
 
-bool Robot::isGamePieceInClaw() {
+void Robot::updateHasGamePiece() {
   int dPadAng = m_controller2.GetPOV();
   if (dPadAng > 75 && dPadAng < 105)
-    return true;
-  return false;
+    hasGamePiece = true;
+  else if (dPadAng > 255 && dPadAng < 285)
+    hasGamePiece = false;
 }

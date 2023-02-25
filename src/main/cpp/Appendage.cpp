@@ -306,7 +306,7 @@ bool Appendage::isSensorWorking(rev::CANSparkMax* canMotor,
 
 bool Appendage::isSensorWorking(frc::AnalogInput* aInput, double last) {
   double cur = 0;
-  boot ret = false;
+  bool ret = false;
   cur = aInput->GetValue();
   if (cur != last) {
     ret = true;
@@ -327,7 +327,7 @@ bool Appendage::getWristWorking() {
   return isSensorWorking(m_wristMotor, wrist_Encoder, lastWrist);
 }
 
-bool Appendage::getAnalogWorkiong() {
+bool Appendage::getAnalogWorking() {
   bool claw1Working = false, claw2Working = false, ret;
   claw1Working = isSensorWorking(claw1_a_input, lastClaw1);
   claw2Working = isSensorWorking(claw2_a_input, lastClaw2);
