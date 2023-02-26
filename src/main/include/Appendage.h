@@ -103,7 +103,7 @@ class Appendage {
   double shoulder_max = 0.0;
   double shoulder_min = -2000.0;
 
-  double arm_max = 0;
+  double arm_max = -5;
   double arm_min = -220.0;
 
   double wrist_max = 2100.0;

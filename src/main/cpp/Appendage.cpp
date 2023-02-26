@@ -122,7 +122,7 @@ void Appendage::shoulder(double d) {
   double cur = shoulder_Encoder->GetDistance();
 
   if (!unleashThePower) {
-    if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
+    if ((cur < shoulder_min && out > 0) || (cur > shoulder_max && out < 0))
       out = 0;
   }
 
@@ -144,14 +144,14 @@ bool Appendage::shoulderPID(double tar) {
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
 
-  if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
+  if ((cur < shoulder_min && out > 0) || (cur > shoulder_max && out < 0))
     out = 0;
 
-  if (checkLim(cur - tar, 10)) {
+  if (checkLim(cur - tar, limit)) {
     m_shoulderMotor->Set(0);
     return true;
   } else {
-    out = remapVal(out, .7);
+    out = remapVal(out, maxval);
     m_shoulderMotor->Set(out);
     return false;
   }
@@ -168,11 +168,11 @@ bool Appendage::armPID(double tar) {
   if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
     out = 0;
 
-  if (checkLim(cur - tar, 10)) {
+  if (checkLim(cur - tar, limit)) {
     m_armMotor->Set(0);
     return true;
   } else {
-    out = remapVal(out, .7);
+    out = remapVal(out, maxval);
     m_armMotor->Set(out);
     return false;
   }
@@ -201,11 +201,11 @@ void Appendage::wrist(double d) {
   double cur = wrist_Encoder->GetDistance();
 
   if (!unleashThePower) {
-    if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
+    if ((cur < wrist_min && out > 0) || (cur > wrist_max && out < 0))
       out = 0;
   }
 
-  m_wristMotor->Set(d);
+  m_wristMotor->Set(out);
 }
 
 bool Appendage::wristPID(double tar) {
@@ -216,14 +216,14 @@ bool Appendage::wristPID(double tar) {
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
 
-  if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
+  if ((cur < wrist_min && out > 0) || (cur > wrist_max && out < 0))
     out = 0;
 
-  if (checkLim(cur - tar, 10)) {
+  if (checkLim(cur - tar, limit)) {
     m_wristMotor->Set(0);
     return true;
   } else {
-    out = remapVal(out, .7);
+    out = remapVal(out, maxval);
     m_wristMotor->Set(out);
     return false;
   }
