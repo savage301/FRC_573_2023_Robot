@@ -645,10 +645,10 @@ void Robot::getPowerDistribution() {
 
 void Robot::selectGamePiece() {
   // Set target piece status variable
-  /*if (m_controller2.GetBackButton())
+  if (m_controller2.GetBackButton())
     tarGamePiece = GamePiece::cone;
   else if (m_controller2.GetStartButton())
-    tarGamePiece = GamePiece::cube;*/
+    tarGamePiece = GamePiece::cube;
 }
 
 void Robot::selectScoringGrid() {
