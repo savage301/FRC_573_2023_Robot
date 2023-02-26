@@ -44,7 +44,7 @@ Appendage::Appendage() {
   m_wristMotor = new rev::CANSparkMax(m_wristMotorId,
                                       rev::CANSparkMax::MotorType::kBrushless);
 
-                                      m_wristMotor->SetInverted(true);
+  m_wristMotor->SetInverted(true);
   wrist_Encoder = new frc::Encoder(8, 9, false);
 
   claw1_a_input = new frc::AnalogInput(0);
@@ -144,15 +144,13 @@ bool Appendage::shoulderPID(double tar) {
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
 
-
   if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
     out = 0;
-  
-  if (checkLim(cur - tar, 10)){
+
+  if (checkLim(cur - tar, 10)) {
     m_shoulderMotor->Set(0);
     return true;
-  }
-  else{
+  } else {
     out = remapVal(out, .7);
     m_shoulderMotor->Set(out);
     return false;
@@ -167,20 +165,17 @@ bool Appendage::armPID(double tar) {
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
 
-
   if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
     out = 0;
-  
-  if (checkLim(cur - tar, 10)){
+
+  if (checkLim(cur - tar, 10)) {
     m_armMotor->Set(0);
     return true;
-  }
-  else{
+  } else {
     out = remapVal(out, .7);
     m_armMotor->Set(out);
     return false;
   }
-
 }
 
 double Appendage::calculateDistanceToLim() {
@@ -223,18 +218,15 @@ bool Appendage::wristPID(double tar) {
 
   if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
     out = 0;
- 
-  if (checkLim(cur - tar, 10)){
+
+  if (checkLim(cur - tar, 10)) {
     m_wristMotor->Set(0);
     return true;
-  }
-  else{
+  } else {
     out = remapVal(out, .7);
     m_wristMotor->Set(out);
     return false;
   }
-
-  
 }
 
 #include <frc/smartdashboard/SmartDashboard.h>
