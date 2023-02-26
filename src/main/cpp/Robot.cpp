@@ -417,8 +417,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.backRollerOff();
       m_appendage.pneumaticsOut();
     }
-    if (curFA_Pos != Robot::fA_Pos::top)
-      m_appendage.wristPID(1);  // angle the wrist when the cone is tipped
+
   }
 
   if (m_controller2.GetAButton()) {
@@ -428,7 +427,12 @@ void Robot::TeleopPeriodic() {
       m_appendage.armPID(0);
     }
     m_appendage.shoulderPID(1);  // bot
-    m_appendage.wristPID(1);
+    if(m_controller2.GetLeftBumper()){ // This handles cone pickup wrist angle. based on controller inputs.
+       m_appendage.wristPID(1);
+    }
+    else{
+      m_appendage.wristPID(10); 
+    }
   } else if (m_controller2.GetBButton()) {
     m_appendage.armPID(1);
     m_appendage.shoulderPID(1);  // mid

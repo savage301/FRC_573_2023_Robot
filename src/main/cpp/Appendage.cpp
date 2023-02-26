@@ -144,14 +144,19 @@ bool Appendage::shoulderPID(double tar) {
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
 
-  if (!unleashThePower) {
-    if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
-      out = 0;
-  }
-  m_shoulderMotor->Set(out);
-  if (checkLim(cur - tar, 10))
+
+  if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
+    out = 0;
+  
+  if (checkLim(cur - tar, 10)){
+    m_shoulderMotor->Set(0);
     return true;
-  return false;
+  }
+  else{
+    out = remapVal(out, .7);
+    m_shoulderMotor->Set(out);
+    return false;
+  }
 }
 
 bool Appendage::armPID(double tar) {
@@ -162,16 +167,20 @@ bool Appendage::armPID(double tar) {
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
 
-  if (!unleashThePower) {
-    if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
-      out = 0;
+
+  if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
+    out = 0;
+  
+  if (checkLim(cur - tar, 10)){
+    m_armMotor->Set(0);
+    return true;
+  }
+  else{
+    out = remapVal(out, .7);
+    m_armMotor->Set(out);
+    return false;
   }
 
-  m_armMotor->Set(out);
-
-  if (checkLim(cur - tar, 10))
-    return true;
-  return false;
 }
 
 double Appendage::calculateDistanceToLim() {
@@ -212,15 +221,20 @@ bool Appendage::wristPID(double tar) {
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
 
-  if (!unleashThePower) {
-    if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
-      out = 0;
-  }
-  m_wristMotor->Set(out);
-
-  if (checkLim(cur - tar, 10))
+  if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
+    out = 0;
+ 
+  if (checkLim(cur - tar, 10)){
+    m_wristMotor->Set(0);
     return true;
-  return false;
+  }
+  else{
+    out = remapVal(out, .7);
+    m_wristMotor->Set(out);
+    return false;
+  }
+
+  
 }
 
 #include <frc/smartdashboard/SmartDashboard.h>
