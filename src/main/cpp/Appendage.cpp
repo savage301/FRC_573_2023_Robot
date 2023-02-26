@@ -137,46 +137,58 @@ bool Appendage::checkLim(double err, double lim) {
 }
 
 bool Appendage::shoulderPID(double tar) {
-  double p = frc::SmartDashboard::GetNumber("shoulder_p", 0);
-  double i = frc::SmartDashboard::GetNumber("shoulder_i", 0);
-  double d = frc::SmartDashboard::GetNumber("shoulder_d", 0);
+  double p = frc::SmartDashboard::GetNumber("p", 0);
+  double i = frc::SmartDashboard::GetNumber("i", 0);
+  double d = frc::SmartDashboard::GetNumber("d", 0);
   Shoulder_PIDController.SetPID(p, i, d);
   double cur = shoulder_Encoder->GetDistance();
+
+  double setpt = frc::SmartDashboard::GetNumber("setpt", 0);
+  double limit = frc::SmartDashboard::GetNumber("limit", 0);
+  double maxval = frc::SmartDashboard::GetNumber("maxval", 0);
+  tar = setpt;
+
   double out = Shoulder_PIDController.Calculate(cur, tar);
 
 
   if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
     out = 0;
   
-  if (checkLim(cur - tar, 10)){
+  if (checkLim(cur - tar, limit)){
     m_shoulderMotor->Set(0);
     return true;
   }
   else{
-    out = remapVal(out, .7);
+    out = remapVal(out, maxval);
     m_shoulderMotor->Set(out);
     return false;
   }
 }
 
 bool Appendage::armPID(double tar) {
-  double p = frc::SmartDashboard::GetNumber("arm_p", 0);
-  double i = frc::SmartDashboard::GetNumber("arm_i", 0);
-  double d = frc::SmartDashboard::GetNumber("arm_d", 0);
+  double p = frc::SmartDashboard::GetNumber("p", 0);
+  double i = frc::SmartDashboard::GetNumber("i", 0);
+  double d = frc::SmartDashboard::GetNumber("d", 0);
   Arm_PIDController.SetPID(p, i, d);
   double cur = arm_Encoder->GetPosition();
+
+  double setpt = frc::SmartDashboard::GetNumber("setpt", 0);
+  double limit = frc::SmartDashboard::GetNumber("limit", 0);
+  double maxval = frc::SmartDashboard::GetNumber("maxval", 0);
+  tar = setpt;
+
   double out = Arm_PIDController.Calculate(cur, tar);
 
 
   if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
     out = 0;
   
-  if (checkLim(cur - tar, 10)){
+  if (checkLim(cur - tar, limit)){
     m_armMotor->Set(0);
     return true;
   }
   else{
-    out = remapVal(out, .7);
+    out = remapVal(out, maxval);
     m_armMotor->Set(out);
     return false;
   }
@@ -214,22 +226,28 @@ void Appendage::wrist(double d) {
 }
 
 bool Appendage::wristPID(double tar) {
-  double p = frc::SmartDashboard::GetNumber("wrist_p", 0);
-  double i = frc::SmartDashboard::GetNumber("wrist_i", 0);
-  double d = frc::SmartDashboard::GetNumber("wrist_d", 0);
+  double p = frc::SmartDashboard::GetNumber("p", 0);
+  double i = frc::SmartDashboard::GetNumber("i", 0);
+  double d = frc::SmartDashboard::GetNumber("d", 0);
   Wrist_PIDController.SetPID(p, i, d);
   double cur = wrist_Encoder->GetDistance();
+
+  double setpt = frc::SmartDashboard::GetNumber("setpt", 0);
+  double limit = frc::SmartDashboard::GetNumber("limit", 0);
+  double maxval = frc::SmartDashboard::GetNumber("maxval", 0);
+  tar = setpt;
+
   double out = Wrist_PIDController.Calculate(cur, tar);
 
   if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
     out = 0;
  
-  if (checkLim(cur - tar, 10)){
+  if (checkLim(cur - tar, limit)){
     m_wristMotor->Set(0);
     return true;
   }
   else{
-    out = remapVal(out, .7);
+    out = remapVal(out, maxval);
     m_wristMotor->Set(out);
     return false;
   }
