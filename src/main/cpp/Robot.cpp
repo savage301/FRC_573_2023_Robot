@@ -421,25 +421,47 @@ void Robot::TeleopPeriodic() {
 
   if (m_controller2.GetAButton()) {
     if (m_controller2.GetRightBumper()) {
-      m_appendage.armPID(1);
+      m_appendage.armPID(0);
     } else {
       m_appendage.armPID(0);
     }
-    m_appendage.shoulderPID(1);           // bot
-    if (m_controller2.GetLeftBumper()) {  // This handles cone pickup wrist
+    m_appendage.shoulderPID(-1994);       // bot
+    if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube) {  // This handles cone pickup wrist
                                           // angle. based on controller inputs.
-      m_appendage.wristPID(1);
+      m_appendage.wristPID(2100);
     } else {
-      m_appendage.wristPID(10);
+      m_appendage.wristPID(1326);
     }
   } else if (m_controller2.GetBButton()) {
-    m_appendage.armPID(1);
-    m_appendage.shoulderPID(1);  // mid
-    m_appendage.wristPID(1);
+    if (m_controller2.GetRightBumper()) {
+      m_appendage.armPID(0);
+    } else {
+      m_appendage.armPID(0);
+    }
+    if (tarGamePiece == Robot::GamePiece::cone)
+      m_appendage.shoulderPID(-1049);  // mid
+    else
+
+      m_appendage.shoulderPID(-881);  // mid
+    m_appendage.wristPID(2100);
   } else if (m_controller2.GetYButton()) {
-    m_appendage.armPID(1);
-    m_appendage.shoulderPID(1);  // top
-    m_appendage.wristPID(1);
+    if (tarGamePiece == Robot::GamePiece::cone) {
+      if (m_controller2.GetRightBumper()) {
+        m_appendage.armPID(-188);
+      } else {
+        m_appendage.armPID(0);
+      }
+      m_appendage.shoulderPID(-716);  // mid
+    } else {
+      if (m_controller2.GetRightBumper()) {
+        m_appendage.armPID(-131);
+      } else {
+        m_appendage.armPID(0);
+      }
+      m_appendage.shoulderPID(-683);  // mid
+    }
+    m_appendage.wristPID(2100);
+
   } else if (m_controller2.GetXButton()) {
     m_appendage.armPID(0);
     m_appendage.shoulderPID(0);  // Stored Position
