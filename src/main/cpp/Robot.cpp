@@ -624,11 +624,11 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
 void Robot::getPowerDistribution() {
   frc::PowerDistribution bd =
       frc::PowerDistribution(20, frc::PowerDistribution::ModuleType::kRev);
-  pumpOut("intake motor 1 current", bd.GetCurrent(14));
-  pumpOut("intake motor 2 current", bd.GetCurrent(15));
-  pumpOut("arm motor current", bd.GetCurrent(16));
-  pumpOut("shoulder motor current", bd.GetCurrent(17));
-  pumpOut("wrist motor current", bd.GetCurrent(18));
+  pumpOut("intake motor 1 current", bd.GetCurrent(4));
+  pumpOut("intake motor 2 current", bd.GetCurrent(5));
+  pumpOut("arm motor current", bd.GetCurrent(0));
+  pumpOut("shoulder motor current", bd.GetCurrent(12));
+  pumpOut("wrist motor current", bd.GetCurrent(3));
 
   pumpOut("drive motor BR 1", bd.GetCurrent(11));
   pumpOut("drive motor BR 2", bd.GetCurrent(10));

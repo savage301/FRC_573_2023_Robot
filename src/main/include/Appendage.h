@@ -89,10 +89,10 @@ class Appendage {
   int m_armId = 16;
   int m_shoulderId = 17;
   // roller
-  int p_Roller1Id_a = 0;
-  int p_Roller1Id_b = 1;
-  int p_RollerB_Id_a = 2;
-  int p_RollerB_Id_b = 3;
+  int p_Roller1Id_a = 1;
+  int p_Roller1Id_b = 0;
+  int p_RollerB_Id_a = 3;
+  int p_RollerB_Id_b = 2;
   int p_RollerF_Id_a = 4;
   int p_RollerF_Id_b = 5;
 
@@ -100,14 +100,14 @@ class Appendage {
   int p_pcmId = 19;
 
   // Appendage Encoder Limits
-  double shoulder_max = 1000.0;
-  double shoulder_min = -1000.0;
+  double shoulder_max = 0.0;
+  double shoulder_min = -2000.0;
 
-  double arm_max = 1000.0;
-  double arm_min = -1000.0;
+  double arm_max = 0;
+  double arm_min = -220.0;
 
-  double wrist_max = 1000.0;
-  double wrist_min = -1000.0;
+  double wrist_max = 2100.0;
+  double wrist_min = 0.0;
 
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;
