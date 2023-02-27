@@ -281,10 +281,10 @@ void Robot::TeleopPeriodic() {
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   selectGamePiece();
-  if (m_appendage.getAnalogWorking())
+  /*if (m_appendage.getAnalogWorking()) // Not expected for 1st event
     hasGamePiece = m_appendage.isGamePieceInClaw();
   else
-    updateHasGamePiece();
+    updateHasGamePiece();*/
   updateHasGamePiece();
   table->PutNumber(
       "pipeline",
@@ -419,50 +419,108 @@ void Robot::TeleopPeriodic() {
     }
   }
 
-  if (m_controller2.GetAButton()) {
-    if (m_controller2.GetRightBumper()) {
+// --------- All possible Arm Positions ---------------------
+  if (m_controller2.GetAButton() && hasGamePiece) {
+    // Floor Level Drop Off
+    if (m_controller2.GetRightBumper()) 
       m_appendage.armPID(0);
-    } else {
+     else
       m_appendage.armPID(0);
-    }
-    m_appendage.shoulderPID(-1994);       // bot
-    if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube) {  // This handles cone pickup wrist
-                                          // angle. based on controller inputs.
+   
+    m_appendage.shoulderPID(-1994);  
+    
+    if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
       m_appendage.wristPID(2100);
-    } else {
+     else 
       m_appendage.wristPID(1326);
-    }
-  } else if (m_controller2.GetBButton()) {
-    if (m_controller2.GetRightBumper()) {
+    
+  } else if (m_controller2.GetBButton() && hasGamePiece) {
+    // Mid Level Scoring Location
+    if (m_controller2.GetRightBumper()) 
       m_appendage.armPID(0);
-    } else {
+    else 
       m_appendage.armPID(0);
-    }
+    
     if (tarGamePiece == Robot::GamePiece::cone)
-      m_appendage.shoulderPID(-1049);  // mid
+      m_appendage.shoulderPID(-1049);  
     else
+      m_appendage.shoulderPID(-881);  
 
-      m_appendage.shoulderPID(-881);  // mid
     m_appendage.wristPID(2100);
-  } else if (m_controller2.GetYButton()) {
+
+  } else if (m_controller2.GetYButton() && hasGamePiece) {
+    // Upper Level Scoring
     if (tarGamePiece == Robot::GamePiece::cone) {
-      if (m_controller2.GetRightBumper()) {
+      if (m_controller2.GetRightBumper()) 
         m_appendage.armPID(-188);
-      } else {
+      else 
         m_appendage.armPID(0);
-      }
-      m_appendage.shoulderPID(-716);  // mid
+      
+      m_appendage.shoulderPID(-716);  
+
     } else {
-      if (m_controller2.GetRightBumper()) {
+      if (m_controller2.GetRightBumper()) 
         m_appendage.armPID(-131);
-      } else {
+      else 
         m_appendage.armPID(0);
-      }
-      m_appendage.shoulderPID(-683);  // mid
+      
+      m_appendage.shoulderPID(-683);  
     }
+
+    m_appendage.wristPID(2100);
+  } 
+  
+  else if (m_controller2.GetAButton() && !hasGamePiece) {
+    // Floor Level Pickup
+    if (m_controller2.GetRightBumper()) 
+      m_appendage.armPID(0);
+     else
+      m_appendage.armPID(0);
+   
+    m_appendage.shoulderPID(-1994);  
+    
+    if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
+      m_appendage.wristPID(2100);
+     else 
+      m_appendage.wristPID(1326);
+    
+  } else if (m_controller2.GetBButton() && !hasGamePiece) {
+    // Side Human Player Loading Location
+    if (m_controller2.GetRightBumper()) 
+      m_appendage.armPID(0);
+    else 
+      m_appendage.armPID(0);
+    
+    if (tarGamePiece == Robot::GamePiece::cone)
+      m_appendage.shoulderPID(-1049);  
+    else
+      m_appendage.shoulderPID(-881);  
+
     m_appendage.wristPID(2100);
 
-  } else if (m_controller2.GetXButton()) {
+  } else if (m_controller2.GetYButton() && !hasGamePiece) {
+    // End field Human Player Loading Location
+    if (tarGamePiece == Robot::GamePiece::cone) {
+      if (m_controller2.GetRightBumper()) 
+        m_appendage.armPID(-188);
+      else 
+        m_appendage.armPID(0);
+      
+      m_appendage.shoulderPID(-716);  
+
+    } else {
+      if (m_controller2.GetRightBumper()) 
+        m_appendage.armPID(-131);
+      else 
+        m_appendage.armPID(0);
+      
+      m_appendage.shoulderPID(-683);  
+    }
+
+    m_appendage.wristPID(2100);
+  }  
+  else if (m_controller2.GetXButton()) {
+    // Store Position possible from with or without gamepiece
     m_appendage.armPID(0);
     m_appendage.shoulderPID(0);  // Stored Position
     m_appendage.wristPID(0);
@@ -485,6 +543,8 @@ void Robot::TeleopPeriodic() {
 
     m_appendage.wrist(m_controller2.GetLeftX());
   }
+
+  // --------- End All possible Arm Positions ---------------------
   // ----------- End Appendage Code -----------------------------------
   handleLedModes(validTarFnd, hasGamePiece, tarGamePiece,
                  m_appendage.checkEdge());
