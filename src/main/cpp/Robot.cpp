@@ -145,6 +145,7 @@ void Robot::TeleopInit() {
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
   tarGrid = Grid::humanLeft;
+  tarGamePiece = Robot::GamePiece::cone;
   curFA_Pos_Latch = 0;
   m_swerve.resetGyro();
   m_swerve.ResetOdometry(redPose[1]);
@@ -155,6 +156,8 @@ void Robot::TeleopPeriodic() {
   m_appendage.pumpOutSensorVal();
   m_swerve.pumpOutSensorVal();
   // getPowerDistribution();
+  frc::SmartDashboard::PutNumber("Has Game Piece", hasGamePiece);
+  frc::SmartDashboard::PutNumber("Target Game Piece", tarGamePiece);
   frc::SmartDashboard::PutNumber(
       "m_timer",
       m_timer.Get()
