@@ -455,7 +455,7 @@ void Robot::TeleopPeriodic() {
     // Upper Level Scoring
     if (tarGamePiece == Robot::GamePiece::cone) {
       if (m_controller2.GetRightBumper()) 
-        m_appendage.armPID(-188);
+        m_appendage.armPID(-168);
       else 
         m_appendage.armPID(0);
       
@@ -483,9 +483,9 @@ void Robot::TeleopPeriodic() {
     m_appendage.shoulderPID(-1994);  
     
     if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
-      m_appendage.wristPID(2100);
+      m_appendage.wristPID(2050);
      else 
-      m_appendage.wristPID(1326);
+      m_appendage.wristPID(1539);
     
   } else if (m_controller2.GetBButton() && !hasGamePiece) {
     // Side Human Player Loading Location

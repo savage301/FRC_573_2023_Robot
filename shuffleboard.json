@@ -50,8 +50,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/traj": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           },
           "6,0": {
@@ -147,12 +146,65 @@
           }
         }
       }
+    },
+    {
+      "title": "Tab 4",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Arm Encoder",
+              "_title": "SmartDashboard/Arm Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Encoder",
+              "_title": "SmartDashboard/Wrist Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Shoulder Encoder",
+              "_title": "SmartDashboard/Shoulder Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          }
+        }
+      }
     }
   ],
   "windowGeometry": {
-    "x": -201.7142791748047,
-    "y": 168.57142639160156,
-    "width": 1113.142822265625,
-    "height": 633.1428833007812
+    "x": 56.0,
+    "y": 62.66666793823242,
+    "width": 1113.3333740234375,
+    "height": 633.3333129882812
   }
 }
