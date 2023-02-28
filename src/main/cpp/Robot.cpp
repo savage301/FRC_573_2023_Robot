@@ -377,8 +377,7 @@ void Robot::TeleopPeriodic() {
     m_swerve.DriveWithJoystick(
         m_controller1.GetLeftY(), m_controller1.GetLeftX(),
         m_controller1.GetRightX(), true,
-        m_controller1.GetLeftBumper() || m_appendage.getArmExtended() ? true
-                                                                      : false);
+        m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
   }
   // ---- End Drive Code -----------------------------------------------
 
