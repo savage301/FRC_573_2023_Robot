@@ -96,6 +96,9 @@ void Robot::AutonomousInit() {
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
   m_appendage.appendageReset(false);
+  m_swerve.currRampPos = Drivetrain::RampPos::floor;
+  m_swerve.crossedramp = false;
+  m_swerve.lastRampSide = Drivetrain::RampPos::downside;
 
   // ---------------------------------- Trajectory Following Auto Section
   // --------------------- Generate trajectory to follow for autonomous Start
@@ -149,6 +152,9 @@ void Robot::TeleopInit() {
   curFA_Pos_Latch = 0;
   m_swerve.resetGyro();
   m_swerve.ResetOdometry(redPose[1]);
+  m_swerve.currRampPos = Drivetrain::RampPos::floor;
+  m_swerve.crossedramp = false;
+  m_swerve.lastRampSide = Drivetrain::RampPos::downside;
 }
 
 void Robot::TeleopPeriodic() {
@@ -365,12 +371,12 @@ void Robot::TeleopPeriodic() {
         }
       }
     }
-    /* else if (m_controller1.GetBackButton()) {
-       if (m_controller1.GetBackButtonPressed()) {
-         m_swerve.onRamp = false;
-       }
+    else if (m_controller1.GetBackButton()) {
+       //if (m_controller1.GetBackButtonPressed()) { //Removed incase button is let go and rehit during a match. We reset at start of teleop
+       //  m_swerve.onRamp = false;
+       //}
        m_swerve.autoBalance();
-     }*/
+     }
   } else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
@@ -1066,6 +1072,7 @@ void Robot::driveToCS(bool isBlue) {
     }
     case 3:
       m_swerve.autoBalance();
+      EstimatePose(0);
       break;
     default: {
       m_swerve.DriveWithJoystick(0, 0, 0, false, false);
