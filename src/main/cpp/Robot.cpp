@@ -324,10 +324,10 @@ void Robot::TeleopPeriodic() {
     if (tarGamePiece == Robot::GamePiece::cube) {  // Cube tracking code
       if (validTarFnd) {
         tx = table->GetNumber("tx", 0.0);
-        tx *= .05;
+        tx *= -.05;
       }
       m_swerve.DriveWithJoystick(tmp, 0, validTarFnd ? tx : 0, false,
-                                 m_controller1.GetLeftBumper() ? true : false);
+                                 m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
 
     } else if (tarGamePiece ==
                Robot::GamePiece::cone) {  // Cone Tracking section
@@ -335,10 +335,10 @@ void Robot::TeleopPeriodic() {
           curFA_Pos == Robot::fA_Pos::top) {  // Cone upright or tip facing
                                               // robot correctly
         tx = table->GetNumber("tx", 0.0);
-        tx *= .05;
+        tx *= -.05;
         m_swerve.DriveWithJoystick(
             tmp, 0, validTarFnd ? tx : 0, false,
-            m_controller1.GetLeftBumper() ? true : false);
+            m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
       } else if (curFA_Pos == Robot::fA_Pos::left ||
                  curFA_Pos == Robot::fA_Pos::right) {  // Cone tipped over, but
                                                        // no oriented correctly.
@@ -347,21 +347,21 @@ void Robot::TeleopPeriodic() {
         double ta = table->GetNumber("ta", 0.0);
         if (ta < 1) {  // Approach the cone until it is a certain size in image.
           tx = table->GetNumber("tx", 0.0);
-          tx *= .05;
+          tx *= -.05;
           m_swerve.DriveWithJoystick(
               tmp, 0, validTarFnd ? tx : 0, false,
-              m_controller1.GetLeftBumper() ? true : false);
+              m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
         } else {  // Rotate around the cone either left or right.
           bool leftRight = false;
           tx = table->GetNumber("tx", 0.0);
-          tx *= .05;
+          tx *= -.05;
           if (curFA_Pos == Robot::fA_Pos::left)
             leftRight = false;
           else if (curFA_Pos == Robot::fA_Pos::right)
             leftRight = true;
           m_swerve.DriveWithJoystick(
               0, leftRight ? -1 * tmp : 1 * tmp, validTarFnd ? tx : 0, false,
-              m_controller1.GetLeftBumper() ? true : false);
+              m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
         }
       }
     }
