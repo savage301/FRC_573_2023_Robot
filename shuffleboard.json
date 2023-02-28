@@ -166,12 +166,12 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Arm Encoder",
-              "_title": "SmartDashboard/Arm Encoder",
+              "_title": "/SmartDashboard/Arm Encoder",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "3,2": {
+          "2,0": {
             "size": [
               1,
               1
@@ -179,12 +179,12 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Wrist Encoder",
-              "_title": "SmartDashboard/Wrist Encoder",
+              "_title": "/SmartDashboard/Wrist Encoder",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "3,1": {
+          "4,0": {
             "size": [
               1,
               1
@@ -192,7 +192,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Shoulder Encoder",
-              "_title": "SmartDashboard/Shoulder Encoder",
+              "_title": "/SmartDashboard/Shoulder Encoder",
               "_glyph": 148,
               "_showGlyph": false
             }
