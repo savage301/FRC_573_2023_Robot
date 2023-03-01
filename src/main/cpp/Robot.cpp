@@ -145,8 +145,14 @@ void Robot::TeleopInit() {
   tarGrid = Grid::humanLeft;
   tarGamePiece = Robot::GamePiece::cone;
   curFA_Pos_Latch = 0;
+  if(isBlue ){
+  m_swerve.resetGyro180();
+  m_swerve.ResetOdometry(bluePose[8]);
+  }
+  else{
   m_swerve.resetGyro();
   m_swerve.ResetOdometry(redPose[1]);
+  }
   m_swerve.currRampPos = Drivetrain::RampPos::floor;
   m_swerve.crossedramp = false;
   m_swerve.lastRampSide = Drivetrain::RampPos::downside;
