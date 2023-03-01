@@ -44,8 +44,8 @@ void Robot::RobotInit() {
   frc::DriverStation::StartDataLog(frcLog::GetLog());
 
   compressor.EnableDigital();
-  m_swerve.ResetOdometry(
-      frc::Pose2d{5_m, 5_m, 0_deg});  // flipping the robot for field setup
+  //m_swerve.ResetOdometry(
+  //    frc::Pose2d{5_m, 5_m, 0_deg});  // flipping the robot for field setup
   frc::SmartDashboard::PutBoolean("Ignore appendage limits",
                                   m_appendage.unleashThePower);
 }
@@ -108,11 +108,6 @@ void Robot::AutonomousInit() {
   // Send Field2d to SmartDashboard.
   frc::SmartDashboard::PutData(&m_field);
 
-  // Reset the drivetrain's odometry to the starting pose of the trajectory.
-  m_swerve.ResetOdometry(exampleTrajectory.InitialPose());
-
-  // Send our generated trajectory to Field2d.
-  m_field.GetObject("traj")->SetTrajectory(exampleTrajectory);
   // ----------------------------------------------------------------------------------------
 }
 
@@ -500,7 +495,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.armPID(0);
     
     if (tarGamePiece == Robot::GamePiece::cone)
-      m_appendage.shoulderPID(-1049);  
+      m_appendage.shoulderPID(-1250);  
     else
       m_appendage.shoulderPID(-881);  
 
@@ -514,18 +509,18 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(0);
       
-      m_appendage.shoulderPID(-716);  
+      m_appendage.shoulderPID(-1250);  
 
     } else {
       if (m_controller2.GetRightBumper()) 
-        m_appendage.armPID(-131);
+        m_appendage.armPID((0));
       else 
         m_appendage.armPID(0);
       
       m_appendage.shoulderPID(-683);  
     }
 
-    m_appendage.wristPID(2100);
+    m_appendage.wristPID(200);
   }  
   else if (m_controller2.GetXButton()) {
     // Store Position possible from with or without gamepiece
