@@ -73,20 +73,26 @@ void Robot::RobotPeriodic() {}
  */
 void Robot::AutonomousInit() {
   // reset pos based on selector
-  if (m_autoSelected == kAutonPaths1)
+  if (m_autoSelected == kAutonPaths1){
     // start with 6 / 2
+    m_swerve.resetGyro();
     m_swerve.ResetOdometry(redPose[6]);
-  else if (m_autoSelected == kAutonPaths2)
+  } else if (m_autoSelected == kAutonPaths2){
+    m_swerve.resetGyro();
     m_swerve.ResetOdometry(redPose[2]);
-  else if (m_autoSelected == kAutonPaths3)
+  } else if (m_autoSelected == kAutonPaths3){
+    m_swerve.resetGyro180();
     m_swerve.ResetOdometry(bluePose[6]);
-  else if (m_autoSelected == kAutonPaths4)
+  } else if (m_autoSelected == kAutonPaths4){
+    m_swerve.resetGyro180();
     m_swerve.ResetOdometry(bluePose[2]);
-
-  else if (m_autoSelected == kAutonPaths5)
+  } else if (m_autoSelected == kAutonPaths5){
+    m_swerve.resetGyro();
     m_swerve.ResetOdometry(redPose[3]);
-  else if (m_autoSelected == kAutonPaths6)
+  }else if (m_autoSelected == kAutonPaths6){
+    m_swerve.resetGyro180();
     m_swerve.ResetOdometry(bluePose[3]);
+  }
   m_autoSelected = m_chooser.GetSelected();
   m_autoSelected =
       frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);

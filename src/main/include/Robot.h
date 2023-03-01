@@ -120,12 +120,16 @@ class Robot : public frc::TimedRobot {
 
 #define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
 #define pose2(x, y) frc::Pose2d(x, y, frc::Rotation2d(180_deg))
-#define poseCubes(x, y) \
+#define poseCubesRed(x, y) \
   frc::Pose2d(x, y, frc::Rotation2d(180_deg))  // facing away from the wall
+#define poseCubesBlue(x, y) \
+  frc::Pose2d(x, y, frc::Rotation2d(0_deg))  // facing away from the wall
 #define poseRed(y) pose1(6.41_m, y)
 #define poseBlue(y) pose2(-6.41_m, y)
-#define poseMid(x) pose1(x, 5.09_m)
-#define poseCubes_(x) poseCubes(x, 1.2_m)
+#define poseMidRed(x) pose1(x, 5.09_m)
+#define poseMidBlue(x) pose2(x, 5.09_m)
+#define poseCubesRed_(x) poseCubesRed(x, 1.2_m)
+#define poseCubesBlue_(x) poseCubesBlue(x, 1.2_m)
 
   std::vector<frc::Pose2d> redPose = {                     // slot num
                                       poseRed(-3.5_m),     // 0
@@ -148,18 +152,18 @@ class Robot : public frc::TimedRobot {
                                        poseBlue(-2.94_m),  // 7
                                        poseBlue(-3.5_m)};  // 8
 
-  frc::Pose2d redRightMidPose = poseMid(0.67_m);
-  frc::Pose2d redLeftMidPose = poseMid(-3.17_m);
-  frc::Pose2d redRightcube = poseCubes_(.57_m);
-  frc::Pose2d redLeftcube = poseCubes_(-3.09_m);
+  frc::Pose2d redRightMidPose = poseMidRed(0.67_m);
+  frc::Pose2d redLeftMidPose = poseMidRed(-3.17_m);
+  frc::Pose2d redRightcube = poseCubesRed_(.57_m);
+  frc::Pose2d redLeftcube = poseCubesRed_(-3.09_m);
 
-  frc::Pose2d blueLeftMidPose = poseMid(-0.67_m);
-  frc::Pose2d blueRightMidPose = poseMid(3.17_m);
-  frc::Pose2d blueLeftcube = poseCubes_(-.57_m);
-  frc::Pose2d blueRightcube = poseCubes_(3.09_m);
+  frc::Pose2d blueLeftMidPose = poseMidBlue(-0.67_m);
+  frc::Pose2d blueRightMidPose = poseMidBlue(3.17_m);
+  frc::Pose2d blueLeftcube = poseCubesBlue_(-.57_m);
+  frc::Pose2d blueRightcube = poseCubesBlue_(3.09_m);
 
   frc::Pose2d redCharge = pose1(5.88_m, -1.29_m);
-  frc::Pose2d blueCharge = pose1(-5.88_m, -1.29_m);
+  frc::Pose2d blueCharge = pose2(-5.88_m, -1.29_m);
   enum Grid { humanLeft, humanCenter, humanRight };
 
   int tarGrid;
