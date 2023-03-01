@@ -78,7 +78,6 @@ class Drivetrain {
   bool isGyroWorking();
 
   void resetGyro();
-  void resetGyro180();
 
  private:
   frc::Translation2d m_frontLeftLocation{+0.3175_m, +0.27305_m};
