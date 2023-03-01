@@ -158,7 +158,7 @@ bool Appendage::shoulderPID(double tar) {
 
 bool Appendage::armPID(double tar) {
   double p = .1, i = 0, d = 0;
-  double limit = 10, maxval = .7;
+  double limit = 10, maxval = 1;
   Arm_PIDController.SetPID(p, i, d);
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
@@ -208,7 +208,7 @@ void Appendage::wrist(double d) {
 
 bool Appendage::wristPID(double tar) {
   double p = -.01, i = 0, d = 0;
-  double limit = 50, maxval = .7;
+  double limit = 50, maxval = 1;
   Wrist_PIDController.SetPID(p, i, d);
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
