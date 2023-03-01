@@ -45,7 +45,7 @@ class Robot : public frc::TimedRobot {
   frc::XboxController m_controller2{1};
 
   // -------------- Added for Auto------------------------------
-  frc::Trajectory exampleTrajectory =
+  /*frc::Trajectory exampleTrajectory =
       frc::TrajectoryGenerator::GenerateTrajectory(
           // Start at the origin facing the +X direction
           frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)),
@@ -55,7 +55,7 @@ class Robot : public frc::TimedRobot {
           frc::Pose2d(8_m, 5_m, frc::Rotation2d(0_deg)),
           // Pass the config
           m_swerve.auto_traj);
-
+*/
   pathplanner::PathPlannerTrajectory trajectoryPP_;
   frc::Trajectory trajectory_;
   // The timer to use during the autonomous period.
@@ -67,7 +67,7 @@ class Robot : public frc::TimedRobot {
   frc::Field2d field_off;
 
   // The Ramsete Controller to follow the trajectory.
-  frc::RamseteController m_ramseteController;
+  //frc::RamseteController m_ramseteController;
 
   frc2::PIDController X_PIDController{1.0, 0, 0};
   frc2::PIDController Y_PIDController{1.0, 0, 0};
