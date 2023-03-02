@@ -37,10 +37,14 @@ Appendage::Appendage() {
 
   m_shoulderMotor = new rev::CANSparkMax{
       m_shoulderId, rev::CANSparkMax::MotorType::kBrushless};
-  shoulder_Encoder = new frc::Encoder(2, 3, false);
+
+  m_shoulderMotor->SetInverted(true);
+  shoulder_Encoder = new frc::Encoder(6, 7, false);
 
   m_wristMotor = new rev::CANSparkMax(m_wristMotorId,
                                       rev::CANSparkMax::MotorType::kBrushless);
+
+  m_wristMotor->SetInverted(true);
   wrist_Encoder = new frc::Encoder(8, 9, false);
 
   claw1_a_input = new frc::AnalogInput(0);
@@ -101,7 +105,7 @@ void Appendage::frontClawPneumaticsOut() {
 }
 void Appendage::arm(double d) {
   double out = remapVal(d, .7);
-  out = deadband(out, 0.05);
+  out = deadband(out, 0.1);
   double cur = arm_Encoder->GetPosition();
 
   if (!unleashThePower) {
@@ -118,7 +122,7 @@ void Appendage::shoulder(double d) {
   double cur = shoulder_Encoder->GetDistance();
 
   if (!unleashThePower) {
-    if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
+    if ((cur < shoulder_min && out > 0) || (cur > shoulder_max && out < 0))
       out = 0;
   }
 
@@ -133,41 +137,43 @@ bool Appendage::checkLim(double err, double lim) {
 }
 
 bool Appendage::shoulderPID(double tar) {
-  double p = frc::SmartDashboard::GetNumber("shoulder_p", 0);
-  double i = frc::SmartDashboard::GetNumber("shoulder_i", 0);
-  double d = frc::SmartDashboard::GetNumber("shoulder_d", 0);
+  double p = -.005, i = 0, d = 0;
+  double limit = 10, maxval = .7;
   Shoulder_PIDController.SetPID(p, i, d);
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
 
-  if (!unleashThePower) {
-    if ((cur < shoulder_min && out < 0) || (cur > shoulder_max && out > 0))
-      out = 0;
-  }
-  m_shoulderMotor->Set(out);
-  if (checkLim(cur - tar, 10))
+  if ((cur < shoulder_min && out > 0) || (cur > shoulder_max && out < 0))
+    out = 0;
+
+  if (checkLim(cur - tar, limit)) {
+    m_shoulderMotor->Set(0);
     return true;
-  return false;
+  } else {
+    out = remapVal(out, maxval);
+    m_shoulderMotor->Set(out);
+    return false;
+  }
 }
 
 bool Appendage::armPID(double tar) {
-  double p = frc::SmartDashboard::GetNumber("arm_p", 0);
-  double i = frc::SmartDashboard::GetNumber("arm_i", 0);
-  double d = frc::SmartDashboard::GetNumber("arm_d", 0);
+  double p = .1, i = 0, d = 0;
+  double limit = 10, maxval = 1;
   Arm_PIDController.SetPID(p, i, d);
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
 
-  if (!unleashThePower) {
-    if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
-      out = 0;
-  }
+  if ((cur < arm_min && out < 0) || (cur > arm_max && out > 0))
+    out = 0;
 
-  m_armMotor->Set(out);
-
-  if (checkLim(cur - tar, 10))
+  if (checkLim(cur - tar, limit)) {
+    m_armMotor->Set(0);
     return true;
-  return false;
+  } else {
+    out = remapVal(out, maxval);
+    m_armMotor->Set(out);
+    return false;
+  }
 }
 
 double Appendage::calculateDistanceToLim() {
@@ -189,34 +195,35 @@ double Appendage::calculateDistanceToLim() {
 
 void Appendage::wrist(double d) {
   double out = remapVal(d, .7);
-  out = deadband(out, 0.05);
+  out = deadband(out, 0.2);
   double cur = wrist_Encoder->GetDistance();
 
   if (!unleashThePower) {
-    if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
+    if ((cur < wrist_min && out > 0) || (cur > wrist_max && out < 0))
       out = 0;
   }
 
-  m_wristMotor->Set(d);
+  m_wristMotor->Set(out);
 }
 
 bool Appendage::wristPID(double tar) {
-  double p = frc::SmartDashboard::GetNumber("wrist_p", 0);
-  double i = frc::SmartDashboard::GetNumber("wrist_i", 0);
-  double d = frc::SmartDashboard::GetNumber("wrist_d", 0);
+  double p = -.01, i = 0, d = 0;
+  double limit = 50, maxval = 1;
   Wrist_PIDController.SetPID(p, i, d);
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
 
-  if (!unleashThePower) {
-    if ((cur < wrist_min && out < 0) || (cur > wrist_max && out > 0))
-      out = 0;
-  }
-  m_wristMotor->Set(out);
+  if ((cur < wrist_min && out > 0) || (cur > wrist_max && out < 0))
+    out = 0;
 
-  if (checkLim(cur - tar, 10))
+  if (checkLim(cur - tar, limit)) {
+    m_wristMotor->Set(0);
     return true;
-  return false;
+  } else {
+    out = remapVal(out, maxval);
+    m_wristMotor->Set(out);
+    return false;
+  }
 }
 
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -271,6 +278,7 @@ bool Appendage::checkEdge() {
  * checks if a sensor is working
  * @param canMotor - name of the can motor
  *        canEncoder - name of the can encoder
+ *        aInput - name of the analog input
  *        last - last value to check
  * @return true - if last is NOT equal to current
  *         false - if last is equal to current
@@ -278,29 +286,63 @@ bool Appendage::checkEdge() {
 bool Appendage::isSensorWorking(rev::CANSparkMax* canMotor,
                                 rev::RelativeEncoder* canEncoder, double last) {
   double cur = 0;
+  bool ret = false;
   if (std::abs(canMotor->GetOutputCurrent()) > 1) {
     cur = canEncoder->GetPosition();
     if (cur != last) {
-      last = cur;
-      return true;
+      ret = true;
     }
   }
   last = cur;
-  return false;
+  return ret;
 }
 
 bool Appendage::isSensorWorking(rev::CANSparkMax* canMotor,
                                 frc::Encoder* frcEncoder, double last) {
   double cur = 0;
+  bool ret = false;
   if (std::abs(canMotor->GetOutputCurrent()) > 1) {
     cur = frcEncoder->GetDistance();
     if (cur != last) {
-      last = cur;
-      return true;
+      ret = true;
     }
   }
   last = cur;
-  return false;
+  return ret;
+}
+
+bool Appendage::isSensorWorking(frc::AnalogInput* aInput, double last) {
+  double cur = 0;
+  bool ret = false;
+  cur = aInput->GetValue();
+  if (cur != last) {
+    ret = true;
+  }
+  last = cur;
+  return ret;
+}
+
+bool Appendage::getArmWorking() {
+  return isSensorWorking(m_armMotor, arm_Encoder, lastArm);
+}
+
+bool Appendage::getShoulderWorking() {
+  return isSensorWorking(m_shoulderMotor, shoulder_Encoder, lastShoulder);
+}
+
+bool Appendage::getWristWorking() {
+  return isSensorWorking(m_wristMotor, wrist_Encoder, lastWrist);
+}
+
+bool Appendage::getAnalogWorking() {
+  bool claw1Working = false, claw2Working = false, ret;
+  claw1Working = isSensorWorking(claw1_a_input, lastClaw1);
+  claw2Working = isSensorWorking(claw2_a_input, lastClaw2);
+  if (claw1Working == true && claw2Working == true)
+    ret = true;
+  if (claw1Working == false || claw2Working == false)
+    ret = false;
+  return ret;
 }
 
 double Appendage::analogToDistance(double i) {

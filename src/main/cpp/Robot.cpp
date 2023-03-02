@@ -44,8 +44,8 @@ void Robot::RobotInit() {
   frc::DriverStation::StartDataLog(frcLog::GetLog());
 
   compressor.EnableDigital();
-  m_swerve.ResetOdometry(
-      frc::Pose2d{5_m, 5_m, 0_deg});  // flipping the robot for field setup
+  //m_swerve.ResetOdometry(
+  //    frc::Pose2d{5_m, 5_m, 0_deg});  // flipping the robot for field setup
   frc::SmartDashboard::PutBoolean("Ignore appendage limits",
                                   m_appendage.unleashThePower);
 }
@@ -95,21 +95,20 @@ void Robot::AutonomousInit() {
   autoState = 0;
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
+  m_swerve.isBlue = isBlue;
   m_appendage.appendageReset(false);
+  m_swerve.currRampPos = Drivetrain::RampPos::floor;
+  m_swerve.crossedramp = false;
+  m_swerve.lastRampSide = Drivetrain::RampPos::downside;
 
   // ---------------------------------- Trajectory Following Auto Section
   // --------------------- Generate trajectory to follow for autonomous Start
   // the timer.
-  m_timer.Start();
+  //m_timer.Start();
 
   // Send Field2d to SmartDashboard.
-  frc::SmartDashboard::PutData(&m_field);
+  //frc::SmartDashboard::PutData(&m_field);
 
-  // Reset the drivetrain's odometry to the starting pose of the trajectory.
-  m_swerve.ResetOdometry(exampleTrajectory.InitialPose());
-
-  // Send our generated trajectory to Field2d.
-  m_field.GetObject("traj")->SetTrajectory(exampleTrajectory);
   // ----------------------------------------------------------------------------------------
 }
 
@@ -145,9 +144,18 @@ void Robot::TeleopInit() {
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
   tarGrid = Grid::humanLeft;
+  tarGamePiece = Robot::GamePiece::cone;
   curFA_Pos_Latch = 0;
+  m_swerve.isBlue = isBlue;
   m_swerve.resetGyro();
+  if (isBlue)
+  m_swerve.ResetOdometry(bluePose[8]);
+  else
   m_swerve.ResetOdometry(redPose[1]);
+
+  m_swerve.currRampPos = Drivetrain::RampPos::floor;
+  m_swerve.crossedramp = false;
+  m_swerve.lastRampSide = Drivetrain::RampPos::downside;
 }
 
 void Robot::TeleopPeriodic() {
@@ -155,6 +163,8 @@ void Robot::TeleopPeriodic() {
   m_appendage.pumpOutSensorVal();
   m_swerve.pumpOutSensorVal();
   // getPowerDistribution();
+  frc::SmartDashboard::PutNumber("Has Game Piece", hasGamePiece);
+  frc::SmartDashboard::PutNumber("Target Game Piece", tarGamePiece);
   frc::SmartDashboard::PutNumber(
       "m_timer",
       m_timer.Get()
@@ -177,11 +187,10 @@ void Robot::TeleopPeriodic() {
     if (curFA_Pos_Latch == 0) {
       std::vector<double> coneCornerXy = cornerXy.Get();
       std::vector<bool> x_orien, y_orien;
-      int length = coneCornerXy.size();
-      frc::SmartDashboard::PutNumber("Corner Arr Length", length);
       std::vector<double> avg = {0.0, 0.0};
-      int i;
-      int idxFA = 0;  // furtherest away point index
+      int i, idxFA = 0,
+             /* furtherest away point index*/ length = coneCornerXy.size();
+      frc::SmartDashboard::PutNumber("Corner Arr Length", length);
       double FADist = 0;
       for (i = 0; i < length;
            i += 2)  // Calculate avg point location from cornerXy
@@ -219,9 +228,7 @@ void Robot::TeleopPeriodic() {
           y_orien.push_back(y > 0);
         }
       }
-      uint y_true = 0;
-      uint y_false = 0;
-      uint j;
+      uint y_true = 0, y_false = 0, j;
       for (j = 0; j < y_orien.size();
            j++) {  // Determine if the furthest point is above or below all
                    // other points in Y direction in cornerXy
@@ -231,18 +238,15 @@ void Robot::TeleopPeriodic() {
           y_false++;
       }
 
-      if (y_false == y_orien.size()) {  // If furthest point is always lt 0 then
-                                        // it is on the bottom
+      if (y_false == y_orien.size())  // If furthest point is always lt 0 then
+                                      // it is on the bottom
         curFA_Pos = Robot::fA_Pos::bot;
-      }
 
-      if (y_true == y_orien.size()) {  // If furthest point is always gt 0 then
-                                       // it is on the top
+      if (y_true == y_orien.size())  // If furthest point is always gt 0 then
+                                     // it is on the top
         curFA_Pos = Robot::fA_Pos::top;
-      }
 
-      uint x_true = 0;
-      uint x_false = 0;
+      uint x_true = 0, x_false = 0;
       for (j = 0; j < x_orien.size();
            j++) {  // Determine if the furthest point is to the left or the
                    // right of all other points in X direction in cornerXy
@@ -252,22 +256,20 @@ void Robot::TeleopPeriodic() {
           x_false++;
       }
 
-      if (x_false == x_orien.size()) {  // If furthest point is always lt 0 then
-                                        // it is on the right
+      if (x_false == x_orien.size())  // If furthest point is always lt 0 then
+                                      // it is on the right
         curFA_Pos = Robot::fA_Pos::right;
-      }
 
-      if (x_true == x_orien.size()) {  // If furthest point is always gt 0 then
-                                       // it is on the left
+      if (x_true == x_orien.size())  // If furthest point is always gt 0 then
+                                     // it is on the left
         curFA_Pos = Robot::fA_Pos::left;
-      }
 
       // For edge case.
       // This sort of works. When rotating to the left form this state there is
       // a bit of an issue when just starting to be able to see the tip of the
       // cone.
-      double tHor_ = table->GetNumber("thor", 0);
-      double tVert_ = table->GetNumber("tvert", 0);
+      double tHor_ = table->GetNumber("thor", 0),
+             tVert_ = table->GetNumber("tvert", 0);
 
       if (curFA_Pos == Robot::fA_Pos::bot || curFA_Pos == Robot::fA_Pos::top) {
         if (std::abs(tHor_ - tVert_) <
@@ -289,8 +291,11 @@ void Robot::TeleopPeriodic() {
   frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   selectGamePiece();
-  // hasGamePiece = m_appendage.isGamePieceInClaw();
-  hasGamePiece = true;
+  /*if (m_appendage.getAnalogWorking()) // Not expected for 1st event
+    hasGamePiece = m_appendage.isGamePieceInClaw();
+  else
+    updateHasGamePiece();*/
+  updateHasGamePiece();
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
@@ -321,16 +326,15 @@ void Robot::TeleopPeriodic() {
       curFA_Pos_Latch = 0;
     }
     // This section is for the auto game piece tracking code.
-    double tx;
-    double tmp = std::sqrt(std::pow(m_controller1.GetLeftX(), 2) +
-                           std::pow(m_controller1.GetLeftY(), 2));
+    double tx, tmp = std::sqrt(std::pow(m_controller1.GetLeftX(), 2) +
+                               std::pow(m_controller1.GetLeftY(), 2));
     if (tarGamePiece == Robot::GamePiece::cube) {  // Cube tracking code
       if (validTarFnd) {
         tx = table->GetNumber("tx", 0.0);
-        tx *= .05;
+        tx *= -.01;
       }
       m_swerve.DriveWithJoystick(tmp, 0, validTarFnd ? tx : 0, false,
-                                 m_controller1.GetLeftBumper() ? true : false);
+                                 m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
 
     } else if (tarGamePiece ==
                Robot::GamePiece::cone) {  // Cone Tracking section
@@ -338,10 +342,10 @@ void Robot::TeleopPeriodic() {
           curFA_Pos == Robot::fA_Pos::top) {  // Cone upright or tip facing
                                               // robot correctly
         tx = table->GetNumber("tx", 0.0);
-        tx *= .05;
+        tx *= -.01;
         m_swerve.DriveWithJoystick(
             tmp, 0, validTarFnd ? tx : 0, false,
-            m_controller1.GetLeftBumper() ? true : false);
+            m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
       } else if (curFA_Pos == Robot::fA_Pos::left ||
                  curFA_Pos == Robot::fA_Pos::right) {  // Cone tipped over, but
                                                        // no oriented correctly.
@@ -350,38 +354,37 @@ void Robot::TeleopPeriodic() {
         double ta = table->GetNumber("ta", 0.0);
         if (ta < 1) {  // Approach the cone until it is a certain size in image.
           tx = table->GetNumber("tx", 0.0);
-          tx *= .05;
+          tx *= -.01;
           m_swerve.DriveWithJoystick(
               tmp, 0, validTarFnd ? tx : 0, false,
-              m_controller1.GetLeftBumper() ? true : false);
+              m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
         } else {  // Rotate around the cone either left or right.
           bool leftRight = false;
           tx = table->GetNumber("tx", 0.0);
-          tx *= .05;
+          tx *= -.01;
           if (curFA_Pos == Robot::fA_Pos::left)
             leftRight = false;
           else if (curFA_Pos == Robot::fA_Pos::right)
             leftRight = true;
           m_swerve.DriveWithJoystick(
               0, leftRight ? -1 * tmp : 1 * tmp, validTarFnd ? tx : 0, false,
-              m_controller1.GetLeftBumper() ? true : false);
+              m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
         }
       }
     }
-    /* else if (m_controller1.GetBackButton()) {
-       if (m_controller1.GetBackButtonPressed()) {
-         m_swerve.onRamp = false;
-       }
+    else if (m_controller1.GetBackButton()) {
+       //if (m_controller1.GetBackButtonPressed()) { //Removed incase button is let go and rehit during a match. We reset at start of teleop
+       //  m_swerve.onRamp = false;
+       //}
        m_swerve.autoBalance();
-     }*/
+     }
   } else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
     m_swerve.DriveWithJoystick(
         m_controller1.GetLeftY(), m_controller1.GetLeftX(),
         m_controller1.GetRightX(), true,
-        m_controller1.GetLeftBumper() || m_appendage.getArmExtended() ? true
-                                                                      : false);
+        m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
   }
   // ---- End Drive Code -----------------------------------------------
 
@@ -423,27 +426,110 @@ void Robot::TeleopPeriodic() {
       m_appendage.backRollerOff();
       m_appendage.pneumaticsOut();
     }
-    if (curFA_Pos != Robot::fA_Pos::top)
-      m_appendage.wristPID(1);  // angle the wrist when the cone is tipped
   }
 
-  if (m_controller2.GetAButton()) {
-    if (m_controller2.GetRightBumper()) {
-      m_appendage.armPID(1);
-    } else {
+// --------- All possible Arm Positions ---------------------
+  if (m_controller2.GetAButton() && hasGamePiece) {
+    // Floor Level Drop Off
+    if (m_controller2.GetRightBumper()) 
       m_appendage.armPID(0);
+     else
+      m_appendage.armPID(0);
+   
+    m_appendage.shoulderPID(-1994);  
+    
+    if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
+      m_appendage.wristPID(2100);
+     else 
+      m_appendage.wristPID(1326);
+    
+  } else if (m_controller2.GetBButton() && hasGamePiece) {
+    // Mid Level Scoring Location
+    if (m_controller2.GetRightBumper()) 
+      m_appendage.armPID(0);
+    else 
+      m_appendage.armPID(0);
+    
+    if (tarGamePiece == Robot::GamePiece::cone)
+      m_appendage.shoulderPID(-949);  
+    else
+      m_appendage.shoulderPID(-881);  
+
+    m_appendage.wristPID(2100);
+
+  } else if (m_controller2.GetYButton() && hasGamePiece) {
+    // Upper Level Scoring
+    if (tarGamePiece == Robot::GamePiece::cone) {
+      if (m_controller2.GetRightBumper()) 
+        m_appendage.armPID(-158);
+      else 
+        m_appendage.armPID(0);
+      
+      m_appendage.shoulderPID(-716);  
+
+    } else {
+      if (m_controller2.GetRightBumper()) 
+        m_appendage.armPID(-131);
+      else 
+        m_appendage.armPID(0);
+      
+      m_appendage.shoulderPID(-683);  
     }
-    m_appendage.shoulderPID(1);  // bot
-    m_appendage.wristPID(1);
-  } else if (m_controller2.GetBButton()) {
-    m_appendage.armPID(1);
-    m_appendage.shoulderPID(1);  // mid
-    m_appendage.wristPID(1);
-  } else if (m_controller2.GetYButton()) {
-    m_appendage.armPID(1);
-    m_appendage.shoulderPID(1);  // top
-    m_appendage.wristPID(1);
-  } else if (m_controller2.GetXButton()) {
+
+    m_appendage.wristPID(2100);
+  } 
+  
+  else if (m_controller2.GetAButton() && !hasGamePiece) {
+    // Floor Level Pickup
+    if (m_controller2.GetRightBumper()) 
+      m_appendage.armPID(0);
+     else
+      m_appendage.armPID(0);
+   
+    m_appendage.shoulderPID(-1994);  
+    
+    if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
+      m_appendage.wristPID(2050);
+     else 
+      m_appendage.wristPID(1539);
+    
+  } else if (m_controller2.GetBButton() && !hasGamePiece) {
+    // Side Human Player Loading Location
+    if (m_controller2.GetRightBumper()) 
+      m_appendage.armPID(0);
+    else 
+      m_appendage.armPID(0);
+    
+    if (tarGamePiece == Robot::GamePiece::cone)
+      m_appendage.shoulderPID(-1250);  
+    else
+      m_appendage.shoulderPID(-881);  
+
+    m_appendage.wristPID(2100);
+
+  } else if (m_controller2.GetYButton() && !hasGamePiece) {
+    // End field Human Player Loading Location
+    if (tarGamePiece == Robot::GamePiece::cone) {
+      if (m_controller2.GetRightBumper()) 
+        m_appendage.armPID(-188);
+      else 
+        m_appendage.armPID(0);
+      
+      m_appendage.shoulderPID(-1250);  
+
+    } else {
+      if (m_controller2.GetRightBumper()) 
+        m_appendage.armPID((0));
+      else 
+        m_appendage.armPID(0);
+      
+      m_appendage.shoulderPID(-683);  
+    }
+
+    m_appendage.wristPID(200);
+  }  
+  else if (m_controller2.GetXButton()) {
+    // Store Position possible from with or without gamepiece
     m_appendage.armPID(0);
     m_appendage.shoulderPID(0);  // Stored Position
     m_appendage.wristPID(0);
@@ -466,6 +552,8 @@ void Robot::TeleopPeriodic() {
 
     m_appendage.wrist(m_controller2.GetLeftX());
   }
+
+  // --------- End All possible Arm Positions ---------------------
   // ----------- End Appendage Code -----------------------------------
   handleLedModes(validTarFnd, hasGamePiece, tarGamePiece,
                  m_appendage.checkEdge());
@@ -528,7 +616,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
       pathplanner::PathPoint(
           isBlue ? bluePose[slot].Translation() : redPose[slot].Translation(),
           isBlue ? bluePose[slot].Rotation() : redPose[slot].Rotation(),
-          frc::Rotation2d(0_deg)  // position, heading(direction of travel)
+          isBlue ? frc::Rotation2d(180_deg) : frc::Rotation2d(0_deg)  // position, heading(direction of travel)
                                   // holonomic rotation, optional velocity in
                                   // the current heading of travel in mps
           ));
@@ -630,11 +718,11 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
 void Robot::getPowerDistribution() {
   frc::PowerDistribution bd =
       frc::PowerDistribution(20, frc::PowerDistribution::ModuleType::kRev);
-  pumpOut("intake motor 1 current", bd.GetCurrent(14));
-  pumpOut("intake motor 2 current", bd.GetCurrent(15));
-  pumpOut("arm motor current", bd.GetCurrent(16));
-  pumpOut("shoulder motor current", bd.GetCurrent(17));
-  pumpOut("wrist motor current", bd.GetCurrent(18));
+  pumpOut("intake motor 1 current", bd.GetCurrent(4));
+  pumpOut("intake motor 2 current", bd.GetCurrent(5));
+  pumpOut("arm motor current", bd.GetCurrent(0));
+  pumpOut("shoulder motor current", bd.GetCurrent(12));
+  pumpOut("wrist motor current", bd.GetCurrent(3));
 
   pumpOut("drive motor BR 1", bd.GetCurrent(11));
   pumpOut("drive motor BR 2", bd.GetCurrent(10));
@@ -648,10 +736,10 @@ void Robot::getPowerDistribution() {
 
 void Robot::selectGamePiece() {
   // Set target piece status variable
-  /*if (m_controller2.GetBackButton())
+  if (m_controller2.GetBackButton())
     tarGamePiece = GamePiece::cone;
   else if (m_controller2.GetStartButton())
-    tarGamePiece = GamePiece::cube;*/
+    tarGamePiece = GamePiece::cube;
 }
 
 void Robot::selectScoringGrid() {
@@ -674,10 +762,14 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, false, false);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(1);
-      bool armReady = m_appendage.armPID(1);
-      bool shoulderReady = m_appendage.shoulderPID(1);
-
+      bool wristReady = m_appendage.wristPID(2100);
+      bool shoulderReady = m_appendage.shoulderPID(-716);
+      bool armReady = false;
+      if(wristReady && shoulderReady)
+        armReady = m_appendage.armPID(-168);
+      else
+        m_appendage.armPID(0);
+      
       if (wristReady && armReady && shoulderReady) {
         m_timer.Reset();
         m_timer.Start();
@@ -687,7 +779,12 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 1: {
-      m_appendage.appendageReset(true);
+      m_appendage.wristPID(2100);
+      m_appendage.shoulderPID(-716);
+      m_appendage.armPID(-168);
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -702,7 +799,17 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
-      m_appendage.armPID(-1);
+      bool armReady = m_appendage.armPID(0);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      if(armReady){
+      m_appendage.wristPID(-1994);
+      m_appendage.shoulderPID(2050);
+      }
+      else{
+      m_appendage.wristPID(2100);
+      m_appendage.shoulderPID(-716);
+      }
       driveWithTraj(true);
       EstimatePose(0);
 
@@ -716,7 +823,8 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       }
       firstTime = false;
       m_appendage.armPID(0);
-      m_appendage.shoulderPID(-1);
+      m_appendage.wristPID(-1994);
+      m_appendage.shoulderPID(2050);
       m_appendage.frontRollerIn();
       m_appendage.backRollerIn();
       m_appendage.pneumaticsIn();
@@ -730,12 +838,17 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       bool validTarFnd = validTarget.Get() > 0;
       if (validTarFnd) {
         tx = table->GetNumber("tx", 0.0);
-        tx *= .05;
+        tx *= -.01;
       }
-      m_swerve.DriveWithJoystick(-.8, 0, validTarFnd ? tx : 0, false, false);
+      m_swerve.DriveWithJoystick(-.6, 0, validTarFnd ? tx : 0, false, false);
+      m_appendage.armPID(0);
+      m_appendage.wristPID(-1994);
+      m_appendage.shoulderPID(2050);
+      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn();
+      m_appendage.pneumaticsIn();
       EstimatePose(2);
-      if (m_appendage.isGamePieceInClaw() || m_timer.Get().value() > 2 ||
-          isPassCenterLine()) {
+      if (m_timer.Get().value() > 1.5 || isPassCenterLine()) {
         autoState++;
         m_timer.Reset();
         firstTime = true;
@@ -750,7 +863,8 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       }
       firstTime = false;
       m_appendage.armPID(0);
-      m_appendage.shoulderPID(1);
+      m_appendage.wristPID(0);
+      m_appendage.shoulderPID(0);
       m_appendage.frontRollerOff();
       m_appendage.backRollerOff();
       m_appendage.pneumaticsIn();
@@ -764,8 +878,11 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
-      m_appendage.arm(0);
-      m_appendage.shoulderPID(1);
+      m_appendage.armPID(0);
+      m_appendage.wristPID(0);
+      m_appendage.shoulderPID(0);
+      m_appendage.frontRollerOff();
+      m_appendage.backRollerOff();
       driveWithTraj(true);
       EstimatePose(0);
 
@@ -774,7 +891,16 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
     case 7: {
       m_swerve.DriveWithJoystick(0, 0, 0, false, false);
       EstimatePose(0);
-      if (m_appendage.armPID(1)) {
+      
+      bool wristReady = m_appendage.wristPID(2100);
+      bool shoulderReady = m_appendage.shoulderPID(-683);
+      bool armReady = false;
+      if (wristReady && shoulderReady)
+        armReady = m_appendage.armPID(-131);
+      else
+        m_appendage.armPID(0);
+
+      if (armReady) {
         autoState++;
         m_timer.Reset();
         firstTime = true;
@@ -782,6 +908,9 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 8: {
+      m_appendage.wristPID(2100);
+      m_appendage.shoulderPID(-683);
+      m_appendage.armPID(-131);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
       m_swerve.DriveWithJoystick(0, 0, 0, false, false);
@@ -797,7 +926,9 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
     default: {
       m_swerve.DriveWithJoystick(0, 0, 0, false, false);
       EstimatePose(0);
-      m_appendage.armPID(1);
+      m_appendage.wristPID(0);
+      m_appendage.shoulderPID(0);
+      m_appendage.armPID(0);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
       break;
@@ -948,9 +1079,13 @@ void Robot::driveToCS(bool isBlue) {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, false, false);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(1);
-      bool armReady = m_appendage.armPID(1);
-      bool shoulderReady = m_appendage.shoulderPID(1);
+      bool wristReady = m_appendage.wristPID(2100);
+      bool shoulderReady = m_appendage.shoulderPID(-716);
+      bool armReady = false;
+      if(wristReady && shoulderReady)
+        armReady = m_appendage.armPID(-168);
+      else
+        m_appendage.armPID(0);
 
       if (wristReady && armReady && shoulderReady) {
         m_timer.Reset();
@@ -961,7 +1096,11 @@ void Robot::driveToCS(bool isBlue) {
       break;
     }
     case 1: {
-      m_appendage.appendageReset(true);
+      m_appendage.wristPID(2100);
+      m_appendage.shoulderPID(-716);
+      m_appendage.armPID(-168);
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -971,28 +1110,64 @@ void Robot::driveToCS(bool isBlue) {
       break;
     }
     case 2: {
+      bool armReady = m_appendage.armPID(0);
+      bool wristReady = false;
+      bool shoulderReady = false;
+      if(armReady){
+      wristReady = m_appendage.wristPID(0);
+      shoulderReady = m_appendage.shoulderPID(0);
+      }
+      else{
+        m_appendage.wristPID(2100);
+        m_appendage.shoulderPID(-716);
+      }
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      EstimatePose(0);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 3: {
       if (firstTime) {
         trajectoryPP_ =
             pathGenerate(isBlue ? blueCharge : redCharge);  // mid of the cs
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
-      m_appendage.armPID(-1);
+      m_appendage.wristPID(0);
+      m_appendage.shoulderPID(0);
+      m_appendage.armPID(0);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
       driveWithTraj(true);
       EstimatePose(0);
-      m_appendage.backClawPneumaticsOut();
       break;
     }
-    case 3:
+    case 4:
       m_swerve.autoBalance();
+      EstimatePose(0);
       break;
     default: {
       m_swerve.DriveWithJoystick(0, 0, 0, false, false);
       EstimatePose(0);
-      m_appendage.armPID(1);
+      m_appendage.wristPID(0);
+      m_appendage.shoulderPID(0);
+      m_appendage.armPID(0);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
       break;
     }
   }
+}
+
+void Robot::updateHasGamePiece() {
+  int dPadAng = m_controller2.GetPOV();
+  if (dPadAng > 75 && dPadAng < 105)
+    hasGamePiece = true;
+  else if (dPadAng > 255 && dPadAng < 285)
+    hasGamePiece = false;
 }

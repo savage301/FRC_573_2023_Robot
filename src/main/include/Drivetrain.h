@@ -36,6 +36,7 @@ class Drivetrain {
 
   void ResetOdometry(const frc::Pose2d& pose);
   frc::ChassisSpeeds GetRobotVelocity();
+  bool isBlue = false;
 
   frc::Pose2d GetPose() const;
 
@@ -63,7 +64,15 @@ class Drivetrain {
 
   void autoBalance();
 
-  bool onRamp = false;
+  //bool onRamp = false;
+
+  enum RampPos { floor = 0, upward = 1, balanced = 2, downside = 3, floorback = 4 };
+
+  int currRampPos;
+
+  int lastRampSide;
+
+  bool crossedramp;
 
   void pumpOutSensorVal();
 

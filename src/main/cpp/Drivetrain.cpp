@@ -123,28 +123,60 @@ void Drivetrain::setTrajCon() {
 void Drivetrain::autoBalance() {
   double gV[3];
   // change these two
-  double upTheRampZ = 0;
-  double downTheRampZ = 0;
-  double balancedZ = 0.99;
+  double RampZ = .7;
+  double balancedZ = 0.9;
   if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK) {
     // vector towards the ground
     // frc::SmartDashboard::PutNumber("GV Gravity Vector X", gV[0]);
     // frc::SmartDashboard::PutNumber("GV Gravity Vector Y", gV[1]);
     frc::SmartDashboard::PutNumber("GV Gravity Vector Z", gV[2]);
   }
-  if (!onRamp)  // start on the floor - drive forward
-    DriveWithJoystick(.7, 0, 0, true, false);
-  if (gV[2] < upTheRampZ)  // on the upward ramp
-  {
-    onRamp = true;
-    // balanced
-  } else if (gV[2] > balancedZ) {
-    DriveWithJoystick(0, 0, 0, true, false);
-    onRamp = false;
-    // on the downward ramp
-  } else if (gV[2] < downTheRampZ) {
-    onRamp = true;
+// -----Cross Ramp Section ---------------------------
+  if (currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) < RampZ && !crossedramp){
+    currRampPos = Drivetrain::RampPos::upward;
+    lastRampSide = Drivetrain::RampPos::upward;
     DriveWithJoystick(-.7, 0, 0, true, false);
+  }
+
+  else if (currRampPos == Drivetrain::RampPos::upward && abs(gV[2]) > balancedZ && !crossedramp){
+    currRampPos = Drivetrain::RampPos::balanced;
+    DriveWithJoystick(-.7, 0, 0, true, false);
+  }
+
+  else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && !crossedramp){
+    currRampPos = Drivetrain::RampPos::downside;
+    lastRampSide = Drivetrain::RampPos::downside;
+    DriveWithJoystick(-.7, 0, 0, true, false);
+  }
+
+  else if (currRampPos == Drivetrain::RampPos::upward && abs(gV[2]) > balancedZ && !crossedramp){
+    currRampPos = Drivetrain::RampPos::floorback;
+    DriveWithJoystick(0.7, 0, 0, true, false);
+    crossedramp = true;
+  }
+
+  // --------------------------------------------------------------------------------
+  // - Balance Section --------------------------------------------
+  else if (currRampPos == Drivetrain::RampPos::floorback && abs(gV[2]) < RampZ && crossedramp){
+    currRampPos = Drivetrain::RampPos::downside;
+    lastRampSide = Drivetrain::RampPos::downside;
+    DriveWithJoystick(0.5, 0, 0, true, false);
+  }
+
+  else if ((currRampPos == Drivetrain::RampPos::downside || currRampPos == Drivetrain::RampPos::upward) && abs(gV[2]) > balancedZ && crossedramp){
+    currRampPos = Drivetrain::RampPos::balanced;
+    DriveWithJoystick(0, 0, 0, true, false);
+  }
+
+  else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && crossedramp && lastRampSide == Drivetrain::RampPos::downside){
+    currRampPos = Drivetrain::RampPos::upward;
+    lastRampSide = Drivetrain::RampPos::upward;
+    DriveWithJoystick(-.5, 0, 0, true, false);
+  }
+   else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && crossedramp && lastRampSide == Drivetrain::RampPos::upward){
+    currRampPos = Drivetrain::RampPos::downside;
+    lastRampSide = Drivetrain::RampPos::downside;
+    DriveWithJoystick(0.5, 0, 0, true, false);
   }
 }
 
