@@ -95,6 +95,7 @@ void Robot::AutonomousInit() {
   autoState = 0;
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
+  m_swerve.isBlue = isBlue;
   m_appendage.appendageReset(false);
   m_swerve.currRampPos = Drivetrain::RampPos::floor;
   m_swerve.crossedramp = false;
@@ -145,8 +146,13 @@ void Robot::TeleopInit() {
   tarGrid = Grid::humanLeft;
   tarGamePiece = Robot::GamePiece::cone;
   curFA_Pos_Latch = 0;
+  m_swerve.isBlue = isBlue;
   m_swerve.resetGyro();
+  if (isBlue)
+  m_swerve.ResetOdometry(bluePose[8]);
+  else
   m_swerve.ResetOdometry(redPose[1]);
+
   m_swerve.currRampPos = Drivetrain::RampPos::floor;
   m_swerve.crossedramp = false;
   m_swerve.lastRampSide = Drivetrain::RampPos::downside;
@@ -325,7 +331,7 @@ void Robot::TeleopPeriodic() {
     if (tarGamePiece == Robot::GamePiece::cube) {  // Cube tracking code
       if (validTarFnd) {
         tx = table->GetNumber("tx", 0.0);
-        tx *= -.05;
+        tx *= -.01;
       }
       m_swerve.DriveWithJoystick(tmp, 0, validTarFnd ? tx : 0, false,
                                  m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
@@ -336,7 +342,7 @@ void Robot::TeleopPeriodic() {
           curFA_Pos == Robot::fA_Pos::top) {  // Cone upright or tip facing
                                               // robot correctly
         tx = table->GetNumber("tx", 0.0);
-        tx *= -.05;
+        tx *= -.01;
         m_swerve.DriveWithJoystick(
             tmp, 0, validTarFnd ? tx : 0, false,
             m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
@@ -348,14 +354,14 @@ void Robot::TeleopPeriodic() {
         double ta = table->GetNumber("ta", 0.0);
         if (ta < 1) {  // Approach the cone until it is a certain size in image.
           tx = table->GetNumber("tx", 0.0);
-          tx *= -.05;
+          tx *= -.01;
           m_swerve.DriveWithJoystick(
               tmp, 0, validTarFnd ? tx : 0, false,
               m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
         } else {  // Rotate around the cone either left or right.
           bool leftRight = false;
           tx = table->GetNumber("tx", 0.0);
-          tx *= -.05;
+          tx *= -.01;
           if (curFA_Pos == Robot::fA_Pos::left)
             leftRight = false;
           else if (curFA_Pos == Robot::fA_Pos::right)
@@ -445,7 +451,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.armPID(0);
     
     if (tarGamePiece == Robot::GamePiece::cone)
-      m_appendage.shoulderPID(-1049);  
+      m_appendage.shoulderPID(-949);  
     else
       m_appendage.shoulderPID(-881);  
 
@@ -455,7 +461,7 @@ void Robot::TeleopPeriodic() {
     // Upper Level Scoring
     if (tarGamePiece == Robot::GamePiece::cone) {
       if (m_controller2.GetRightBumper()) 
-        m_appendage.armPID(-168);
+        m_appendage.armPID(-158);
       else 
         m_appendage.armPID(0);
       
@@ -610,7 +616,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
       pathplanner::PathPoint(
           isBlue ? bluePose[slot].Translation() : redPose[slot].Translation(),
           isBlue ? bluePose[slot].Rotation() : redPose[slot].Rotation(),
-          frc::Rotation2d(0_deg)  // position, heading(direction of travel)
+          isBlue ? frc::Rotation2d(180_deg) : frc::Rotation2d(0_deg)  // position, heading(direction of travel)
                                   // holonomic rotation, optional velocity in
                                   // the current heading of travel in mps
           ));
@@ -832,7 +838,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       bool validTarFnd = validTarget.Get() > 0;
       if (validTarFnd) {
         tx = table->GetNumber("tx", 0.0);
-        tx *= -.05;
+        tx *= -.01;
       }
       m_swerve.DriveWithJoystick(-.6, 0, validTarFnd ? tx : 0, false, false);
       m_appendage.armPID(0);

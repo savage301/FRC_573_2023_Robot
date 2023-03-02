@@ -36,6 +36,7 @@ class Drivetrain {
 
   void ResetOdometry(const frc::Pose2d& pose);
   frc::ChassisSpeeds GetRobotVelocity();
+  bool isBlue = false;
 
   frc::Pose2d GetPose() const;
 
