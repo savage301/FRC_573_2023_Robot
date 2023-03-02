@@ -132,7 +132,12 @@ void Drivetrain::autoBalance() {
     frc::SmartDashboard::PutNumber("GV Gravity Vector Z", gV[2]);
   }
 // -----Cross Ramp Section ---------------------------
-  if (currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) < RampZ && !crossedramp){
+
+  if(currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) > RampZ && !crossedramp){
+      DriveWithJoystick(-.7, 0, 0, true, false);
+      currRampPos = Drivetrain::RampPos::floor;
+  }
+  else if (currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) < RampZ && !crossedramp){
     currRampPos = Drivetrain::RampPos::upward;
     lastRampSide = Drivetrain::RampPos::upward;
     DriveWithJoystick(-.7, 0, 0, true, false);
@@ -149,7 +154,7 @@ void Drivetrain::autoBalance() {
     DriveWithJoystick(-.7, 0, 0, true, false);
   }
 
-  else if (currRampPos == Drivetrain::RampPos::upward && abs(gV[2]) > balancedZ && !crossedramp){
+  else if (currRampPos == Drivetrain::RampPos::downside && abs(gV[2]) > balancedZ && !crossedramp){
     currRampPos = Drivetrain::RampPos::floorback;
     DriveWithJoystick(0.7, 0, 0, true, false);
     crossedramp = true;

@@ -72,6 +72,9 @@ void Robot::RobotPeriodic() {}
  * make sure to add them to the chooser code above as well.
  */
 void Robot::AutonomousInit() {
+
+m_autoSelected = m_chooser.GetSelected();
+
   // reset pos based on selector
   if (m_autoSelected == kAutonPaths1)
     // start with 6 / 2
@@ -87,9 +90,8 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(redPose[3]);
   else if (m_autoSelected == kAutonPaths6)
     m_swerve.ResetOdometry(bluePose[3]);
-  m_autoSelected = m_chooser.GetSelected();
-  m_autoSelected =
-      frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
+  
+  //m_autoSelected =frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
   // fmt::print("Auto selected: {}\n", m_autoSelected);
 
   autoState = 0;
@@ -113,11 +115,12 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-  /*if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }*/
+  
+m_autoSelected = m_chooser.GetSelected();
+
+frc::SmartDashboard::PutString("Selected Auto", m_autoSelected);
+frc::SmartDashboard::PutNumber("AutoState", autoState);
+
   if (m_autoSelected == kAutonPaths1)  // update init pose?
     autonomousPaths(1);
   else if (m_autoSelected == kAutonPaths2)
@@ -126,16 +129,11 @@ void Robot::AutonomousPeriodic() {
     autonomousPaths(3);
   else if (m_autoSelected == kAutonPaths4)
     autonomousPaths(4);
-
   else if (m_autoSelected == kAutonPaths5)
     driveToCS(false);
   else if (m_autoSelected == kAutonPaths6)
     driveToCS(true);
 
-  frc::SmartDashboard::PutNumber(
-      "m_timer",
-      m_timer.Get()
-          .value());  // This will allow us to debug the auto drive code.
 }
 
 void Robot::TeleopInit() {
@@ -148,10 +146,12 @@ void Robot::TeleopInit() {
   curFA_Pos_Latch = 0;
   m_swerve.isBlue = isBlue;
   m_swerve.resetGyro();
+  //-------------This chunk needs to be commented out for match play taken care of in auton
   if (isBlue)
   m_swerve.ResetOdometry(bluePose[8]);
   else
   m_swerve.ResetOdometry(redPose[1]);
+  // -------------------------------------
 
   m_swerve.currRampPos = Drivetrain::RampPos::floor;
   m_swerve.crossedramp = false;
@@ -165,11 +165,12 @@ void Robot::TeleopPeriodic() {
   // getPowerDistribution();
   frc::SmartDashboard::PutNumber("Has Game Piece", hasGamePiece);
   frc::SmartDashboard::PutNumber("Target Game Piece", tarGamePiece);
-  frc::SmartDashboard::PutNumber(
+  /*frc::SmartDashboard::PutNumber(
       "m_timer",
       m_timer.Get()
-          .value());  // This will allow us to debug the auto drive code.
-  if (m_controller1.GetLeftBumper())
+          .value());  // This will allow us to debug the auto drive code.*/
+  // Removed as these claws are no longer being used
+  /*if (m_controller1.GetLeftBumper())
     m_appendage.frontClawPneumaticsOut();
   else
     m_appendage.frontClawPneumaticsIn();
@@ -177,7 +178,7 @@ void Robot::TeleopPeriodic() {
   if (m_controller1.GetRightBumper())
     m_appendage.backClawPneumaticsOut();
   else
-    m_appendage.backClawPneumaticsIn();
+    m_appendage.backClawPneumaticsIn();*/
 
   bool validTarFnd = validTarget.Get() > 0;
 
@@ -373,9 +374,6 @@ void Robot::TeleopPeriodic() {
       }
     }
     else if (m_controller1.GetBackButton()) {
-       //if (m_controller1.GetBackButtonPressed()) { //Removed incase button is let go and rehit during a match. We reset at start of teleop
-       //  m_swerve.onRamp = false;
-       //}
        m_swerve.autoBalance();
      }
   } else {

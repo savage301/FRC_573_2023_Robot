@@ -113,7 +113,7 @@ class Robot : public frc::TimedRobot {
   frc::Compressor compressor =
       frc::Compressor(19, frc::PneumaticsModuleType::CTREPCM);
 
-  int autoState = 0;
+  int autoState;
   bool firstTime;
 
   std::shared_ptr<nt::NetworkTable> table;
