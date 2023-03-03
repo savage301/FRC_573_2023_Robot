@@ -25,6 +25,8 @@ void Robot::RobotInit() {
   addToChooser(kAutonPaths2);
   addToChooser(kAutonPaths3);
   addToChooser(kAutonPaths4);
+  addToChooser(kAutonPaths5);
+  addToChooser(kAutonPaths6);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
@@ -145,12 +147,13 @@ void Robot::TeleopInit() {
   tarGamePiece = Robot::GamePiece::cone;
   curFA_Pos_Latch = 0;
   m_swerve.isBlue = isBlue;
-  m_swerve.resetGyro();
   //-------------This chunk needs to be commented out for match play taken care of in auton
+  /*m_swerve.resetGyro();
   if (isBlue)
   m_swerve.ResetOdometry(bluePose[8]);
   else
   m_swerve.ResetOdometry(redPose[1]);
+  */
   // -------------------------------------
 
   m_swerve.currRampPos = Drivetrain::RampPos::floor;
@@ -373,10 +376,10 @@ void Robot::TeleopPeriodic() {
         }
       }
     }
-    else if (m_controller1.GetBackButton()) {
+    
+  } else if (m_controller1.GetStartButton()) {
        m_swerve.autoBalance();
-     }
-  } else {
+     }else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
     m_swerve.DriveWithJoystick(
@@ -696,20 +699,16 @@ void Robot::driveWithTraj(bool auton) {
 #define setLeds(x) m_leds.led_control(x)
 void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
                            int tarGamePiece, bool isEdgeClose) {
-  if (isEdgeClose) {
-    if (isGamePieceAcquired) {
+    if (isGamePieceAcquired)
       setLeds("Green");
-      if (isGamePiece) {
-        setLeds("White");
-        if (tarGamePiece == Robot::GamePiece::cone)
-          setLeds("Yellow");
-        else if (tarGamePiece == Robot::GamePiece::cube)
-          setLeds("Purple");
-      }
-    }
-  } else {
-    setLeds("Black");
-  }
+    else if (isGamePiece)
+      setLeds("White");
+    else if (tarGamePiece == Robot::GamePiece::cone)
+      setLeds("Yellow");
+    else if (tarGamePiece == Robot::GamePiece::cube)
+       setLeds("Purple");
+    else
+       setLeds("Black");
 }
 
 #define pumpOut frc::SmartDashboard::PutNumber
@@ -831,6 +830,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 4: {
+      if (0) {
       table->PutNumber("pipeline", 2);  // Cube Pipeline
       double tx;
       bool validTarFnd = validTarget.Get() > 0;
@@ -851,6 +851,10 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
         m_timer.Reset();
         firstTime = true;
       }
+      }
+        autoState++;
+        m_timer.Reset();
+        firstTime = true;
       break;
     }
     case 5: {

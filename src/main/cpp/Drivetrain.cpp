@@ -125,6 +125,10 @@ void Drivetrain::autoBalance() {
   // change these two
   double RampZ = .7;
   double balancedZ = 0.9;
+   units::meters_per_second_t fastSpeed = 1.5_mps;
+   units::meters_per_second_t slowSpeed = 1_mps;
+   units::meters_per_second_t zeroSpeed = 0_mps; 
+   units::radians_per_second_t zeroSpeedrot{0}; 
   if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK) {
     // vector towards the ground
     // frc::SmartDashboard::PutNumber("GV Gravity Vector X", gV[0]);
@@ -134,29 +138,29 @@ void Drivetrain::autoBalance() {
 // -----Cross Ramp Section ---------------------------
 
   if(currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) > RampZ && !crossedramp){
-      DriveWithJoystick(-.7, 0, 0, true, false);
+    Drive(-fastSpeed, zeroSpeed, zeroSpeedrot, true);
       currRampPos = Drivetrain::RampPos::floor;
   }
   else if (currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) < RampZ && !crossedramp){
     currRampPos = Drivetrain::RampPos::upward;
     lastRampSide = Drivetrain::RampPos::upward;
-    DriveWithJoystick(-.7, 0, 0, true, false);
+    Drive(-fastSpeed, zeroSpeed, zeroSpeedrot, true);
   }
 
   else if (currRampPos == Drivetrain::RampPos::upward && abs(gV[2]) > balancedZ && !crossedramp){
     currRampPos = Drivetrain::RampPos::balanced;
-    DriveWithJoystick(-.7, 0, 0, true, false);
+    Drive(-fastSpeed, zeroSpeed, zeroSpeedrot, true);
   }
 
   else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && !crossedramp){
     currRampPos = Drivetrain::RampPos::downside;
     lastRampSide = Drivetrain::RampPos::downside;
-    DriveWithJoystick(-.7, 0, 0, true, false);
+    Drive(-fastSpeed, zeroSpeed, zeroSpeedrot, true);
   }
 
   else if (currRampPos == Drivetrain::RampPos::downside && abs(gV[2]) > balancedZ && !crossedramp){
     currRampPos = Drivetrain::RampPos::floorback;
-    DriveWithJoystick(0.7, 0, 0, true, false);
+    Drive(fastSpeed, zeroSpeed, zeroSpeedrot, true);
     crossedramp = true;
   }
 
@@ -165,23 +169,23 @@ void Drivetrain::autoBalance() {
   else if (currRampPos == Drivetrain::RampPos::floorback && abs(gV[2]) < RampZ && crossedramp){
     currRampPos = Drivetrain::RampPos::downside;
     lastRampSide = Drivetrain::RampPos::downside;
-    DriveWithJoystick(0.5, 0, 0, true, false);
+    Drive(slowSpeed, zeroSpeed, zeroSpeedrot, true);
   }
 
   else if ((currRampPos == Drivetrain::RampPos::downside || currRampPos == Drivetrain::RampPos::upward) && abs(gV[2]) > balancedZ && crossedramp){
     currRampPos = Drivetrain::RampPos::balanced;
-    DriveWithJoystick(0, 0, 0, true, false);
+    Drive(zeroSpeed, zeroSpeed, zeroSpeedrot, true);
   }
 
   else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && crossedramp && lastRampSide == Drivetrain::RampPos::downside){
     currRampPos = Drivetrain::RampPos::upward;
     lastRampSide = Drivetrain::RampPos::upward;
-    DriveWithJoystick(-.5, 0, 0, true, false);
+    Drive(-slowSpeed, zeroSpeed, zeroSpeedrot, true);
   }
    else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && crossedramp && lastRampSide == Drivetrain::RampPos::upward){
     currRampPos = Drivetrain::RampPos::downside;
     lastRampSide = Drivetrain::RampPos::downside;
-    DriveWithJoystick(0.5, 0, 0, true, false);
+    Drive(slowSpeed, zeroSpeed, zeroSpeedrot, true);
   }
 }
 

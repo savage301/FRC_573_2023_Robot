@@ -9,7 +9,7 @@
 
 Led::Led() {
   // Define CAN and PWM Ids used in Led here
-  int LedID = 0;
+  int LedID = 9;
 
   // Define motors, sensors, and pneumatics here
   m_leds = new frc::Spark(LedID);

@@ -139,6 +139,7 @@ bool Appendage::checkLim(double err, double lim) {
 bool Appendage::shoulderPID(double tar) {
   double p = -.005, i = 0, d = 0;
   double limit = 10, maxval = .7;
+  double outlimit = 50;
   Shoulder_PIDController.SetPID(p, i, d);
   double cur = shoulder_Encoder->GetDistance();
   double out = Shoulder_PIDController.Calculate(cur, tar);
@@ -148,17 +149,21 @@ bool Appendage::shoulderPID(double tar) {
 
   if (checkLim(cur - tar, limit)) {
     m_shoulderMotor->Set(0);
-    return true;
   } else {
     out = remapVal(out, maxval);
     m_shoulderMotor->Set(out);
-    return false;
   }
+
+  if (checkLim(cur-tar, outlimit))
+    return true;
+  else
+    return false;
 }
 
 bool Appendage::armPID(double tar) {
   double p = .1, i = 0, d = 0;
-  double limit = 10, maxval = 1;
+  double limit = 5, maxval = 1;
+  double outlimit = 10;
   Arm_PIDController.SetPID(p, i, d);
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
@@ -168,12 +173,15 @@ bool Appendage::armPID(double tar) {
 
   if (checkLim(cur - tar, limit)) {
     m_armMotor->Set(0);
-    return true;
   } else {
     out = remapVal(out, maxval);
     m_armMotor->Set(out);
-    return false;
   }
+
+  if (checkLim(cur-tar, outlimit))
+    return true;
+  else
+    return false;
 }
 
 double Appendage::calculateDistanceToLim() {
@@ -209,6 +217,7 @@ void Appendage::wrist(double d) {
 bool Appendage::wristPID(double tar) {
   double p = -.01, i = 0, d = 0;
   double limit = 50, maxval = 1;
+  double outlimit = 75;
   Wrist_PIDController.SetPID(p, i, d);
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
@@ -218,12 +227,15 @@ bool Appendage::wristPID(double tar) {
 
   if (checkLim(cur - tar, limit)) {
     m_wristMotor->Set(0);
-    return true;
   } else {
     out = remapVal(out, maxval);
+    
     m_wristMotor->Set(out);
-    return false;
   }
+  if (checkLim(cur-tar, outlimit))
+    return true;
+  else
+    return false;
 }
 
 #include <frc/smartdashboard/SmartDashboard.h>
