@@ -94,12 +94,22 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
   // positive value when we pull to the left (remember, CCW is positive in
   // mathematics). Xbox controllers return positive values when you pull to
   // the right by default.
+
+  
+
+  if (abs(rJoy)<=0.02){
+    rJoy = gryoStablize();
+    frc::SmartDashboard::PutNumber("gryoStabrot", rJoy);
+  }else{
+    gyroSetpoint = m_gyro.GetAngle();
+  }
+
   const auto rot =
       Drivetrain::m_rotLimiter.Calculate(frc::ApplyDeadband(rJoy, 0.02)) *
       Drivetrain::kMaxAngularSpeed;
 
   Drive(lim ? xSpeed / 2 : xSpeed, lim ? ySpeed / 2 : ySpeed,
-        lim ? rot / 2 : rot, fieldRelative);
+        lim ? rot / 3 : rot, fieldRelative);
   // UpdateOdometry();
   frc::SmartDashboard::PutNumber("Gyro", m_gyro.GetAngle());
 }
@@ -213,4 +223,11 @@ bool Drivetrain::isGyroWorking() {
 
 void Drivetrain::resetGyro() {
   m_gyro.SetYaw(0, 0);
+}
+
+double Drivetrain::gryoStablize(){
+  double input = m_gyro.GetAngle();
+  double pVal = 0.01;
+  double out = pVal * (input-gyroSetpoint);
+  return out;
 }
