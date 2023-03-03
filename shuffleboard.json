@@ -11,7 +11,7 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "4,0": {
+          "0,0": {
             "size": [
               2,
               1
@@ -277,10 +277,10 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "1,0": {
+          "0,0": {
             "size": [
               2,
-              2
+              1
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -290,41 +290,15 @@
               "_showGlyph": false
             }
           },
-          "0,0": {
+          "2,0": {
             "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RampState",
-              "_title": "/SmartDashboard/RampState",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "0,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Vector",
-              "_title": "/SmartDashboard/Vector",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,0": {
-            "size": [
-              5,
+              4,
               3
             ],
             "content": {
               "_type": "Field",
               "_source0": "network_table:///SmartDashboard/Field",
-              "_title": "/SmartDashboard/Field",
+              "_title": "Field",
               "_glyph": 148,
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
@@ -332,30 +306,66 @@
               "Visuals/Show Outside Circles": false
             }
           },
-          "1,2": {
+          "1,1": {
             "size": [
-              2,
-              1
+              1,
+              2
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Has Game Piece",
-              "_title": "/SmartDashboard/Has Game Piece",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_type": "Grid Layout",
+              "_title": "Charging station",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "1,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Vector",
+                  "_title": "Vector",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "1,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/RampState",
+                  "_title": "RampState",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              }
             }
           },
-          "1,3": {
+          "0,1": {
             "size": [
-              2,
-              1
+              1,
+              2
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Target Game Piece",
-              "_title": "/SmartDashboard/Target Game Piece",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_type": "Grid Layout",
+              "_title": "Game piece",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Has Game Piece",
+                  "_title": "Has Game Piece",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "0,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Target Game Piece",
+                  "_title": "Target Game Piece",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              }
             }
           }
         }
