@@ -101,7 +101,7 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
 
   
 
-  if (abs(rJoy)<=0.02){
+  if (rJoy==0.0){
     rJoy = gryoStablize();
     frc::SmartDashboard::PutNumber("gryoStabrot", rJoy);
   }else{
@@ -137,21 +137,60 @@ void Drivetrain::setTrajCon() {
 void Drivetrain::autoBalance() {
   double gV[3];
   // change these two
-  double RampZ = .7;
-  double balancedZ = 0.9;
-  double fastSpeed = 1;
-  double slowSpeed = .8;
+  double RampZ = 8;
+  double balancedZ = 5;
+  double fastSpeed = 0.5;
+  double midSpeed = 0.045;
+  double slowSpeed = .045;
   double zeroSpeed = 0; 
   double zeroSpeedrot = 0; 
+  double vector =.99;
+  frc::SmartDashboard::PutNumber("RampState", rampState);
   if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK) {
     // vector towards the ground
     // frc::SmartDashboard::PutNumber("GV Gravity Vector X", gV[0]);
     // frc::SmartDashboard::PutNumber("GV Gravity Vector Y", gV[1]);
     frc::SmartDashboard::PutNumber("GV Gravity Vector Z", gV[2]);
+    vector = gV[2];
   }
+  vector = m_gyro.GetRoll();
+frc::SmartDashboard::PutNumber("Vector", vector);
+switch (rampState) {
+    case 0: {
+      DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
+      if (abs(vector) > balancedZ)
+        rampState++;
+      
+        
+      break;
+    }
+    case 1: {
+      DriveWithJoystick(-midSpeed,zeroSpeed,zeroSpeedrot,true,false);
+      if (abs(vector) < balancedZ)
+        rampState++;
+      break;
+    }
+    case 2: {
+      DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false);
+      if (abs(vector) > RampZ)
+        rampState++;
+      break;
+    }
+    case 3: {
+      DriveWithJoystick(slowSpeed,zeroSpeed,zeroSpeedrot,true,false);
+      if (abs(vector) < balancedZ)
+        rampState++;
+      break;
+    }
+    default:{
+      DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false);
+    }
+}
+
+  
 // -----Cross Ramp Section ---------------------------
 
-  if(currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) > RampZ && !crossedramp){
+  /*if(currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) > balancedZ && !crossedramp){
     DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
       currRampPos = Drivetrain::RampPos::floor;
   }
@@ -200,7 +239,8 @@ void Drivetrain::autoBalance() {
     currRampPos = Drivetrain::RampPos::downside;
     lastRampSide = Drivetrain::RampPos::downside;
     DriveWithJoystick(slowSpeed,zeroSpeed,zeroSpeedrot,true,false);
-  }
+  }*/
+  
 }
 
 #include <frc/smartdashboard/SmartDashboard.h>

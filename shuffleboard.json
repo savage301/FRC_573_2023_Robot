@@ -155,8 +155,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/traj": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           }
         }
@@ -269,7 +268,7 @@
     },
     {
       "title": "Field",
-      "autoPopulate": false,
+      "autoPopulate": true,
       "autoPopulatePrefix": "",
       "widgetPane": {
         "gridSize": 128.0,
@@ -278,56 +277,83 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "3,0": {
+          "1,0": {
             "size": [
-              1,
-              1
+              2,
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Auto Modes",
-              "_title": "SmartDashboard/Auto Modes",
+              "_title": "Auto Modes",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "4,0": {
+          "0,0": {
             "size": [
               1,
               1
             ],
             "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Ignore appendage limits",
-              "_title": "SmartDashboard/Ignore appendage limits",
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/RampState",
+              "_title": "/SmartDashboard/RampState",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "0,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vector",
+              "_title": "/SmartDashboard/Vector",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,0": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "Field",
+              "_source0": "network_table:///SmartDashboard/Field",
+              "_title": "/SmartDashboard/Field",
               "_glyph": 148,
               "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
+              "Game/Game": "A2023_Charged_Up",
+              "Visuals/Robot Icon Size": 50.0,
+              "Visuals/Show Outside Circles": false
             }
           },
-          "5,0": {
+          "1,2": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/GV Gravity Vector Z",
-              "_title": "SmartDashboard/GV Gravity Vector Z",
+              "_source0": "network_table:///SmartDashboard/Has Game Piece",
+              "_title": "/SmartDashboard/Has Game Piece",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "3,1": {
+          "1,3": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Robot Speed X",
-              "_title": "SmartDashboard/Robot Speed X",
+              "_source0": "network_table:///SmartDashboard/Target Game Piece",
+              "_title": "/SmartDashboard/Target Game Piece",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -337,9 +363,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.0,
-    "y": 0.0,
-    "width": 1111.0,
-    "height": 631.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1382.0,
+    "height": 744.0
   }
 }

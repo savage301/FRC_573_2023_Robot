@@ -27,6 +27,10 @@ void Robot::RobotInit() {
   addToChooser(kAutonPaths4);
   addToChooser(kAutonPaths5);
   addToChooser(kAutonPaths6);
+  addToChooser(kAutonPaths7);
+  addToChooser(kAutonPaths8);
+  addToChooser(kAutonPaths9);
+  addToChooser(kAutonPaths10);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
@@ -163,8 +167,11 @@ void Robot::TeleopInit() {
   tarGrid = Grid::humanLeft;
   tarGamePiece = Robot::GamePiece::cone;
   curFA_Pos_Latch = 0;
+  m_swerve.rampState = 0;
   m_swerve.isBlue = isBlue;
   //-------------This chunk needs to be commented out for match play taken care of in auton
+  // comment this
+   // m_swerve.gyroSetpoint = 0;
   /*m_swerve.resetGyro();
   if (isBlue)
   m_swerve.ResetOdometry(bluePose[8]);
@@ -469,7 +476,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.armPID(10);
     
     if (tarGamePiece == Robot::GamePiece::cone)
-      m_appendage.shoulderPID(-949);  
+      m_appendage.shoulderPID(-849);  
     else
       m_appendage.shoulderPID(-881);  
 
@@ -507,7 +514,7 @@ void Robot::TeleopPeriodic() {
     m_appendage.shoulderPID(-1994);  
     
     if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
-      m_appendage.wristPID(2050);
+      m_appendage.wristPID(1750);
      else 
       m_appendage.wristPID(1539);
     
@@ -1203,7 +1210,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       bool shoulderReady = m_appendage.shoulderPID(-716);
       bool armReady = false;
       if(wristReady && shoulderReady)
-        armReady = m_appendage.armPID(-168);
+        armReady = m_appendage.armPID(-158);
       else
         m_appendage.armPID(10);
 
@@ -1218,7 +1225,7 @@ void Robot::driveToCSsimple(bool isBlue) {
     case 1: {
       m_appendage.wristPID(2100);
       m_appendage.shoulderPID(-716);
-      m_appendage.armPID(-168);
+      m_appendage.armPID(-158);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
       EstimatePose(0);
@@ -1283,7 +1290,7 @@ void Robot::basicAuto(bool isBlue) {
       bool shoulderReady = m_appendage.shoulderPID(-716);
       bool armReady = false;
       if(wristReady && shoulderReady)
-        armReady = m_appendage.armPID(-168);
+        armReady = m_appendage.armPID(-158);
       else
         m_appendage.armPID(10);
 
@@ -1298,7 +1305,7 @@ void Robot::basicAuto(bool isBlue) {
     case 1: {
       m_appendage.wristPID(2100);
       m_appendage.shoulderPID(-716);
-      m_appendage.armPID(-168);
+      m_appendage.armPID(-158);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
       EstimatePose(0);
@@ -1339,7 +1346,7 @@ void Robot::basicAuto(bool isBlue) {
       m_appendage.frontRollerOff();
       m_swerve.DriveWithJoystick(-.7, 0, 0, true, false);
       EstimatePose(0);
-       if (m_timer.Get().value() > 2) { // Need to test how long to drive for in order to get out of zone.
+       if (m_timer.Get().value() > 1.5) { // Need to test how long to drive for in order to get out of zone.
         m_timer.Stop();
         autoState++;
         firstTime = true;

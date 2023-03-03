@@ -74,6 +74,8 @@ class Drivetrain {
 
   bool crossedramp;
 
+  int rampState;
+
   void pumpOutSensorVal();
 
   bool isGyroWorking();
