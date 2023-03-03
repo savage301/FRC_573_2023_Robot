@@ -77,6 +77,10 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
                                    bool fieldRelative, bool lim) {
   // Weikai: add bool lim to limit speed to 50%
 
+  frc::SmartDashboard::PutNumber("xJoy",xJoy);
+  frc::SmartDashboard::PutNumber("yJoy",yJoy);
+  frc::SmartDashboard::PutNumber("rJoy",rJoy);
+
   // Get the x speed. We are inverting this because Xbox controllers return
   // negative values when we push forward.
   const auto xSpeed =
