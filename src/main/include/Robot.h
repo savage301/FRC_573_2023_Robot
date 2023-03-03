@@ -128,7 +128,7 @@ class Robot : public frc::TimedRobot {
   frc::Pose2d(x, y, frc::Rotation2d(180_deg))  // facing away from the wall
 #define poseRed(y) pose1(6.41_m, y)
 #define poseBlue(y) pose2(-6.41_m, y)
-#define poseRedMid(y) pose2(5.09_m, y)
+#define poseRedMid(y) pose1(5.09_m, y) // not sure 'bout this, might be 180, i.e. pose2
 #define poseBlueMid(y) pose1(-5.09_m, y)
 #define poseRedCubes_(y) poseCubes(1.2_m, y)
 #define poseBlueCubes_(y) poseCubes(-1.2_m, y)
@@ -186,7 +186,7 @@ class Robot : public frc::TimedRobot {
       frc::Rotation2d(units::degree_t(0)));
 
   pathplanner::PathPlannerTrajectory pathGenerate(int slot);
-  pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d tarPose);
+  pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d tarPose, frc::Rotation2d angle);
   void driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
                      frc::Pose2d offPose);
   void driveWithTraj(bool auton);

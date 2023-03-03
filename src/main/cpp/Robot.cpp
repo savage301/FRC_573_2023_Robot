@@ -641,7 +641,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
   return trajectoryPP_;
 }
 
-pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
+pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose, frc::Rotation2d angle) {
   // Simple path with holonomic rotation. Stationary start/end. Max velocity of
   // 4 m/s and max accel of 3 m/s^2
 
@@ -663,7 +663,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose) {
                         // travel),holonomic rotation, robot velocity
       pathplanner::PathPoint(
           tarPose.Translation(), tarPose.Rotation(),
-          frc::Rotation2d(0_deg)  // position, heading(direction of travel)//
+          angle  // position, heading(direction of travel)//
                                   // holonomic rotation
           ));
   return trajectoryPP_;
@@ -810,7 +810,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
     }
     case 2: {
       if (firstTime) {
-        trajectoryPP_ = pathGenerate(poseMidPoint);  // mid pt
+        trajectoryPP_ = pathGenerate(poseMidPoint, isBlue ? 0_deg : 180_deg);  // mid pt
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
@@ -833,7 +833,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
     case 3: {
       table->PutNumber("pipeline", 2);  // Cube Pipeline
       if (firstTime) {
-        trajectoryPP_ = pathGenerate(poseCube);
+        trajectoryPP_ = pathGenerate(poseCube, isBlue ? 0_deg : 180_deg);
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
@@ -878,7 +878,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
     case 5: {
       table->PutNumber("pipeline", 0);  // April Tag Pipeline
       if (firstTime) {
-        trajectoryPP_ = pathGenerate(poseMidPoint);  // mid pt
+        trajectoryPP_ = pathGenerate(poseMidPoint, isBlue ? 0_deg : 180_deg);  // mid pt
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
@@ -1154,7 +1154,7 @@ void Robot::driveToCS(bool isBlue) {
     case 3: {
       if (firstTime) {
         trajectoryPP_ =
-            pathGenerate(isBlue ? blueCharge : redCharge);  // mid of the cs
+            pathGenerate(isBlue ? blueCharge : redCharge, isBlue ? 180_deg : 0_deg);  // mid of the cs
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
