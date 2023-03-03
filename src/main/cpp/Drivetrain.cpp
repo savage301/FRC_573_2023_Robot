@@ -225,6 +225,10 @@ void Drivetrain::resetGyro() {
   m_gyro.SetYaw(0, 0);
 }
 
+void Drivetrain::updateGyroAngle(){
+  gyroSetpoint = m_gyro.GetAngle();
+}
+
 double Drivetrain::gryoStablize(){
   double input = m_gyro.GetAngle();
   double pVal = 0.01;

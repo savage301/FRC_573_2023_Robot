@@ -700,6 +700,7 @@ void Robot::driveWithTraj(bool auton) {
     // Set the linear and angular speeds.
     m_swerve.Drive(refChassisSpeeds.vx, refChassisSpeeds.vy,
                    refChassisSpeeds.omega, false);
+    m_swerve.updateGyroAngle();
   } else {
     // When trajectory is completed if button is still pressed this stops the
     // robot

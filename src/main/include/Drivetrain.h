@@ -80,6 +80,8 @@ class Drivetrain {
 
   void resetGyro();
 
+  void updateGyroAngle();
+
   double gryoStablize();
   double gyroSetpoint;
 
