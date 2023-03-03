@@ -92,6 +92,14 @@ m_autoSelected = m_chooser.GetSelected();
     m_swerve.ResetOdometry(redPose[3]);
   else if (m_autoSelected == kAutonPaths6)
     m_swerve.ResetOdometry(bluePose[3]);
+  else if (m_autoSelected == kAutonPaths7)
+    m_swerve.ResetOdometry(redPose[0]);
+  else if (m_autoSelected == kAutonPaths8)
+    m_swerve.ResetOdometry(redPose[8]);
+  else if (m_autoSelected == kAutonPaths9)
+    m_swerve.ResetOdometry(bluePose[8]);
+  else if (m_autoSelected == kAutonPaths10)
+    m_swerve.ResetOdometry(bluePose[0]);
   
   //m_autoSelected =frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
   // fmt::print("Auto selected: {}\n", m_autoSelected);
@@ -104,6 +112,7 @@ m_autoSelected = m_chooser.GetSelected();
   m_swerve.currRampPos = Drivetrain::RampPos::floor;
   m_swerve.crossedramp = false;
   m_swerve.lastRampSide = Drivetrain::RampPos::downside;
+  m_swerve.gyroSetpoint = 0;
 
   // ---------------------------------- Trajectory Following Auto Section
   // --------------------- Generate trajectory to follow for autonomous Start
@@ -132,9 +141,17 @@ frc::SmartDashboard::PutNumber("AutoState", autoState);
   else if (m_autoSelected == kAutonPaths4)
     autonomousPaths(4);
   else if (m_autoSelected == kAutonPaths5)
-    driveToCS(false);
+    driveToCSsimple(false);
   else if (m_autoSelected == kAutonPaths6)
-    driveToCS(true);
+    driveToCSsimple(true);
+  else if (m_autoSelected == kAutonPaths7)
+    basicAuto(false);
+  else if (m_autoSelected == kAutonPaths8)
+    basicAuto(false);
+  else if (m_autoSelected == kAutonPaths9)
+    basicAuto(true);
+  else if (m_autoSelected == kAutonPaths10)
+    basicAuto(true);
 
 }
 
@@ -1172,4 +1189,170 @@ void Robot::updateHasGamePiece() {
     hasGamePiece = true;
   else if (dPadAng > 255 && dPadAng < 285)
     hasGamePiece = false;
+}
+
+
+void Robot::driveToCSsimple(bool isBlue) {
+  switch (autoState) {
+    case 0: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(2100);
+      bool shoulderReady = m_appendage.shoulderPID(-716);
+      bool armReady = false;
+      if(wristReady && shoulderReady)
+        armReady = m_appendage.armPID(-168);
+      else
+        m_appendage.armPID(10);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 1: {
+      m_appendage.wristPID(2100);
+      m_appendage.shoulderPID(-716);
+      m_appendage.armPID(-168);
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      bool armReady = m_appendage.armPID(10);
+      bool wristReady = false;
+      bool shoulderReady = false;
+      if(armReady){
+      wristReady = m_appendage.wristPID(100);
+      shoulderReady = m_appendage.shoulderPID(0);
+      }
+      else{
+        m_appendage.wristPID(2100);
+        m_appendage.shoulderPID(-716);
+      }
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      EstimatePose(0);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 3:
+      m_appendage.wristPID(100);
+      m_appendage.shoulderPID(0);
+      m_appendage.armPID(10);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      m_swerve.autoBalance();
+      EstimatePose(0);
+      break;
+    default: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      m_appendage.wristPID(100);
+      m_appendage.shoulderPID(0);
+      m_appendage.armPID(10);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      break;
+    }
+  }
+}
+
+void Robot::basicAuto(bool isBlue) {
+  switch (autoState) {
+    case 0: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(2100);
+      bool shoulderReady = m_appendage.shoulderPID(-716);
+      bool armReady = false;
+      if(wristReady && shoulderReady)
+        armReady = m_appendage.armPID(-168);
+      else
+        m_appendage.armPID(10);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 1: {
+      m_appendage.wristPID(2100);
+      m_appendage.shoulderPID(-716);
+      m_appendage.armPID(-168);
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      bool armReady = m_appendage.armPID(10);
+      bool wristReady = false;
+      bool shoulderReady = false;
+      if(armReady){
+      wristReady = m_appendage.wristPID(100);
+      shoulderReady = m_appendage.shoulderPID(0);
+      }
+      else{
+        m_appendage.wristPID(2100);
+        m_appendage.shoulderPID(-716);
+      }
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      EstimatePose(0);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 3:
+      m_appendage.wristPID(100);
+      m_appendage.shoulderPID(0);
+      m_appendage.armPID(10);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false);
+      EstimatePose(0);
+       if (m_timer.Get().value() > 2) { // Need to test how long to drive for in order to get out of zone.
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    default: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      EstimatePose(0);
+      m_appendage.wristPID(100);
+      m_appendage.shoulderPID(0);
+      m_appendage.armPID(10);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      break;
+    }
+  }
 }
