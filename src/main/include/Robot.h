@@ -124,7 +124,7 @@ class Robot : public frc::TimedRobot {
   frc::Pose2d(x, y, frc::Rotation2d(180_deg))  // facing away from the wall
 #define poseRed(y) pose1(6.41_m, y)
 #define poseBlue(y) pose2(-6.41_m, y)
-#define poseRedMid(y) pose1(5.09_m, y)
+#define poseRedMid(y) pose2(5.09_m, y)
 #define poseBlueMid(y) pose1(-5.09_m, y)
 #define poseRedCubes_(y) poseCubes(1.2_m, y)
 #define poseBlueCubes_(y) poseCubes(-1.2_m, y)
