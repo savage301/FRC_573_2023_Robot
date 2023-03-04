@@ -135,24 +135,25 @@ void Drivetrain::setTrajCon() {
 }
 
 void Drivetrain::autoBalance() {
-  double gV[3];
+  //double gV[3];
   // change these two
   double RampZ = 8;
-  double balancedZ = 5;
+  double balancedZ = 5; //5 works for dock
   double fastSpeed = 0.5;
   double midSpeed = 0.045;
   double slowSpeed = .045;
+  double slowestSpeed = 0.03;
   double zeroSpeed = 0; 
   double zeroSpeedrot = 0; 
   double vector =.99;
   frc::SmartDashboard::PutNumber("RampState", rampState);
-  if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK) {
+  /*if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK) {
     // vector towards the ground
     // frc::SmartDashboard::PutNumber("GV Gravity Vector X", gV[0]);
     // frc::SmartDashboard::PutNumber("GV Gravity Vector Y", gV[1]);
     frc::SmartDashboard::PutNumber("GV Gravity Vector Z", gV[2]);
     vector = gV[2];
-  }
+  }*/
   vector = m_gyro.GetRoll();
 frc::SmartDashboard::PutNumber("Vector", vector);
 switch (rampState) {
@@ -166,18 +167,45 @@ switch (rampState) {
     }
     case 1: {
       DriveWithJoystick(-midSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
-      if (abs(vector) < balancedZ)
+      if (abs(vector) < balancedZ){
+        counter = 0;
         rampState++;
+      }
       break;
     }
     case 2: {
-      DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
+      if (counter < 5){
+        DriveWithJoystick(zeroSpeed,zeroSpeed,0.025,true,false,false);
+        counter++;
+      }else{
+       DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
+      }
       if (abs(vector) > RampZ)
         rampState++;
       break;
     }
     case 3: {
       DriveWithJoystick(slowSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
+      if (abs(vector) < balancedZ){
+        rampState++;
+        counter = 0;
+      }
+      break;
+      
+    }
+    case 4: {
+      if (counter < 5){
+        DriveWithJoystick(zeroSpeed,zeroSpeed,0.025,true,false,false);
+        counter++;
+      }else{
+       DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
+      }
+      if (abs(vector) > RampZ)
+        rampState++;
+      break;
+    }
+    case 5: {
+      DriveWithJoystick(-slowestSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
       if (abs(vector) < balancedZ){
         rampState++;
         counter = 0;
@@ -256,11 +284,12 @@ switch (rampState) {
 #define pumpOut frc::SmartDashboard::PutNumber
 void Drivetrain::pumpOutSensorVal() {
   double curGyro = m_gyro.GetAngle();
-  double gV[3];
+  //double gV[3];
 
   pumpOut("Gyro angle", curGyro);
-  if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
-    pumpOut("GV Gravity Vector Z", gV[2]);
+  pumpOut("Gyro Roll", m_gyro.GetRoll());
+  //if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
+  //  pumpOut("GV Gravity Vector Z", gV[2]);
 }
 
 bool Drivetrain::isGyroWorking() {
