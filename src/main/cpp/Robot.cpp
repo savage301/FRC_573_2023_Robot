@@ -208,7 +208,7 @@ void Robot::TeleopPeriodic() {
     m_appendage.backClawPneumaticsIn();*/
 
   bool validTarFnd = validTarget.Get() > 0;
-
+  
   if (validTarFnd) {
     // ------------- Cone Orientation Code --------------------------
     // This should get moved to its own function
@@ -217,7 +217,8 @@ void Robot::TeleopPeriodic() {
       std::vector<bool> x_orien, y_orien;
       std::vector<double> avg = {0.0, 0.0};
       int i, idxFA = 0,
-             /* furtherest away point index*/ length = coneCornerXy.size();
+             //furtherest away point index 
+             length = coneCornerXy.size();
       frc::SmartDashboard::PutNumber("Corner Arr Length", length);
       double FADist = 0;
       for (i = 0; i < length;
@@ -316,7 +317,7 @@ void Robot::TeleopPeriodic() {
 
     // ------------- End Cone Orientation Code --------------------------
   }
-  frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
+  //frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   selectGamePiece();
   /*if (m_appendage.getAnalogWorking()) // Not expected for 1st event
@@ -362,7 +363,7 @@ void Robot::TeleopPeriodic() {
         tx *= -.01;
       }
       m_swerve.DriveWithJoystick(tmp, 0, validTarFnd ? tx : 0, false,
-                                 m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
+                                 m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false,false);
 
     } else if (tarGamePiece ==
                Robot::GamePiece::cone) {  // Cone Tracking section
@@ -373,7 +374,7 @@ void Robot::TeleopPeriodic() {
         tx *= -.01;
         m_swerve.DriveWithJoystick(
             tmp, 0, validTarFnd ? tx : 0, false,
-            m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
+            m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false,false);
       } else if (curFA_Pos == Robot::fA_Pos::left ||
                  curFA_Pos == Robot::fA_Pos::right) {  // Cone tipped over, but
                                                        // no oriented correctly.
@@ -385,7 +386,7 @@ void Robot::TeleopPeriodic() {
           tx *= -.01;
           m_swerve.DriveWithJoystick(
               tmp, 0, validTarFnd ? tx : 0, false,
-              m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
+              m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false,false);
         } else {  // Rotate around the cone either left or right.
           bool leftRight = false;
           tx = table->GetNumber("tx", 0.0);
@@ -396,7 +397,7 @@ void Robot::TeleopPeriodic() {
             leftRight = true;
           m_swerve.DriveWithJoystick(
               0, leftRight ? -1 * tmp : 1 * tmp, validTarFnd ? tx : 0, false,
-              m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
+              m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false,false);
         }
       }
     }
@@ -409,7 +410,7 @@ void Robot::TeleopPeriodic() {
     m_swerve.DriveWithJoystick(
         m_controller1.GetLeftY(), m_controller1.GetLeftX(),
         m_controller1.GetRightX(), true,
-        m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false);
+        m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false, m_controller1.GetRightTriggerAxis() > 0.5 ? true : false);
   }
   // ---- End Drive Code -----------------------------------------------
 
@@ -460,11 +461,12 @@ void Robot::TeleopPeriodic() {
       m_appendage.armPID(10);
      else
       m_appendage.armPID(10);
-   
-    m_appendage.shoulderPID(-1994);  
+    
+    double trim = -200*m_controller2.GetLeftY();
+    m_appendage.shoulderPID(-1994+trim);  
     
     if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
-      m_appendage.wristPID(2100);
+      m_appendage.wristPID(3000);
      else 
       m_appendage.wristPID(1326);
     
@@ -475,12 +477,16 @@ void Robot::TeleopPeriodic() {
     else 
       m_appendage.armPID(10);
     
-    if (tarGamePiece == Robot::GamePiece::cone)
-      m_appendage.shoulderPID(-849);  
-    else
-      m_appendage.shoulderPID(-881);  
+    if (tarGamePiece == Robot::GamePiece::cone){
+    double trim = -200*m_controller2.GetLeftY();
+      m_appendage.shoulderPID(-825+trim);  
+    }
+    else{
+      double trim = -200*m_controller2.GetLeftY();
+      m_appendage.shoulderPID(-881+trim);  
+    }
 
-    m_appendage.wristPID(2100);
+    m_appendage.wristPID(3000);
 
   } else if (m_controller2.GetYButton() && hasGamePiece) {
     // Upper Level Scoring
@@ -490,7 +496,8 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(10);
       
-      m_appendage.shoulderPID(-716);  
+      double trim = -200*m_controller2.GetLeftY();
+      m_appendage.shoulderPID(-609+trim);  
 
     } else {
       if (m_controller2.GetRightBumper()) 
@@ -498,10 +505,11 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(10);
       
-      m_appendage.shoulderPID(-683);  
+      double trim = -200*m_controller2.GetLeftY();
+      m_appendage.shoulderPID(-683+trim);  
     }
 
-    m_appendage.wristPID(2100);
+    m_appendage.wristPID(3000);
   } 
   
   else if (m_controller2.GetAButton() && !hasGamePiece) {
@@ -511,10 +519,11 @@ void Robot::TeleopPeriodic() {
      else
       m_appendage.armPID(10);
    
-    m_appendage.shoulderPID(-1994);  
+    double trim = -200*m_controller2.GetLeftY();
+    m_appendage.shoulderPID(-1994+trim);  
     
     if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
-      m_appendage.wristPID(1750);
+      m_appendage.wristPID(1900);
      else 
       m_appendage.wristPID(1539);
     
@@ -525,12 +534,16 @@ void Robot::TeleopPeriodic() {
     else 
       m_appendage.armPID(10);
     
-    if (tarGamePiece == Robot::GamePiece::cone)
-      m_appendage.shoulderPID(-1250);  
-    else
-      m_appendage.shoulderPID(-881);  
+    if (tarGamePiece == Robot::GamePiece::cone){
+      double trim = -200*m_controller2.GetLeftY();
+      m_appendage.shoulderPID(-1250+trim);  
+    }
+    else{
+    double trim = -200*m_controller2.GetLeftY();
+      m_appendage.shoulderPID(-881+trim);  
+    }
 
-    m_appendage.wristPID(2100);
+    m_appendage.wristPID(3000);
 
   } else if (m_controller2.GetYButton() && !hasGamePiece) {
     // End field Human Player Loading Location
@@ -540,7 +553,8 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(10);
       
-      m_appendage.shoulderPID(-1250);  
+      double trim = -200*m_controller2.GetLeftY();
+      m_appendage.shoulderPID(-1250+trim);  
 
     } else {
       if (m_controller2.GetRightBumper()) 
@@ -548,7 +562,8 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(10);
       
-      m_appendage.shoulderPID(-683);  
+      double trim = -200*m_controller2.GetLeftY();
+      m_appendage.shoulderPID(-683+trim);  
     }
 
     m_appendage.wristPID(200);
@@ -782,9 +797,9 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
   switch (autoState) {
     case 0: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,false);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(2100);
+      bool wristReady = m_appendage.wristPID(3000);
       bool shoulderReady = m_appendage.shoulderPID(-716);
       bool armReady = false;
       if(wristReady && shoulderReady)
@@ -801,12 +816,12 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 1: {
-      m_appendage.wristPID(2100);
+      m_appendage.wristPID(3000);
       m_appendage.shoulderPID(-716);
       m_appendage.armPID(-168);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,false);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -829,7 +844,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       m_appendage.shoulderPID(2050);
       }
       else{
-      m_appendage.wristPID(2100);
+      m_appendage.wristPID(3000);
       m_appendage.shoulderPID(-716);
       }
       driveWithTraj(true);
@@ -863,7 +878,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
         tx = table->GetNumber("tx", 0.0);
         tx *= -.01;
       }
-      m_swerve.DriveWithJoystick(-.6, 0, validTarFnd ? tx : 0, false, false);
+      m_swerve.DriveWithJoystick(-.6, 0, validTarFnd ? tx : 0, false, false,false);
       m_appendage.armPID(10);
       m_appendage.wristPID(-1994);
       m_appendage.shoulderPID(2050);
@@ -916,10 +931,10 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 7: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,false);
       EstimatePose(0);
       
-      bool wristReady = m_appendage.wristPID(2100);
+      bool wristReady = m_appendage.wristPID(3000);
       bool shoulderReady = m_appendage.shoulderPID(-683);
       bool armReady = false;
       if (wristReady && shoulderReady)
@@ -935,12 +950,12 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 8: {
-      m_appendage.wristPID(2100);
+      m_appendage.wristPID(3000);
       m_appendage.shoulderPID(-683);
       m_appendage.armPID(-131);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,false);
       EstimatePose(0);
       if (m_timer.Get().value() > .5) {
         m_timer.Reset();
@@ -951,7 +966,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,false);
       EstimatePose(0);
       m_appendage.wristPID(100);
       m_appendage.shoulderPID(0);
@@ -1104,9 +1119,9 @@ void Robot::driveToCS(bool isBlue) {
   switch (autoState) {
     case 0: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,true);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(2100);
+      bool wristReady = m_appendage.wristPID(3000);
       bool shoulderReady = m_appendage.shoulderPID(-716);
       bool armReady = false;
       if(wristReady && shoulderReady)
@@ -1123,7 +1138,7 @@ void Robot::driveToCS(bool isBlue) {
       break;
     }
     case 1: {
-      m_appendage.wristPID(2100);
+      m_appendage.wristPID(3000);
       m_appendage.shoulderPID(-716);
       m_appendage.armPID(-168);
       m_appendage.backRollerOut();
@@ -1145,7 +1160,7 @@ void Robot::driveToCS(bool isBlue) {
       shoulderReady = m_appendage.shoulderPID(0);
       }
       else{
-        m_appendage.wristPID(2100);
+        m_appendage.wristPID(3000);
         m_appendage.shoulderPID(-716);
       }
       m_appendage.backRollerOut();
@@ -1179,7 +1194,7 @@ void Robot::driveToCS(bool isBlue) {
       EstimatePose(0);
       break;
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,true);
       EstimatePose(0);
       m_appendage.wristPID(100);
       m_appendage.shoulderPID(0);
@@ -1204,10 +1219,10 @@ void Robot::driveToCSsimple(bool isBlue) {
   switch (autoState) {
     case 0: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,true);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(2100);
-      bool shoulderReady = m_appendage.shoulderPID(-716);
+      bool wristReady = m_appendage.wristPID(3000);
+      bool shoulderReady = m_appendage.shoulderPID(-609);
       bool armReady = false;
       if(wristReady && shoulderReady)
         armReady = m_appendage.armPID(-158);
@@ -1223,8 +1238,8 @@ void Robot::driveToCSsimple(bool isBlue) {
       break;
     }
     case 1: {
-      m_appendage.wristPID(2100);
-      m_appendage.shoulderPID(-716);
+      m_appendage.wristPID(3000);
+      m_appendage.shoulderPID(-609);
       m_appendage.armPID(-158);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
@@ -1245,8 +1260,8 @@ void Robot::driveToCSsimple(bool isBlue) {
       shoulderReady = m_appendage.shoulderPID(0);
       }
       else{
-        m_appendage.wristPID(2100);
-        m_appendage.shoulderPID(-716);
+        m_appendage.wristPID(3000);
+        m_appendage.shoulderPID(-609);
       }
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
@@ -1268,7 +1283,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       EstimatePose(0);
       break;
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,true);
       EstimatePose(0);
       m_appendage.wristPID(100);
       m_appendage.shoulderPID(0);
@@ -1284,10 +1299,10 @@ void Robot::basicAuto(bool isBlue) {
   switch (autoState) {
     case 0: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,true);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(2100);
-      bool shoulderReady = m_appendage.shoulderPID(-716);
+      bool wristReady = m_appendage.wristPID(3000);
+      bool shoulderReady = m_appendage.shoulderPID(-609);
       bool armReady = false;
       if(wristReady && shoulderReady)
         armReady = m_appendage.armPID(-158);
@@ -1303,8 +1318,8 @@ void Robot::basicAuto(bool isBlue) {
       break;
     }
     case 1: {
-      m_appendage.wristPID(2100);
-      m_appendage.shoulderPID(-716);
+      m_appendage.wristPID(3000);
+      m_appendage.shoulderPID(-609);
       m_appendage.armPID(-158);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
@@ -1325,8 +1340,8 @@ void Robot::basicAuto(bool isBlue) {
       shoulderReady = m_appendage.shoulderPID(0);
       }
       else{
-        m_appendage.wristPID(2100);
-        m_appendage.shoulderPID(-716);
+        m_appendage.wristPID(3000);
+        m_appendage.shoulderPID(-609);
       }
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
@@ -1344,7 +1359,7 @@ void Robot::basicAuto(bool isBlue) {
       m_appendage.armPID(10);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
-      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false);
+      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false,true);
       EstimatePose(0);
        if (m_timer.Get().value() > 1.5) { // Need to test how long to drive for in order to get out of zone.
         m_timer.Stop();
@@ -1353,7 +1368,7 @@ void Robot::basicAuto(bool isBlue) {
       }
       break;
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false);
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,true);
       EstimatePose(0);
       m_appendage.wristPID(100);
       m_appendage.shoulderPID(0);

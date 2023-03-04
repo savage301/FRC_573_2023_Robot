@@ -63,7 +63,7 @@ void Appendage::frontRollerIn() {
 }
 
 void Appendage::frontRollerOut() {
-  m_frontRollerMotor->Set(-0.40);
+  m_frontRollerMotor->Set(-0.35);
 }
 
 void Appendage::frontRollerOff() {
@@ -75,7 +75,7 @@ void Appendage::backRollerIn() {
 }
 
 void Appendage::backRollerOut() {
-  m_backRollerMotor->Set(0.40);
+  m_backRollerMotor->Set(0.35);
 }
 
 void Appendage::backRollerOff() {

@@ -32,7 +32,7 @@ class Drivetrain {
   void UpdateOdometry(frc::Pose2d camerapose);
 
   void DriveWithJoystick(double xJoy, double yJoy, double rJoy,
-                         bool fieldRelative, bool lim);
+                         bool fieldRelative, bool lim, bool gyrostablize);
 
   void ResetOdometry(const frc::Pose2d& pose);
   frc::ChassisSpeeds GetRobotVelocity();
@@ -111,6 +111,8 @@ class Drivetrain {
        m_backLeft.GetPosition(), m_backRight.GetPosition()}};
 
   double last = 0;
+
+  int counter = 0;
 
   // Gains are for example purposes only - must be determined for your own
   // robot!

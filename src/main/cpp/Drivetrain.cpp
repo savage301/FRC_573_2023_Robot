@@ -74,7 +74,7 @@ frc::ChassisSpeeds Drivetrain::GetRobotVelocity() {
 }
 
 void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
-                                   bool fieldRelative, bool lim) {
+                                   bool fieldRelative, bool lim, bool gyrostablize) {
   // Weikai: add bool lim to limit speed to 50%
 
   frc::SmartDashboard::PutNumber("xJoy",xJoy);
@@ -101,7 +101,7 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
 
   
 
-  if (rJoy==0.0){
+  if (gyrostablize){
     rJoy = gryoStablize();
     frc::SmartDashboard::PutNumber("gryoStabrot", rJoy);
   }else{
@@ -157,7 +157,7 @@ void Drivetrain::autoBalance() {
 frc::SmartDashboard::PutNumber("Vector", vector);
 switch (rampState) {
     case 0: {
-      DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
+      DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
       if (abs(vector) > balancedZ)
         rampState++;
       
@@ -165,25 +165,34 @@ switch (rampState) {
       break;
     }
     case 1: {
-      DriveWithJoystick(-midSpeed,zeroSpeed,zeroSpeedrot,true,false);
+      DriveWithJoystick(-midSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
       if (abs(vector) < balancedZ)
         rampState++;
       break;
     }
     case 2: {
-      DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false);
+      DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
       if (abs(vector) > RampZ)
         rampState++;
       break;
     }
     case 3: {
-      DriveWithJoystick(slowSpeed,zeroSpeed,zeroSpeedrot,true,false);
-      if (abs(vector) < balancedZ)
+      DriveWithJoystick(slowSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
+      if (abs(vector) < balancedZ){
         rampState++;
+        counter = 0;
+      }
       break;
+      
     }
     default:{
-      DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false);
+      if(counter <5){
+      DriveWithJoystick(zeroSpeed,zeroSpeed,0.025,true,false,false);
+      counter++;
+      }
+      else{
+      DriveWithJoystick(0,0,0,true,false,true);
+      }
     }
 }
 

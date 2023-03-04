@@ -367,6 +367,19 @@
                 }
               }
             }
+          },
+          "6,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///SmartDashboard/Ignore appendage limits",
+              "_title": "SmartDashboard/Ignore appendage limits",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
