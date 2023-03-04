@@ -402,8 +402,8 @@ void Robot::TeleopPeriodic() {
       }
     }
     
-  } else if (m_controller1.GetStartButton()) {
-       m_swerve.autoBalance();
+  } else if (m_controller1.GetStartButton()&& m_controller1.GetBackButton()) {
+       m_swerve.resetGyro();
      }else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
