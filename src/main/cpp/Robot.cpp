@@ -462,7 +462,7 @@ void Robot::TeleopPeriodic() {
      else
       m_appendage.armPID(10);
     
-    double trim = -200*m_controller2.GetLeftY();
+    double trim = -400*m_controller2.GetLeftY();
     m_appendage.shoulderPID(-1994+trim);  
     
     if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
@@ -478,11 +478,11 @@ void Robot::TeleopPeriodic() {
       m_appendage.armPID(10);
     
     if (tarGamePiece == Robot::GamePiece::cone){
-    double trim = -200*m_controller2.GetLeftY();
+    double trim = -400*m_controller2.GetLeftY();
       m_appendage.shoulderPID(-825+trim);  
     }
     else{
-      double trim = -200*m_controller2.GetLeftY();
+      double trim = -400*m_controller2.GetLeftY();
       m_appendage.shoulderPID(-881+trim);  
     }
 
@@ -496,7 +496,7 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(10);
       
-      double trim = -200*m_controller2.GetLeftY();
+      double trim = -400*m_controller2.GetLeftY();
       m_appendage.shoulderPID(-609+trim);  
 
     } else {
@@ -505,7 +505,7 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(10);
       
-      double trim = -200*m_controller2.GetLeftY();
+      double trim = -400*m_controller2.GetLeftY();
       m_appendage.shoulderPID(-683+trim);  
     }
 
@@ -519,7 +519,7 @@ void Robot::TeleopPeriodic() {
      else
       m_appendage.armPID(10);
    
-    double trim = -200*m_controller2.GetLeftY();
+    double trim = -400*m_controller2.GetLeftY();
     m_appendage.shoulderPID(-1994+trim);  
     
     if (m_controller2.GetLeftBumper()||tarGamePiece==Robot::GamePiece::cube)   
@@ -535,11 +535,11 @@ void Robot::TeleopPeriodic() {
       m_appendage.armPID(10);
     
     if (tarGamePiece == Robot::GamePiece::cone){
-      double trim = -200*m_controller2.GetLeftY();
+      double trim = -400*m_controller2.GetLeftY();
       m_appendage.shoulderPID(-1250+trim);  
     }
     else{
-    double trim = -200*m_controller2.GetLeftY();
+    double trim = -400*m_controller2.GetLeftY();
       m_appendage.shoulderPID(-881+trim);  
     }
 
@@ -553,7 +553,7 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(10);
       
-      double trim = -200*m_controller2.GetLeftY();
+      double trim = -400*m_controller2.GetLeftY();
       m_appendage.shoulderPID(-1250+trim);  
 
     } else {
@@ -562,7 +562,7 @@ void Robot::TeleopPeriodic() {
       else 
         m_appendage.armPID(10);
       
-      double trim = -200*m_controller2.GetLeftY();
+      double trim = -400*m_controller2.GetLeftY();
       m_appendage.shoulderPID(-683+trim);  
     }
 
