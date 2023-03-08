@@ -35,12 +35,12 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
 
 frc::SwerveModuleState SwerveModule::GetState() {
   return {units::meters_per_second_t{m_driveEncoder.GetVelocity()},
-          units::radian_t{m_turningEncoder.GetPosition()}};
+          units::radian_t{m_turningEncoder.GetAbsolutePosition()}};
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {
   return {units::meter_t{((m_driveEncoder.GetPosition()))},
-          units::radian_t{m_turningEncoder.GetPosition()}};
+          units::radian_t{m_turningEncoder.GetAbsolutePosition()}};
 }
 
 void SwerveModule::SetDesiredState(
@@ -57,7 +57,7 @@ void SwerveModule::SetDesiredState(
 
   // Calculate the turning motor output from the turning PID controller.
   const auto turnOutput = m_turningPIDController.Calculate(
-      units::radian_t{m_turningEncoder.GetPosition()}, state.angle.Radians());
+      units::radian_t{m_turningEncoder.GetAbsolutePosition()}, state.angle.Radians());
 
   // const auto turnFeedforward =
   // m_turnFeedforward.Calculate(m_turningPIDController.GetSetpoint().velocity);
@@ -75,7 +75,7 @@ void SwerveModule::SetDesiredState(
   switch (driveMotorId) {
     case 1:
       pumpOut("Drive Encoder FL", m_driveEncoder.GetPosition());
-      pumpOut("Turn Encoder FL", m_turningEncoder.GetPosition());
+      pumpOut("Turn Encoder FL", m_turningEncoder.GetAbsolutePosition());
       pumpOut("fl vol output", driveOutput);
       pumpOut("fl measured speed", m_driveEncoder.GetVelocity());
       frc::SmartDashboard::PutNumber(
@@ -91,15 +91,15 @@ void SwerveModule::SetDesiredState(
       break;
     case 4:
       pumpOut("Drive Encoder FR", m_driveEncoder.GetPosition());
-      pumpOut("Turn Encoder FR", m_turningEncoder.GetPosition());
+      pumpOut("Turn Encoder FR", m_turningEncoder.GetAbsolutePosition());
       break;
     case 7:
       pumpOut("Drive Encoder BL", m_driveEncoder.GetPosition());
-      pumpOut("Turn Encoder BL", m_turningEncoder.GetPosition());
+      pumpOut("Turn Encoder BL", m_turningEncoder.GetAbsolutePosition());
       break;
     case 10:
       pumpOut("Drive Encoder BR", m_driveEncoder.GetPosition());
-      pumpOut("Turn Encoder BR", m_turningEncoder.GetPosition());
+      pumpOut("Turn Encoder BR", m_turningEncoder.GetAbsolutePosition());
       break;
 
     default:
