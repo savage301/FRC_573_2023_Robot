@@ -57,7 +57,8 @@ void SwerveModule::SetDesiredState(
 
   // Calculate the turning motor output from the turning PID controller.
   const auto turnOutput = m_turningPIDController.Calculate(
-      units::radian_t{m_turningEncoder.GetAbsolutePosition()}, state.angle.Radians());
+      units::radian_t{m_turningEncoder.GetAbsolutePosition()},
+      state.angle.Radians());
 
   // const auto turnFeedforward =
   // m_turnFeedforward.Calculate(m_turningPIDController.GetSetpoint().velocity);

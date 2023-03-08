@@ -74,12 +74,13 @@ frc::ChassisSpeeds Drivetrain::GetRobotVelocity() {
 }
 
 void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
-                                   bool fieldRelative, bool lim, bool gyrostablize) {
+                                   bool fieldRelative, bool lim,
+                                   bool gyrostablize) {
   // Weikai: add bool lim to limit speed to 50%
 
-  frc::SmartDashboard::PutNumber("xJoy",xJoy);
-  frc::SmartDashboard::PutNumber("yJoy",yJoy);
-  frc::SmartDashboard::PutNumber("rJoy",rJoy);
+  frc::SmartDashboard::PutNumber("xJoy", xJoy);
+  frc::SmartDashboard::PutNumber("yJoy", yJoy);
+  frc::SmartDashboard::PutNumber("rJoy", rJoy);
 
   // Get the x speed. We are inverting this because Xbox controllers return
   // negative values when we push forward.
@@ -99,12 +100,10 @@ void Drivetrain::DriveWithJoystick(double xJoy, double yJoy, double rJoy,
   // mathematics). Xbox controllers return positive values when you pull to
   // the right by default.
 
-  
-
-  if (gyrostablize){
+  if (gyrostablize) {
     rJoy = gryoStablize();
     frc::SmartDashboard::PutNumber("gryoStabrot", rJoy);
-  }else{
+  } else {
     gyroSetpoint = m_gyro.GetAngle();
   }
 
@@ -135,17 +134,17 @@ void Drivetrain::setTrajCon() {
 }
 
 void Drivetrain::autoBalance() {
-  //double gV[3];
-  // change these two
+  // double gV[3];
+  //  change these two
   double RampZ = 8;
-  double balancedZ = 5; //5 works for dock
+  double balancedZ = 5;  // 5 works for dock
   double fastSpeed = 0.5;
   double midSpeed = 0.045;
   double slowSpeed = .045;
   double slowestSpeed = 0.03;
-  double zeroSpeed = 0; 
-  double zeroSpeedrot = 0; 
-  double vector =.99;
+  double zeroSpeed = 0;
+  double zeroSpeedrot = 0;
+  double vector = .99;
   frc::SmartDashboard::PutNumber("RampState", rampState);
   /*if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK) {
     // vector towards the ground
@@ -155,141 +154,143 @@ void Drivetrain::autoBalance() {
     vector = gV[2];
   }*/
   vector = m_gyro.GetRoll();
-frc::SmartDashboard::PutNumber("Vector", vector);
-switch (rampState) {
+  frc::SmartDashboard::PutNumber("Vector", vector);
+  switch (rampState) {
     case 0: {
-      DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
-      if (abs(vector) > balancedZ)
+      DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      if (std::abs(vector) > balancedZ)
         rampState++;
-      
-        
+
       break;
     }
     case 1: {
-      DriveWithJoystick(-midSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
-      if (abs(vector) < balancedZ){
+      DriveWithJoystick(-midSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      if (std::abs(vector) < balancedZ) {
         counter = 0;
         rampState++;
       }
       break;
     }
     case 2: {
-      if (counter < 5){
-        DriveWithJoystick(zeroSpeed,zeroSpeed,0.025,true,false,false);
+      if (counter < 5) {
+        DriveWithJoystick(zeroSpeed, zeroSpeed, 0.025, true, false, false);
         counter++;
-      }else{
-       DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
+      } else {
+        DriveWithJoystick(zeroSpeed, zeroSpeed, zeroSpeedrot, true, false,
+                          true);
       }
-      if (abs(vector) > RampZ)
+      if (std::abs(vector) > RampZ)
         rampState++;
       break;
     }
     case 3: {
-      DriveWithJoystick(slowSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
-      if (abs(vector) < balancedZ){
+      DriveWithJoystick(slowSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      if (std::abs(vector) < balancedZ) {
         rampState++;
         counter = 0;
       }
       break;
-      
     }
     case 4: {
-      if (counter < 5){
-        DriveWithJoystick(zeroSpeed,zeroSpeed,0.025,true,false,false);
+      if (counter < 5) {
+        DriveWithJoystick(zeroSpeed, zeroSpeed, 0.025, true, false, false);
         counter++;
-      }else{
-       DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
+      } else {
+        DriveWithJoystick(zeroSpeed, zeroSpeed, zeroSpeedrot, true, false,
+                          true);
       }
-      if (abs(vector) > RampZ)
+      if (std::abs(vector) > RampZ)
         rampState++;
       break;
     }
     case 5: {
-      DriveWithJoystick(-slowestSpeed,zeroSpeed,zeroSpeedrot,true,false,true);
-      if (abs(vector) < balancedZ){
+      DriveWithJoystick(-slowestSpeed, zeroSpeed, zeroSpeedrot, true, false,
+                        true);
+      if (std::abs(vector) < balancedZ) {
         rampState++;
         counter = 0;
       }
       break;
-      
     }
-    default:{
-      if(counter <5){
-      DriveWithJoystick(zeroSpeed,zeroSpeed,0.025,true,false,false);
-      counter++;
-      }
-      else{
-      DriveWithJoystick(0,0,0,true,false,true);
+    default: {
+      if (counter < 5) {
+        DriveWithJoystick(zeroSpeed, zeroSpeed, 0.025, true, false, false);
+        counter++;
+      } else {
+        DriveWithJoystick(0, 0, 0, true, false, true);
       }
     }
-}
+  }
 
-  
-// -----Cross Ramp Section ---------------------------
+  // -----Cross Ramp Section ---------------------------
 
-  /*if(currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) > balancedZ && !crossedramp){
+  /*if(currRampPos == Drivetrain::RampPos::floor && std::abs(gV[2]) > balancedZ
+  && !crossedramp){
     DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
       currRampPos = Drivetrain::RampPos::floor;
   }
-  else if (currRampPos == Drivetrain::RampPos::floor && abs(gV[2]) < RampZ && !crossedramp){
-    currRampPos = Drivetrain::RampPos::upward;
-    lastRampSide = Drivetrain::RampPos::upward;
+  else if (currRampPos == Drivetrain::RampPos::floor && std::abs(gV[2]) < RampZ
+  && !crossedramp){ currRampPos = Drivetrain::RampPos::upward; lastRampSide =
+  Drivetrain::RampPos::upward;
     DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
   }
 
-  else if (currRampPos == Drivetrain::RampPos::upward && abs(gV[2]) > balancedZ && !crossedramp){
-    currRampPos = Drivetrain::RampPos::balanced;
+  else if (currRampPos == Drivetrain::RampPos::upward && std::abs(gV[2]) >
+  balancedZ && !crossedramp){ currRampPos = Drivetrain::RampPos::balanced;
     DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
   }
 
-  else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && !crossedramp){
-    currRampPos = Drivetrain::RampPos::downside;
+  else if (currRampPos == Drivetrain::RampPos::balanced && std::abs(gV[2]) <
+  RampZ && !crossedramp){ currRampPos = Drivetrain::RampPos::downside;
     lastRampSide = Drivetrain::RampPos::downside;
     DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
   }
 
-  else if (currRampPos == Drivetrain::RampPos::downside && abs(gV[2]) > balancedZ && !crossedramp){
-    currRampPos = Drivetrain::RampPos::floorback;
+  else if (currRampPos == Drivetrain::RampPos::downside && std::abs(gV[2]) >
+  balancedZ && !crossedramp){ currRampPos = Drivetrain::RampPos::floorback;
     DriveWithJoystick(-fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
     crossedramp = true;
   }
 
-  // --------------------------------------------------------------------------------
+  //
+  --------------------------------------------------------------------------------
   // - Balance Section --------------------------------------------
-  else if (currRampPos == Drivetrain::RampPos::floorback && abs(gV[2]) < RampZ && crossedramp){
-    currRampPos = Drivetrain::RampPos::downside;
+  else if (currRampPos == Drivetrain::RampPos::floorback && std::abs(gV[2]) <
+  RampZ && crossedramp){ currRampPos = Drivetrain::RampPos::downside;
     lastRampSide = Drivetrain::RampPos::downside;
     DriveWithJoystick(fastSpeed,zeroSpeed,zeroSpeedrot,true,false);
   }
 
-  else if ((currRampPos == Drivetrain::RampPos::downside || currRampPos == Drivetrain::RampPos::upward) && abs(gV[2]) > balancedZ && crossedramp){
+  else if ((currRampPos == Drivetrain::RampPos::downside || currRampPos ==
+  Drivetrain::RampPos::upward) && std::abs(gV[2]) > balancedZ && crossedramp){
     currRampPos = Drivetrain::RampPos::balanced;
     DriveWithJoystick(zeroSpeed,zeroSpeed,zeroSpeedrot,true,false);
   }
 
-  else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && crossedramp && lastRampSide == Drivetrain::RampPos::downside){
+  else if (currRampPos == Drivetrain::RampPos::balanced && std::abs(gV[2]) <
+  RampZ && crossedramp && lastRampSide == Drivetrain::RampPos::downside){
     currRampPos = Drivetrain::RampPos::upward;
     lastRampSide = Drivetrain::RampPos::upward;
     DriveWithJoystick(-slowSpeed,zeroSpeed,zeroSpeedrot,true,false);
   }
-   else if (currRampPos == Drivetrain::RampPos::balanced && abs(gV[2]) < RampZ && crossedramp && lastRampSide == Drivetrain::RampPos::upward){
+   else if (currRampPos == Drivetrain::RampPos::balanced && std::abs(gV[2]) <
+  RampZ && crossedramp && lastRampSide == Drivetrain::RampPos::upward){
     currRampPos = Drivetrain::RampPos::downside;
     lastRampSide = Drivetrain::RampPos::downside;
     DriveWithJoystick(slowSpeed,zeroSpeed,zeroSpeedrot,true,false);
   }*/
-  
 }
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #define pumpOut frc::SmartDashboard::PutNumber
 void Drivetrain::pumpOutSensorVal() {
   double curGyro = m_gyro.GetAngle();
-  //double gV[3];
+  // double gV[3];
 
   pumpOut("Gyro angle", curGyro);
   pumpOut("Gyro Roll", m_gyro.GetRoll());
-  //if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
-  //  pumpOut("GV Gravity Vector Z", gV[2]);
+  // if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
+  //   pumpOut("GV Gravity Vector Z", gV[2]);
 }
 
 bool Drivetrain::isGyroWorking() {
@@ -307,13 +308,13 @@ void Drivetrain::resetGyro() {
   m_gyro.SetYaw(0, 0);
 }
 
-void Drivetrain::updateGyroAngle(){
+void Drivetrain::updateGyroAngle() {
   gyroSetpoint = m_gyro.GetAngle();
 }
 
-double Drivetrain::gryoStablize(){
+double Drivetrain::gryoStablize() {
   double input = m_gyro.GetAngle();
   double pVal = 0.01;
-  double out = pVal * (input-gyroSetpoint);
+  double out = pVal * (input - gyroSetpoint);
   return out;
 }

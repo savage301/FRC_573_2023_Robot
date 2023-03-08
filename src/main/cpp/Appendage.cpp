@@ -154,7 +154,7 @@ bool Appendage::shoulderPID(double tar) {
     m_shoulderMotor->Set(out);
   }
 
-  if (checkLim(cur-tar, outlimit))
+  if (checkLim(cur - tar, outlimit))
     return true;
   else
     return false;
@@ -178,7 +178,7 @@ bool Appendage::armPID(double tar) {
     m_armMotor->Set(out);
   }
 
-  if (checkLim(cur-tar, outlimit))
+  if (checkLim(cur - tar, outlimit))
     return true;
   else
     return false;
@@ -229,10 +229,10 @@ bool Appendage::wristPID(double tar) {
     m_wristMotor->Set(0);
   } else {
     out = remapVal(out, maxval);
-    
+
     m_wristMotor->Set(out);
   }
-  if (checkLim(cur-tar, outlimit))
+  if (checkLim(cur - tar, outlimit))
     return true;
   else
     return false;
