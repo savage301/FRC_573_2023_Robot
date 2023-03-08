@@ -9,11 +9,12 @@
 #include <frc/DigitalInput.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/Encoder.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/PIDCommand.h>
 #include <rev/CANSparkMax.h>
 
 #include <numbers>
+
+#include "def.h"
 
 class Appendage {
  public:

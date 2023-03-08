@@ -8,7 +8,6 @@
 #include <fmt/core.h>
 #include <frc/MathUtil.h>
 #include <frc/TimedRobot.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 
 #define frcLog frc::DataLogManager::DataLogManager
 wpi::log::StringLogEntry m_log;
@@ -196,7 +195,7 @@ void Robot::TeleopPeriodic() {
       std::vector<bool> x_orien, y_orien;
       std::vector<double> avg = {0.0, 0.0};
       int idxFA = 0,
-             // furtherest away point index
+          // furtherest away point index
           length = coneCornerXy.size();
       frc::SmartDashboard::PutNumber("Corner Arr Length", length);
       double FADist = 0, idx = 0;
@@ -730,7 +729,6 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
     setLeds("Black");
 }
 
-#define pumpOut frc::SmartDashboard::PutNumber
 void Robot::getPowerDistribution() {
   frc::PowerDistribution bd =
       frc::PowerDistribution(20, frc::PowerDistribution::ModuleType::kRev);

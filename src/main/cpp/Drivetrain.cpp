@@ -7,7 +7,6 @@
 
 #include <frc/Timer.h>
 #include <frc/smartdashboard/Field2d.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 
 void Drivetrain::Drive(units::meters_per_second_t xSpeed,
                        units::meters_per_second_t ySpeed,
@@ -134,8 +133,6 @@ void Drivetrain::setTrajCon() {
 }
 
 void Drivetrain::autoBalance() {
-  // double gV[3];
-  //  change these two
   double RampZ = 8;
   double balancedZ = 5;  // 5 works for dock
   double fastSpeed = 0.5;
@@ -146,13 +143,6 @@ void Drivetrain::autoBalance() {
   double zeroSpeedrot = 0;
   double vector = .99;
   frc::SmartDashboard::PutNumber("RampState", rampState);
-  /*if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK) {
-    // vector towards the ground
-    // frc::SmartDashboard::PutNumber("GV Gravity Vector X", gV[0]);
-    // frc::SmartDashboard::PutNumber("GV Gravity Vector Y", gV[1]);
-    frc::SmartDashboard::PutNumber("GV Gravity Vector Z", gV[2]);
-    vector = gV[2];
-  }*/
   vector = m_gyro.GetRoll();
   frc::SmartDashboard::PutNumber("Vector", vector);
   switch (rampState) {
@@ -281,16 +271,9 @@ void Drivetrain::autoBalance() {
   }*/
 }
 
-#include <frc/smartdashboard/SmartDashboard.h>
-#define pumpOut frc::SmartDashboard::PutNumber
 void Drivetrain::pumpOutSensorVal() {
-  double curGyro = m_gyro.GetAngle();
-  // double gV[3];
-
-  pumpOut("Gyro angle", curGyro);
+  pumpOut("Gyro angle", m_gyro.GetAngle());
   pumpOut("Gyro Roll", m_gyro.GetRoll());
-  // if (m_gyro.GetGravityVector(gV) == ctre::phoenix::ErrorCode::OK)
-  //   pumpOut("GV Gravity Vector Z", gV[2]);
 }
 
 bool Drivetrain::isGyroWorking() {

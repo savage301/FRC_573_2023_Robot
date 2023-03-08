@@ -22,6 +22,7 @@
 #include <numbers>
 
 #include "ctre/Phoenix.h"
+#include "def.h"
 
 class SwerveModule {
  public:

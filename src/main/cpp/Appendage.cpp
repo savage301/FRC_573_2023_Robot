@@ -238,8 +238,6 @@ bool Appendage::wristPID(double tar) {
     return false;
 }
 
-#include <frc/smartdashboard/SmartDashboard.h>
-#define pumpOut frc::SmartDashboard::PutNumber
 void Appendage::pumpOutSensorVal() {
   double armCur = arm_Encoder->GetPosition();
   double wristCur = wrist_Encoder->GetDistance();

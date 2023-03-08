@@ -6,11 +6,8 @@
 #include "SwerveModule.h"
 
 #include <frc/geometry/Rotation2d.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 
 #include <numbers>
-
-#define pumpOut frc::SmartDashboard::PutNumber
 
 SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
                            int turningEncoderChannel)
@@ -79,7 +76,7 @@ void SwerveModule::SetDesiredState(
       pumpOut("Turn Encoder FL", m_turningEncoder.GetAbsolutePosition());
       pumpOut("fl vol output", driveOutput);
       pumpOut("fl measured speed", m_driveEncoder.GetVelocity());
-      frc::SmartDashboard::PutNumber(
+      /*frc::SmartDashboard::PutNumber(
           "DrivePCF",
           m_driveEncoder
               .GetPositionConversionFactor());  // temp to just confirm should
@@ -89,6 +86,7 @@ void SwerveModule::SetDesiredState(
           m_driveEncoder
               .GetVelocityConversionFactor());  // temp to just confirm should
                                                 // be ~0.00078771358
+       */
       break;
     case 4:
       pumpOut("Drive Encoder FR", m_driveEncoder.GetPosition());

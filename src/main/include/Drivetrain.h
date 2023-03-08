@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "SwerveModule.h"
+#include "def.h"
 
 /**
  * Represents a swerve drive style drivetrain.
