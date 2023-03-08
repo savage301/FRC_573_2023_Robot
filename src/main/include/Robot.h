@@ -100,6 +100,7 @@ class Robot : public frc::TimedRobot {
   const std::string kAutonPaths8 = "Basic Red Left Left";
   const std::string kAutonPaths9 = "Basic Blue Right Right";
   const std::string kAutonPaths10 = "Basic Blue Left Left";
+  const std::string kAutonPaths11 = "make a turn";
   const std::string kAutonPaths5 = "Red Left 3 to CS";
   const std::string kAutonPaths6 = "Blue Left 3 to CS";
   const std::string kAutonPaths1 = "Red Right 6 to 7";
@@ -208,5 +209,6 @@ class Robot : public frc::TimedRobot {
   void driveToCS(bool isBlue);
   void driveToCSsimple(bool isBlue);
   void basicAuto(bool isBlue);
+  void basicAuto2();
   void updateHasGamePiece();
 };

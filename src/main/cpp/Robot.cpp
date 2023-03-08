@@ -31,6 +31,7 @@ void Robot::RobotInit() {
   addToChooser(kAutonPaths8);
   addToChooser(kAutonPaths9);
   addToChooser(kAutonPaths10);
+  addToChooser(kAutonPaths11);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
@@ -104,6 +105,10 @@ m_autoSelected = m_chooser.GetSelected();
     m_swerve.ResetOdometry(bluePose[8]);
   else if (m_autoSelected == kAutonPaths10)
     m_swerve.ResetOdometry(bluePose[0]);
+    
+  else if (m_autoSelected == kAutonPaths11)
+
+    m_swerve.ResetOdometry(redPose[0]);
   
   //m_autoSelected =frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
   // fmt::print("Auto selected: {}\n", m_autoSelected);
@@ -156,6 +161,8 @@ frc::SmartDashboard::PutNumber("AutoState", autoState);
     basicAuto(true);
   else if (m_autoSelected == kAutonPaths10)
     basicAuto(true);
+  else if (m_autoSelected == kAutonPaths11)
+  basicAuto2();
 
 }
 
@@ -1375,6 +1382,115 @@ void Robot::basicAuto(bool isBlue) {
       m_appendage.armPID(10);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
+      break;
+    }
+  }
+}
+
+void Robot::basicAuto2() {
+  switch (autoState) {
+    case 0: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(isBlue ? blueLeftMidPose : redLeftMidPose, isBlue ? 0_deg : 180_deg);  // mid pt
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      driveWithTraj(true);
+      EstimatePose(0);
+            if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 1: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(isBlue ? blueLeftcube : redLeftcube, isBlue ? 0_deg : 180_deg);
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      driveWithTraj(true);
+      EstimatePose(2);
+            if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 2: {
+      table->PutNumber("pipeline", 2);  // Cube Pipeline
+      double tx;
+      bool validTarFnd = validTarget.Get() > 0;
+      if (validTarFnd) {
+        tx = table->GetNumber("tx", 0.0);
+        tx *= -.01;
+      }
+      m_swerve.DriveWithJoystick(-.6, 0, validTarFnd ? tx : 0, false, false,false);
+      EstimatePose(2);
+      if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 3: {
+      table->PutNumber("pipeline", 0);  // April Tag Pipeline
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(isBlue ? blueLeftMidPose : redLeftMidPose, isBlue ? 0_deg : 180_deg);  // mid pt
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      driveWithTraj(true);
+      EstimatePose(0);
+            if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 4: {
+      if (firstTime) {
+        trajectoryPP_ = pathGenerate(1);
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      driveWithTraj(true);
+      EstimatePose(0);
+      if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 5: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,false);
+      EstimatePose(0);
+      if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 6: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,false);
+      EstimatePose(0);
+      if (m_timer.Get().value() > .5) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    default: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false,false);
+      EstimatePose(0);
       break;
     }
   }
