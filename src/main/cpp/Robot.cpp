@@ -195,22 +195,23 @@ void Robot::TeleopPeriodic() {
       std::vector<double> coneCornerXy = cornerXy.Get();
       std::vector<bool> x_orien, y_orien;
       std::vector<double> avg = {0.0, 0.0};
-      int i, idxFA = 0,
+      int idxFA = 0,
              // furtherest away point index
           length = coneCornerXy.size();
       frc::SmartDashboard::PutNumber("Corner Arr Length", length);
-      double FADist = 0;
-      for (i = 0; i < length;
+      double FADist = 0, idx = 0;
+      for (int i = 0; i < length;
            i += 2)  // Calculate avg point location from cornerXy
       {
         avg[0] += coneCornerXy[i];
         avg[1] += coneCornerXy[i + 1];
+        idx = i;
       }
-      avg[0] /= (.5 * i);
-      avg[1] /= (.5 * i);
+      avg[0] /= (.5 * idx);
+      avg[1] /= (.5 * idx);
       frc::SmartDashboard::PutNumber("avg x", avg[0]);
       frc::SmartDashboard::PutNumber("avg y", avg[1]);
-      for (i = 0; i < length;
+      for (int i = 0; i < length;
            i += 2)  // Determine point in cornerXy furthest from the average
                     // point location in cornerXy
       {
@@ -223,7 +224,7 @@ void Robot::TeleopPeriodic() {
         }
       }
       frc::SmartDashboard::PutNumber("index of FA", idxFA);
-      for (i = 0; i < length;
+      for (int i = 0; i < length;
            i += 2)  // Determine if furthest away point is + or - from all other
                     // points in x and y in cornerXy
       {
@@ -236,8 +237,8 @@ void Robot::TeleopPeriodic() {
           y_orien.push_back(y > 0);
         }
       }
-      uint y_true = 0, y_false = 0, j;
-      for (j = 0; j < y_orien.size();
+      uint y_true = 0, y_false = 0;
+      for (uint j = 0; j < y_orien.size();
            j++) {  // Determine if the furthest point is above or below all
                    // other points in Y direction in cornerXy
         if (y_orien[j] == true)
@@ -255,7 +256,7 @@ void Robot::TeleopPeriodic() {
         curFA_Pos = Robot::fA_Pos::top;
 
       uint x_true = 0, x_false = 0;
-      for (j = 0; j < x_orien.size();
+      for (uint j = 0; j < x_orien.size();
            j++) {  // Determine if the furthest point is to the left or the
                    // right of all other points in X direction in cornerXy
         if (x_orien[j] == true)
