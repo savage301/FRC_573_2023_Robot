@@ -51,8 +51,6 @@ void Robot::RobotInit() {
   frc::DriverStation::StartDataLog(frcLog::GetLog());
 
   compressor.EnableDigital();
-  // m_swerve.ResetOdometry(
-  //     frc::Pose2d{5_m, 5_m, 0_deg});  // flipping the robot for field setup
   frc::SmartDashboard::PutBoolean("Ignore appendage limits",
                                   m_appendage.unleashThePower);
 }
@@ -104,14 +102,8 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(bluePose[8]);
   else if (m_autoSelected == kAutonPaths10)
     m_swerve.ResetOdometry(bluePose[0]);
-
   else if (m_autoSelected == kAutonPaths11)
-
     m_swerve.ResetOdometry(redPose[0]);
-
-  // m_autoSelected =frc::SmartDashboard::GetString("Auto Selector",
-  // kAutoNameDefault);
-  //  fmt::print("Auto selected: {}\n", m_autoSelected);
 
   autoState = 0;
   isBlue = (frc::DriverStation::GetAlliance() ==
@@ -122,15 +114,6 @@ void Robot::AutonomousInit() {
   m_swerve.crossedramp = false;
   m_swerve.lastRampSide = Drivetrain::RampPos::downside;
   m_swerve.gyroSetpoint = 0;
-
-  // ---------------------------------- Trajectory Following Auto Section
-  // --------------------- Generate trajectory to follow for autonomous Start
-  // the timer.
-  // m_timer.Start();
-
-  // Send Field2d to SmartDashboard.
-  // frc::SmartDashboard::PutData(&m_field);
-
   // ----------------------------------------------------------------------------------------
 }
 
@@ -202,16 +185,6 @@ void Robot::TeleopPeriodic() {
       "m_timer",
       m_timer.Get()
           .value());  // This will allow us to debug the auto drive code.*/
-  // Removed as these claws are no longer being used
-  /*if (m_controller1.GetLeftBumper())
-    m_appendage.frontClawPneumaticsOut();
-  else
-    m_appendage.frontClawPneumaticsIn();
-
-  if (m_controller1.GetRightBumper())
-    m_appendage.backClawPneumaticsOut();
-  else
-    m_appendage.backClawPneumaticsIn();*/
 
   bool validTarFnd = validTarget.Get() > 0;
 
