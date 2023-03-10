@@ -53,10 +53,10 @@ class Robot : public frc::TimedRobot {
   frc::Field2d m_field;
   frc::Field2d field_off;
 
-  frc2::PIDController X_PIDController{1.0, 0, 0};
-  frc2::PIDController Y_PIDController{1.0, 0, 0};
+  frc2::PIDController X_PIDController{0.03, 0, 0};
+  frc2::PIDController Y_PIDController{0.03, 0, 0};
   frc::ProfiledPIDController<units::radians> theta_PIDController{
-      1, 0.0, 0.0, {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
+      2.5, 0.0, 0.0, {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
 
   // Swerve Controller to follow the trajectory
   frc::HolonomicDriveController m_holonmicController =
@@ -118,6 +118,9 @@ class Robot : public frc::TimedRobot {
 #define poseBlueMid(y) pose1(-5.09_m, y)
 #define poseRedCubes_(y) poseCubes(1.2_m, y)
 #define poseBlueCubes_(y) poseCubes(-1.2_m, y)
+
+frc::Pose2d poseTestStart = pose1(6.41_m, -1.5_m);
+frc::Pose2d poseTestEnd = pose1(3.4_m, -1.5_m);
 
   std::vector<frc::Pose2d> redPose = {                     // slot num
                                       poseRed(-3.5_m),     // 0

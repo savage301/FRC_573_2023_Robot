@@ -102,7 +102,7 @@ void Robot::AutonomousInit() {
   else if (m_autoSelected == kAutonPaths10)
     m_swerve.ResetOdometry(bluePose[0]);
   else if (m_autoSelected == kAutonPaths11)
-    m_swerve.ResetOdometry(redPose[0]);
+    m_swerve.ResetOdometry(poseTestStart);
 
   autoState = 0;
   isBlue = (frc::DriverStation::GetAlliance() ==
@@ -655,8 +655,8 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(frc::Pose2d tarPose,
 
   frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-      pathplanner::PathConstraints(m_swerve.kMaxSpeed,
-                                   m_swerve.kMaxAcceleration),
+      pathplanner::PathConstraints(m_swerve.kMaxSpeedAuto,
+                                   m_swerve.kMaxAccelerationAuto),
       pathplanner::PathPoint(
           m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
           frc::Rotation2d(
@@ -675,7 +675,7 @@ void Robot::driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
 
   // Send our generated trajectory to Dashboard Field Object
   field_off.GetObject("traj")->SetTrajectory(trajectory_.RelativeTo(offPose));
-  // frc::SmartDashboard::PutData(&field_off);
+  //frc::SmartDashboard::PutData(&field_off);
 
   // Start the timer for trajectory following.
   m_timer.Reset();
@@ -683,12 +683,13 @@ void Robot::driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
 }
 
 void Robot::driveWithTraj(bool auton) {
+
   if (m_timer.Get() < trajectory_.TotalTime()) {
     auto desiredState = trajectory_.Sample(
         m_timer.Get());  // Get the desired pose from the trajectory.
-
+pumpOut("desired rot", desiredState.pose.Rotation().Degrees().value());
     auto refChassisSpeeds = m_holonmicController.Calculate(
-        m_swerve.GetPose(), desiredState, frc::Rotation2d(0_deg));
+        m_swerve.GetPose(), desiredState, desiredState.pose.Rotation());
 
     frc::SmartDashboard::PutNumber("pose x", m_swerve.GetPose().X().value());
     frc::SmartDashboard::PutNumber("desired pose x",
@@ -1361,105 +1362,13 @@ void Robot::basicAuto2() {
   switch (autoState) {
     case 0: {
       if (firstTime) {
-        trajectoryPP_ = pathGenerate(isBlue ? blueLeftMidPose : redLeftMidPose,
-                                     isBlue ? 0_deg : 180_deg);  // mid pt
+        trajectoryPP_ = pathGenerate(poseTestEnd,
+                                     frc::Rotation2d(180_deg));  // mid pt
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
       driveWithTraj(true);
       EstimatePose(0);
-      if (m_timer.Get().value() > .5) {
-        m_timer.Reset();
-        m_timer.Start();
-        autoState++;
-      }
-      break;
-    }
-    case 1: {
-      if (firstTime) {
-        trajectoryPP_ = pathGenerate(isBlue ? blueLeftcube : redLeftcube,
-                                     isBlue ? 0_deg : 180_deg);
-        driveWithTraj(trajectoryPP_, offPose);
-      }
-      firstTime = false;
-      driveWithTraj(true);
-      EstimatePose(2);
-      if (m_timer.Get().value() > .5) {
-        m_timer.Reset();
-        m_timer.Start();
-        autoState++;
-      }
-      break;
-    }
-    case 2: {
-      table->PutNumber("pipeline", 2);  // Cube Pipeline
-      double tx;
-      bool validTarFnd = validTarget.Get() > 0;
-      if (validTarFnd) {
-        tx = table->GetNumber("tx", 0.0);
-        tx *= -.01;
-      }
-      m_swerve.DriveWithJoystick(-.6, 0, validTarFnd ? tx : 0, false, false,
-                                 false);
-      EstimatePose(2);
-      if (m_timer.Get().value() > .5) {
-        m_timer.Reset();
-        m_timer.Start();
-        autoState++;
-      }
-      break;
-    }
-    case 3: {
-      table->PutNumber("pipeline", 0);  // April Tag Pipeline
-      if (firstTime) {
-        trajectoryPP_ = pathGenerate(isBlue ? blueLeftMidPose : redLeftMidPose,
-                                     isBlue ? 0_deg : 180_deg);  // mid pt
-        driveWithTraj(trajectoryPP_, offPose);
-      }
-      firstTime = false;
-      driveWithTraj(true);
-      EstimatePose(0);
-      if (m_timer.Get().value() > .5) {
-        m_timer.Reset();
-        m_timer.Start();
-        autoState++;
-      }
-      break;
-    }
-    case 4: {
-      if (firstTime) {
-        trajectoryPP_ = pathGenerate(1);
-        driveWithTraj(trajectoryPP_, offPose);
-      }
-      firstTime = false;
-      driveWithTraj(true);
-      EstimatePose(0);
-      if (m_timer.Get().value() > .5) {
-        m_timer.Reset();
-        m_timer.Start();
-        autoState++;
-      }
-      break;
-    }
-    case 5: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
-      EstimatePose(0);
-      if (m_timer.Get().value() > .5) {
-        m_timer.Reset();
-        m_timer.Start();
-        autoState++;
-      }
-      break;
-    }
-    case 6: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
-      EstimatePose(0);
-      if (m_timer.Get().value() > .5) {
-        m_timer.Reset();
-        m_timer.Start();
-        autoState++;
-      }
-
       break;
     }
     default: {
