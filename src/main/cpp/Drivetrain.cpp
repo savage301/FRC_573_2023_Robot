@@ -287,8 +287,8 @@ bool Drivetrain::isGyroWorking() {
   return false;
 }
 
-void Drivetrain::resetGyro() {
-  m_gyro.SetYaw(0, 0);
+void Drivetrain::resetGyro(double angle) {
+  m_gyro.SetYaw(angle, 0);
 }
 
 void Drivetrain::updateGyroAngle() {

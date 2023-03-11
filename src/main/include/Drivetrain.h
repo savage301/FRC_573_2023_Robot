@@ -94,7 +94,7 @@ class Drivetrain {
 
   bool isGyroWorking();
 
-  void resetGyro();
+  void resetGyro(double angle);
 
   void updateGyroAngle();
 

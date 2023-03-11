@@ -53,10 +53,10 @@ class Robot : public frc::TimedRobot {
   frc::Field2d m_field;
   frc::Field2d field_off;
 
-  frc2::PIDController X_PIDController{0.03, 0, 0};
+  frc2::PIDController X_PIDController{-0.03, 0, 0};
   frc2::PIDController Y_PIDController{0.03, 0, 0};
   frc::ProfiledPIDController<units::radians> theta_PIDController{
-      2.5, 0.0, 0.0, {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
+      -2.5, 0.0, 0.0, {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
 
   // Swerve Controller to follow the trajectory
   frc::HolonomicDriveController m_holonmicController =
@@ -108,6 +108,7 @@ class Robot : public frc::TimedRobot {
   std::shared_ptr<nt::NetworkTable> table;
 
 #define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
+#define pose_(x, y, o) frc::Pose2d(x, y, frc::Rotation2d(o))
 #define pose2(x, y) frc::Pose2d(x, y, frc::Rotation2d(180_deg))
 #define poseCubes(x, y) \
   frc::Pose2d(x, y, frc::Rotation2d(180_deg))  // facing away from the wall
@@ -119,8 +120,9 @@ class Robot : public frc::TimedRobot {
 #define poseRedCubes_(y) poseCubes(1.2_m, y)
 #define poseBlueCubes_(y) poseCubes(-1.2_m, y)
 
-frc::Pose2d poseTestStart = pose1(6.41_m, -1.5_m);
-frc::Pose2d poseTestEnd = pose1(3.4_m, -1.5_m);
+  frc::Pose2d poseTestStart = pose_(6.41_m, -1.5_m, -180_deg);
+  frc::Pose2d poseTestEnd = pose_(3.4_m, -1.5_m, -180_deg);
+  frc::Pose2d botTestStart = pose_(6.41_m, -1.5_m, 0_deg);
 
   std::vector<frc::Pose2d> redPose = {                     // slot num
                                       poseRed(-3.5_m),     // 0
@@ -177,6 +179,10 @@ frc::Pose2d poseTestEnd = pose1(3.4_m, -1.5_m);
   pathplanner::PathPlannerTrajectory pathGenerate(int slot);
   pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d tarPose,
                                                   frc::Rotation2d angle);
+  pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d startPose,
+                                                  frc::Pose2d tarPose,
+                                                  frc::Rotation2d angle);
+  pathplanner::PathPlannerTrajectory pathLoad(std::string path);
   void driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
                      frc::Pose2d offPose);
   void driveWithTraj(bool auton);
