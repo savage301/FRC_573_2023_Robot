@@ -56,7 +56,7 @@ class Robot : public frc::TimedRobot {
   frc2::PIDController X_PIDController{-0.03, 0, 0};
   frc2::PIDController Y_PIDController{0.03, 0, 0};
   frc::ProfiledPIDController<units::radians> theta_PIDController{
-      -2.5, 0.0, 0.0, {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
+      2.5, 0.0, 0.0, {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
 
   // Swerve Controller to follow the trajectory
   frc::HolonomicDriveController m_holonmicController =
@@ -85,6 +85,7 @@ class Robot : public frc::TimedRobot {
   const std::string kAutonPaths9 = "Basic Blue Right Right";
   const std::string kAutonPaths10 = "Basic Blue Left Left";
   const std::string kAutonPaths11 = "make a turn";
+  const std::string kAutonPaths12 = "two gp";
   const std::string kAutonPaths5 = "Red Left 3 to CS";
   const std::string kAutonPaths6 = "Blue Left 3 to CS";
   const std::string kAutonPaths1 = "Red Right 6 to 7";
@@ -206,4 +207,5 @@ class Robot : public frc::TimedRobot {
   void basicAuto(bool isBlue);
   void basicAuto2();
   void updateHasGamePiece();
+  void twoGPAuto();
 };

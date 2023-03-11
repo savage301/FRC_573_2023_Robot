@@ -31,6 +31,7 @@ void Robot::RobotInit() {
   addToChooser(kAutonPaths9);
   addToChooser(kAutonPaths10);
   addToChooser(kAutonPaths11);
+  addToChooser(kAutonPaths12);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
@@ -104,7 +105,8 @@ void Robot::AutonomousInit() {
   else if (m_autoSelected == kAutonPaths11) {
     m_swerve.ResetOdometry(botTestStart);
     m_swerve.resetGyro(0);
-  }
+  } else if (m_autoSelected == kAutonPaths12)
+  m_swerve.ResetOdometry(redPose[6]);
 
   autoState = 0;
   isBlue = (frc::DriverStation::GetAlliance() ==
@@ -146,6 +148,9 @@ void Robot::AutonomousPeriodic() {
     basicAuto(true);
   else if (m_autoSelected == kAutonPaths11)
     basicAuto2();
+  else if (m_autoSelected == kAutonPaths12)
+    twoGPAuto();
+
 }
 
 void Robot::TeleopInit() {
@@ -1399,6 +1404,27 @@ void Robot::basicAuto2() {
     case 0: {
       if (firstTime) {
         trajectoryPP_ = pathLoad("turn");  // mid pt
+        driveWithTraj(trajectoryPP_, offPose);
+      }
+      firstTime = false;
+      driveWithTraj(true);
+      EstimatePose(0);
+      break;
+    }
+    default: {
+      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
+      EstimatePose(0);
+      break;
+    }
+  }
+}
+
+
+void Robot::twoGPAuto() {
+  switch (autoState) {
+    case 0: {
+      if (firstTime) {
+        trajectoryPP_ = pathLoad("2-N2P");  // mid pt
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;

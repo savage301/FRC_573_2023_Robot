@@ -23,6 +23,34 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/edge analog",
+              "_title": "/SmartDashboard/edge analog",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Claw 1 AnalogInput",
+              "_title": "/SmartDashboard/Claw 1 AnalogInput",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -306,7 +334,7 @@
           },
           "2,0": {
             "size": [
-              4,
+              5,
               3
             ],
             "content": {
