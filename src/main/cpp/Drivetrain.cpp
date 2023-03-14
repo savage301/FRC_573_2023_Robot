@@ -137,7 +137,7 @@ void Drivetrain::autoBalance() {
   double balancedZ = 5;  // 5 works for dock
   double fastSpeed = 0.5;
   double midSpeed = 0.045;
-  double slowSpeed = .045;
+  //double slowSpeed = .045;
   double slowestSpeed = 0.03;
   double zeroSpeed = 0;
   double zeroSpeedrot = 0;
@@ -145,6 +145,7 @@ void Drivetrain::autoBalance() {
   frc::SmartDashboard::PutNumber("RampState", rampState);
   vector = m_gyro.GetRoll();
   frc::SmartDashboard::PutNumber("Vector", vector);
+  double coeff = vector / std::abs(vector);
   switch (rampState) {
     case 0: {
       DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
@@ -154,7 +155,8 @@ void Drivetrain::autoBalance() {
       break;
     }
     case 1: {
-      DriveWithJoystick(-midSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      DriveWithJoystick(coeff * midSpeed, zeroSpeed, zeroSpeedrot, true, false,
+                        true);
       if (std::abs(vector) < balancedZ) {
         counter = 0;
         rampState++;
@@ -163,43 +165,15 @@ void Drivetrain::autoBalance() {
     }
     case 2: {
       if (counter < 5) {
-        DriveWithJoystick(zeroSpeed, zeroSpeed, 0.025, true, false, false);
+        DriveWithJoystick(coeff * slowestSpeed, zeroSpeed, zeroSpeedrot, true,
+                          false, false);
         counter++;
       } else {
         DriveWithJoystick(zeroSpeed, zeroSpeed, zeroSpeedrot, true, false,
                           true);
       }
       if (std::abs(vector) > RampZ)
-        rampState++;
-      break;
-    }
-    case 3: {
-      DriveWithJoystick(slowSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
-      if (std::abs(vector) < balancedZ) {
-        rampState++;
-        counter = 0;
-      }
-      break;
-    }
-    case 4: {
-      if (counter < 5) {
-        DriveWithJoystick(zeroSpeed, zeroSpeed, 0.025, true, false, false);
-        counter++;
-      } else {
-        DriveWithJoystick(zeroSpeed, zeroSpeed, zeroSpeedrot, true, false,
-                          true);
-      }
-      if (std::abs(vector) > RampZ)
-        rampState++;
-      break;
-    }
-    case 5: {
-      DriveWithJoystick(-slowestSpeed, zeroSpeed, zeroSpeedrot, true, false,
-                        true);
-      if (std::abs(vector) < balancedZ) {
-        rampState++;
-        counter = 0;
-      }
+        rampState--;
       break;
     }
     default: {
