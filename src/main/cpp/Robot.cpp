@@ -397,6 +397,19 @@ void Robot::TeleopPeriodic() {
         m_controller1.GetLeftTriggerAxis() > 0.5 ? true : false,
         m_controller1.GetRightTriggerAxis() > 0.5 ? true : false);
   }
+  frc::SmartDashboard::PutNumber("test x speed", 0);
+  frc::SmartDashboard::PutNumber("test y speed", 0);
+  frc::SmartDashboard::PutNumber("test rot", 0);
+
+  if (m_controllerTest.GetLeftTriggerAxis() > 0)
+    m_swerve.Drive(
+        units::velocity::meters_per_second_t(frc::SmartDashboard::GetNumber(
+            "test x speed", m_swerve.kMaxSpeed.value())),
+        units::velocity::meters_per_second_t(frc::SmartDashboard::GetNumber(
+            "test y speed", m_swerve.kMaxSpeed.value())),
+        units::angular_velocity::radians_per_second_t(
+            frc::SmartDashboard::GetNumber("test rot", 0)),
+        false);
   // ---- End Drive Code -----------------------------------------------
 
   // ---- Robot Pose Generation Code -----------------------------------

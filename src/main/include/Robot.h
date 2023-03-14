@@ -43,6 +43,7 @@ class Robot : public frc::TimedRobot {
   Led m_leds;
   frc::XboxController m_controller1{0};
   frc::XboxController m_controller2{1};
+  frc::XboxController m_controllerTest{2};
 
   // -------------- Added for Auto------------------------------
   pathplanner::PathPlannerTrajectory trajectoryPP_;
