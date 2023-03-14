@@ -15,6 +15,7 @@
 #include <numbers>
 
 #include "def.h"
+#include "setpoints.h"
 
 class Appendage {
  public:
@@ -95,16 +96,6 @@ class Appendage {
 
   int m_wristMotorId = 18;
   int p_pcmId = 19;
-
-  // Appendage Encoder Limits
-  double shoulder_max = 0.0;
-  double shoulder_min = -2000.0;
-
-  double arm_max = -5;
-  double arm_min = -220.0;
-
-  double wrist_max = 3000.0;
-  double wrist_min = 0.0;
 
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;

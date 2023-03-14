@@ -137,7 +137,7 @@ void Drivetrain::autoBalance() {
   double balancedZ = 5;  // 5 works for dock
   double fastSpeed = 0.5;
   double midSpeed = 0.045;
-  //double slowSpeed = .045;
+  // double slowSpeed = .045;
   double slowestSpeed = 0.03;
   double zeroSpeed = 0;
   double zeroSpeedrot = 0;
