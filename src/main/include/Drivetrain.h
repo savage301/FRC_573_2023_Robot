@@ -101,7 +101,7 @@ class Drivetrain {
   double gryoStablize();
   double gyroSetpoint;
 
-  void resetDrivetrain();
+  void resetDrivetrain(bool auton);
 
  private:
   frc::Translation2d m_frontLeftLocation{+0.3175_m, +0.27305_m};

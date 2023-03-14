@@ -111,3 +111,8 @@ void SwerveModule::resetEnc() {
       units::radian_t{m_turningEncoder.GetAbsolutePosition()}, 0_rad);
   m_turningMotor.SetVoltage(units::volt_t{turnOutput});
 }
+
+void SwerveModule::switchIdleMode(bool auton) {
+  m_driveMotor.SetIdleMode(auton ? rev::CANSparkMax::IdleMode::kBrake
+                                 : rev::CANSparkMax::IdleMode::kCoast);
+}

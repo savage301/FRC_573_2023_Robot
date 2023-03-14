@@ -276,9 +276,13 @@ double Drivetrain::gryoStablize() {
   return out;
 }
 
-void Drivetrain::resetDrivetrain() {
+void Drivetrain::resetDrivetrain(bool auton) {
   m_frontLeft.resetEnc();
   m_frontRight.resetEnc();
   m_backLeft.resetEnc();
   m_backRight.resetEnc();
+  m_frontLeft.switchIdleMode(auton);
+  m_frontRight.switchIdleMode(auton);
+  m_backLeft.switchIdleMode(auton);
+  m_backRight.switchIdleMode(auton);
 }
