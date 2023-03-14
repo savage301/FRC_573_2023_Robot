@@ -87,7 +87,6 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(bluePose[6]);
   else if (m_autoSelected == kAutonPaths4)
     m_swerve.ResetOdometry(bluePose[2]);
-
   else if (m_autoSelected == kAutonPaths5)
     m_swerve.ResetOdometry(redPose[3]);
   else if (m_autoSelected == kAutonPaths6)
@@ -100,11 +99,10 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(bluePose[8]);
   else if (m_autoSelected == kAutonPaths10)
     m_swerve.ResetOdometry(bluePose[0]);
-  else if (m_autoSelected == kAutonPaths11) {
+  else if (m_autoSelected == kAutonPaths11)
     m_swerve.ResetOdometry(botTestStart);
-    m_swerve.resetGyro(0);
-  } else if (m_autoSelected == kAutonPaths12)
-  m_swerve.ResetOdometry(redPose[6]);
+  else if (m_autoSelected == kAutonPaths12)
+    m_swerve.ResetOdometry(redPose[6]);
 
   autoState = 0;
   isBlue = (frc::DriverStation::GetAlliance() ==
@@ -148,7 +146,6 @@ void Robot::AutonomousPeriodic() {
     basicAuto2();
   else if (m_autoSelected == kAutonPaths12)
     twoGPAuto();
-
 }
 
 void Robot::TeleopInit() {
@@ -1398,6 +1395,7 @@ void Robot::basicAuto(bool isBlue) {
 }
 
 void Robot::basicAuto2() {
+  m_swerve.resetGyro(0);
   switch (autoState) {
     case 0: {
       if (firstTime) {
@@ -1416,7 +1414,6 @@ void Robot::basicAuto2() {
     }
   }
 }
-
 
 void Robot::twoGPAuto() {
   switch (autoState) {
