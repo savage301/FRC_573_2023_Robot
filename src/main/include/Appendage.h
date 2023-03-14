@@ -73,10 +73,6 @@ class Appendage {
   bool getWristWorking();
   bool getAnalogWorking();
 
-  void frontClawPneumaticsIn();
-  void frontClawPneumaticsOut();
-  void backClawPneumaticsIn();
-  void backClawPneumaticsOut();
   double getClaw1();
   double getClaw2();
 

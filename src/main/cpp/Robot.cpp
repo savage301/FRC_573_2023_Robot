@@ -16,8 +16,6 @@ wpi::log::StringLogEntry m_log;
 
 void Robot::RobotInit() {
   m_appendage.pneumaticsOut();
-  m_appendage.frontClawPneumaticsIn();
-  m_appendage.backClawPneumaticsIn();
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   addToChooser(kAutoNameCustom);
   addToChooser(kAutonPaths1);
