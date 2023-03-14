@@ -451,9 +451,9 @@ void Robot::TeleopPeriodic() {
     m_appendage.shoulderPID(shoulderFloor + trim);
 
     if (m_controller2.GetLeftBumper() || tarGamePiece == Robot::GamePiece::cube)
-      m_appendage.wristPID(wristHome);
+      m_appendage.wristPID(wristFloorCube);
     else
-      m_appendage.wristPID(wristFloor);
+      m_appendage.wristPID(wristFloorCone);
 
   } else if (m_controller2.GetBButton() && hasGamePiece) {
     // Mid Level Scoring Location
@@ -470,7 +470,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.shoulderPID(shoulderMidCube + trim);
     }
 
-    m_appendage.wristPID(wristHome);
+    m_appendage.wristPID(wristHigh);
 
   } else if (m_controller2.GetYButton() && hasGamePiece) {
     // Upper Level Scoring
@@ -524,7 +524,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.shoulderPID(shoulderHumanLowCube + trim);
     }
 
-    m_appendage.wristPID(wristHome);
+    m_appendage.wristPID(wristHumanLow);
 
   } else if (m_controller2.GetYButton() && !hasGamePiece) {
     // End field Human Player Loading Location
@@ -552,7 +552,7 @@ void Robot::TeleopPeriodic() {
     // Store Position possible from with or without gamepiece
     m_appendage.armPID(armHome);
     m_appendage.shoulderPID(shoulderHome);  // Stored Position
-    m_appendage.wristPID(100);
+    m_appendage.wristPID(wristHome);
   } else {
     // Arm
     // if going up and is closer to the lim
@@ -924,7 +924,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       }
       firstTime = false;
       m_appendage.armPID(armHome);
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.frontRollerOff();
       m_appendage.backRollerOff();
@@ -940,7 +940,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       }
       firstTime = false;
       m_appendage.armPID(armHome);
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.frontRollerOff();
       m_appendage.backRollerOff();
@@ -987,7 +987,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
     default: {
       m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
       EstimatePose(0);
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
@@ -1140,7 +1140,7 @@ void Robot::driveToCS(bool isBlue) {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(wristHome);
+      bool wristReady = m_appendage.wristPID(wristHigh);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
       if (wristReady && shoulderReady)
@@ -1175,7 +1175,7 @@ void Robot::driveToCS(bool isBlue) {
       bool wristReady = false;
       bool shoulderReady = false;
       if (armReady) {
-        wristReady = m_appendage.wristPID(100);
+        wristReady = m_appendage.wristPID(wristHome);
         shoulderReady = m_appendage.shoulderPID(shoulderHome);
       } else {
         m_appendage.wristPID(wristHome);
@@ -1199,7 +1199,7 @@ void Robot::driveToCS(bool isBlue) {
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
@@ -1215,7 +1215,7 @@ void Robot::driveToCS(bool isBlue) {
     default: {
       m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
       EstimatePose(0);
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
@@ -1239,7 +1239,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(wristHome);
+      bool wristReady = m_appendage.wristPID(wristHigh);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
       if (wristReady && shoulderReady)
@@ -1256,7 +1256,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       break;
     }
     case 1: {
-      m_appendage.wristPID(wristHome);
+      m_appendage.wristPID(wristHigh);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
       m_appendage.backRollerOut();
@@ -1274,7 +1274,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       bool wristReady = false;
       bool shoulderReady = false;
       if (armReady) {
-        wristReady = m_appendage.wristPID(100);
+        wristReady = m_appendage.wristPID(wristHome);
         shoulderReady = m_appendage.shoulderPID(shoulderHome);
       } else {
         m_appendage.wristPID(wristHome);
@@ -1291,7 +1291,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       break;
     }
     case 3:
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
@@ -1302,7 +1302,7 @@ void Robot::driveToCSsimple(bool isBlue) {
     default: {
       m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
       EstimatePose(0);
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
@@ -1318,7 +1318,7 @@ void Robot::basicAuto(bool isBlue) {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
       EstimatePose(0);
-      bool wristReady = m_appendage.wristPID(wristHome);
+      bool wristReady = m_appendage.wristPID(wristHigh);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
       if (wristReady && shoulderReady)
@@ -1335,7 +1335,7 @@ void Robot::basicAuto(bool isBlue) {
       break;
     }
     case 1: {
-      m_appendage.wristPID(wristHome);
+      m_appendage.wristPID(wristHigh);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
       m_appendage.backRollerOut();
@@ -1353,10 +1353,10 @@ void Robot::basicAuto(bool isBlue) {
       bool wristReady = false;
       bool shoulderReady = false;
       if (armReady) {
-        wristReady = m_appendage.wristPID(100);
+        wristReady = m_appendage.wristPID(wristHome);
         shoulderReady = m_appendage.shoulderPID(shoulderHome);
       } else {
-        m_appendage.wristPID(wristHome);
+        m_appendage.wristPID(wristHigh);
         m_appendage.shoulderPID(shoulderHighCone);
       }
       m_appendage.backRollerOff();
@@ -1370,7 +1370,7 @@ void Robot::basicAuto(bool isBlue) {
       break;
     }
     case 3:
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
@@ -1387,7 +1387,7 @@ void Robot::basicAuto(bool isBlue) {
     default: {
       m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
       EstimatePose(0);
-      m_appendage.wristPID(100);
+      m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();

@@ -30,9 +30,10 @@ const double shoulderHighCone = -609;
 const double shoulderHumanLowCube = -881;
 const double shoulderHumanLowCone = -1250;
 
-const double wristHome = 3000;
+const double wristHome = 100;
 const double wristFloorCube = 1900;
 const double wristFloorCone = 1539;
 const double wristFloor = 1326;
 // const double wristMid = ;
-// const double wristHigh = ;
+const double wristHigh = 3000;
+const double wristHumanLow = 3000;
