@@ -31,6 +31,7 @@ class SwerveModule {
   frc::SwerveModuleState GetState();
   frc::SwerveModulePosition GetPosition();
   void SetDesiredState(const frc::SwerveModuleState& state);
+  void resetEnc();
 
  private:
   static constexpr double kWheelRadius = 0.0508;

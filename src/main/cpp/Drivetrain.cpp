@@ -301,3 +301,10 @@ double Drivetrain::gryoStablize() {
   double out = pVal * (input - gyroSetpoint);
   return out;
 }
+
+void Drivetrain::resetDrivetrain() {
+  m_frontLeft.resetEnc();
+  m_frontRight.resetEnc();
+  m_backLeft.resetEnc();
+  m_backRight.resetEnc();
+}
