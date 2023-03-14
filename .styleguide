@@ -12,4 +12,6 @@ cppSrcFileInclude {
 modifiableFileExclude {
    gradle/
    vendordeps/
+   deploy/
+   \.json$
 }
