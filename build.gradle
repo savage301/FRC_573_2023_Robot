@@ -61,6 +61,7 @@ model {
                 }
                 exportedHeaders {
                     srcDir 'src/main/include'
+                    srcDir 'src/main/include/inc'
                 }
             }
 
