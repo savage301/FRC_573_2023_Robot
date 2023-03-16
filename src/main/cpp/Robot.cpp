@@ -403,10 +403,10 @@ void Robot::TeleopPeriodic() {
 
   if (m_controllerTest.GetLeftTriggerAxis() > 0)
     m_swerve.Drive(
-        units::velocity::meters_per_second_t(frc::SmartDashboard::GetNumber(
-            "test x speed", m_swerve.kMaxSpeed.value())),
-        units::velocity::meters_per_second_t(frc::SmartDashboard::GetNumber(
-            "test y speed", m_swerve.kMaxSpeed.value())),
+        units::velocity::meters_per_second_t(
+            frc::SmartDashboard::GetNumber("test x speed", kMaxSpeed.value())),
+        units::velocity::meters_per_second_t(
+            frc::SmartDashboard::GetNumber("test y speed", kMaxSpeed.value())),
         units::angular_velocity::radians_per_second_t(
             frc::SmartDashboard::GetNumber("test rot", 0)),
         false);
@@ -640,8 +640,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(int slot) {
   frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
 
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-      pathplanner::PathConstraints(m_swerve.kMaxSpeed,
-                                   m_swerve.kMaxAcceleration),
+      pathplanner::PathConstraints(kMaxSpeed, kMaxAcceleration),
       pathplanner::PathPoint(
           m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
           frc::Rotation2d(0_deg)),  // position, heading(direction of travel),
@@ -673,8 +672,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(
 
   frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-      pathplanner::PathConstraints(m_swerve.kMaxSpeedAuto,
-                                   m_swerve.kMaxAccelerationAuto),
+      pathplanner::PathConstraints(kMaxSpeedAuto, kMaxAccelerationAuto),
       pathplanner::PathPoint(
           m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
           frc::Rotation2d(
@@ -701,8 +699,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(
 
   frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-      pathplanner::PathConstraints(m_swerve.kMaxSpeedAuto,
-                                   m_swerve.kMaxAccelerationAuto),
+      pathplanner::PathConstraints(kMaxSpeedAuto, kMaxAccelerationAuto),
       pathplanner::PathPoint(
           startPose.Translation(), startPose.Rotation(),
           startPose.Rotation()),  // position, heading(direction of
@@ -716,8 +713,8 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(
 
 pathplanner::PathPlannerTrajectory Robot::pathLoad(std::string path) {
   trajectoryPP_ = pathplanner::PathPlanner::loadPath(
-      path, {pathplanner::PathConstraints{m_swerve.kMaxSpeedAuto,
-                                          m_swerve.kMaxAccelerationAuto}});
+      path,
+      {pathplanner::PathConstraints{kMaxSpeedAuto, kMaxAccelerationAuto}});
   return trajectoryPP_;
 }
 

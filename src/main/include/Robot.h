@@ -34,6 +34,7 @@
 #include "networktables/NetworkTableEntry.h"
 #include "networktables/NetworkTableInstance.h"
 #include "networktables/NetworkTableValue.h"
+#include "pid.h"
 #include "poses.h"
 
 class Robot : public frc::TimedRobot {
@@ -54,11 +55,6 @@ class Robot : public frc::TimedRobot {
   // Create Field2d for robot and trajectory visualizations.
   frc::Field2d m_field;
   frc::Field2d field_off;
-
-  frc2::PIDController X_PIDController{-0.03, 0, 0};
-  frc2::PIDController Y_PIDController{0.03, 0, 0};
-  frc::ProfiledPIDController<units::radians> theta_PIDController{
-      2.5, 0.0, 0.0, {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
 
   // Swerve Controller to follow the trajectory
   frc::HolonomicDriveController m_holonmicController =

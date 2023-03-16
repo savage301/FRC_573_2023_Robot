@@ -18,6 +18,7 @@
 
 #include "SwerveModule.h"
 #include "def.h"
+#include "pid.h"
 
 /**
  * Represents a swerve drive style drivetrain.
@@ -40,24 +41,6 @@ class Drivetrain {
   bool isBlue = false;
 
   frc::Pose2d GetPose() const;
-
-  static constexpr units::meters_per_second_t kMaxSpeed =
-      4.4_mps;  // 14.5 ft/s to meters per second
-
-  static constexpr units::meters_per_second_t kMaxSpeedAuto =
-      3.3_mps;  // 7.25 ft/s to meters per second
-
-  static constexpr units::radians_per_second_t kMaxAngularSpeed{
-      std::numbers::pi * 2};  // rotation per second
-
-  static constexpr auto kMaxAcceleration =
-      units::meters_per_second_squared_t(2.2);  // meters per second^2
-
-  static constexpr auto kMaxAccelerationAuto =
-      units::meters_per_second_squared_t(1.7);  // meters per second^2
-
-  static constexpr units::radians_per_second_squared_t kMaxAngularAccel{
-      std::numbers::pi};  // 1 rotation per second per second
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
   // to 1.
@@ -140,5 +123,4 @@ class Drivetrain {
       frc::Pose2d{0_m, 0_m, 0_deg},
       {0.1, 0.1, 0.1},
       {0.1, 0.1, 0.1}};
-  frc2::PIDController gyro_PIDController{0.01, 0, 0};
 };

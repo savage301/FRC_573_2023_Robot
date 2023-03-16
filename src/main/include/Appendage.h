@@ -15,6 +15,7 @@
 #include <numbers>
 
 #include "def.h"
+#include "pid.h"
 #include "setpoints.h"
 
 class Appendage {
@@ -128,11 +129,6 @@ class Appendage {
   double remapVal(double i, double threshold);
   double deadband(double i, double threshold);
   double analogToDistance(double i);
-
-  frc2::PIDController Arm_PIDController{1.0, 0, 0};
-  frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
-  frc2::PIDController Wrist_PIDController{1.0, 0, 0};
-
   double lastArm = 0;
   double lastShoulder = 0;
   double lastWrist = 0;
