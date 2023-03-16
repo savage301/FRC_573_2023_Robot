@@ -90,10 +90,6 @@ class Appendage {
   // roller
   int p_Roller1Id_a = 1;
   int p_Roller1Id_b = 0;
-  int p_RollerB_Id_a = 3;
-  int p_RollerB_Id_b = 2;
-  int p_RollerF_Id_a = 4;
-  int p_RollerF_Id_b = 5;
 
   int m_wristMotorId = 18;
   int p_pcmId = 19;
