@@ -106,7 +106,7 @@ void SwerveModule::SetDesiredState(
   }
 }
 
-void SwerveModule::resetEnc() {
+void SwerveModule::resetTurningMotorHeading() {
   const auto turnOutput = m_turningPIDController.Calculate(
       units::radian_t{m_turningEncoder.GetAbsolutePosition()}, 0_rad);
   m_turningMotor.SetVoltage(units::volt_t{turnOutput});

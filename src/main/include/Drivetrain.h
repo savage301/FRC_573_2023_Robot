@@ -66,7 +66,6 @@ class Drivetrain {
   frc::SlewRateLimiter<units::dimensionless::scalar> m_rotLimiter{3 / 1_s};
 
   frc::TrajectoryConfig auto_traj{kMaxSpeed, kMaxAcceleration};
-  // auto_traj.AddConstraints(SwerveDriveKinematicsConstraint);
 
   void setTrajCon();
 
@@ -102,6 +101,7 @@ class Drivetrain {
   double gyroSetpoint;
 
   void resetDrivetrain(bool auton);
+  void stopDrivetrain(bool gyro, double r);
 
  private:
   frc::Translation2d m_frontLeftLocation{+0.3175_m, +0.27305_m};
@@ -140,4 +140,5 @@ class Drivetrain {
       frc::Pose2d{0_m, 0_m, 0_deg},
       {0.1, 0.1, 0.1},
       {0.1, 0.1, 0.1}};
+  frc2::PIDController gyro_PIDController{0.01, 0, 0};
 };

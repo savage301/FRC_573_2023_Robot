@@ -169,8 +169,7 @@ void Drivetrain::autoBalance() {
                           false, false);
         counter++;
       } else {
-        DriveWithJoystick(zeroSpeed, zeroSpeed, zeroSpeedrot, true, false,
-                          true);
+        stopDrivetrain(true, 0);
       }
       if (std::abs(vector) > RampZ)
         rampState--;
@@ -178,10 +177,10 @@ void Drivetrain::autoBalance() {
     }
     default: {
       if (counter < 5) {
-        DriveWithJoystick(zeroSpeed, zeroSpeed, 0.025, true, false, false);
+        stopDrivetrain(false, 0.025);
         counter++;
       } else {
-        DriveWithJoystick(0, 0, 0, true, false, true);
+        stopDrivetrain(true, 0);
       }
     }
   }
@@ -270,19 +269,29 @@ void Drivetrain::updateGyroAngle() {
 }
 
 double Drivetrain::gryoStablize() {
-  double input = m_gyro.GetAngle();
-  double pVal = 0.01;
-  double out = pVal * (input - gyroSetpoint);
-  return out;
+  return gyro_PIDController.Calculate(m_gyro.GetAngle(), gyroSetpoint);
 }
 
 void Drivetrain::resetDrivetrain(bool auton) {
-  m_frontLeft.resetEnc();
-  m_frontRight.resetEnc();
-  m_backLeft.resetEnc();
-  m_backRight.resetEnc();
+  m_frontLeft.resetTurningMotorHeading();
+  m_frontRight.resetTurningMotorHeading();
+  m_backLeft.resetTurningMotorHeading();
+  m_backRight.resetTurningMotorHeading();
   m_frontLeft.switchIdleMode(auton);
   m_frontRight.switchIdleMode(auton);
   m_backLeft.switchIdleMode(auton);
   m_backRight.switchIdleMode(auton);
+}
+
+void Drivetrain::stopDrivetrain(bool gyro, double r) {
+  if (gyro)
+    r = gryoStablize();
+  else
+    updateGyroAngle();
+
+  const auto rot =
+      Drivetrain::m_rotLimiter.Calculate(frc::ApplyDeadband(r, 0.02)) *
+      Drivetrain::kMaxAngularSpeed;
+  Drive(units::velocity::meters_per_second_t{0},
+        units::velocity::meters_per_second_t{0}, rot, false);
 }

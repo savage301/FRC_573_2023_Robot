@@ -827,7 +827,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
   switch (autoState) {
     case 0: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
+      m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
       bool wristReady = m_appendage.wristPID(wristHome);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
@@ -851,7 +851,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       m_appendage.armPID(armHighCone);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
+      m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -963,7 +963,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     case 7: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
+      m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
 
       bool wristReady = m_appendage.wristPID(wristHome);
@@ -987,7 +987,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       m_appendage.armPID(armHighCube);
       m_appendage.backRollerOut();
       m_appendage.frontRollerOut();
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
+      m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
       if (m_timer.Get().value() > .5) {
         m_timer.Reset();
@@ -998,7 +998,7 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       break;
     }
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
+      m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
@@ -1151,7 +1151,7 @@ void Robot::driveToCS(bool isBlue) {
   switch (autoState) {
     case 0: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
+      m_swerve.stopDrivetrain(true, 0);
       EstimatePose(0);
       bool wristReady = m_appendage.wristPID(wristHigh);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
@@ -1226,7 +1226,7 @@ void Robot::driveToCS(bool isBlue) {
       EstimatePose(0);
       break;
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
+      m_swerve.stopDrivetrain(true, 0);
       EstimatePose(0);
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
@@ -1250,7 +1250,7 @@ void Robot::driveToCSsimple(bool isBlue) {
   switch (autoState) {
     case 0: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
+      m_swerve.stopDrivetrain(true, 0);
       EstimatePose(0);
       bool wristReady = m_appendage.wristPID(wristHigh);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
@@ -1313,7 +1313,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       EstimatePose(0);
       break;
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
+      m_swerve.stopDrivetrain(true, 0);
       EstimatePose(0);
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
@@ -1329,7 +1329,7 @@ void Robot::basicAuto(bool isBlue) {
   switch (autoState) {
     case 0: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
+      m_swerve.stopDrivetrain(true, 0);
       EstimatePose(0);
       bool wristReady = m_appendage.wristPID(wristHigh);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
@@ -1398,7 +1398,7 @@ void Robot::basicAuto(bool isBlue) {
       }
       break;
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, true);
+      m_swerve.stopDrivetrain(true, 0);
       EstimatePose(0);
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
@@ -1424,7 +1424,7 @@ void Robot::basicAuto2() {
       break;
     }
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
+      m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
       break;
     }
@@ -1444,7 +1444,7 @@ void Robot::twoGPAuto() {
       break;
     }
     default: {
-      m_swerve.DriveWithJoystick(0, 0, 0, false, false, false);
+      m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
       break;
     }

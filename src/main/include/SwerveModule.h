@@ -31,7 +31,7 @@ class SwerveModule {
   frc::SwerveModuleState GetState();
   frc::SwerveModulePosition GetPosition();
   void SetDesiredState(const frc::SwerveModuleState& state);
-  void resetEnc();
+  void resetTurningMotorHeading();
   void switchIdleMode(bool auton);
 
  private:
