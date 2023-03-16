@@ -277,10 +277,6 @@ void Drivetrain::resetDrivetrain(bool auton) {
   m_frontRight.resetTurningMotorHeading();
   m_backLeft.resetTurningMotorHeading();
   m_backRight.resetTurningMotorHeading();
-  m_frontLeft.switchIdleMode(auton);
-  m_frontRight.switchIdleMode(auton);
-  m_backLeft.switchIdleMode(auton);
-  m_backRight.switchIdleMode(auton);
 }
 
 void Drivetrain::stopDrivetrain(bool gyro, double r) {
@@ -294,4 +290,11 @@ void Drivetrain::stopDrivetrain(bool gyro, double r) {
       kMaxAngularSpeed;
   Drive(units::velocity::meters_per_second_t{0},
         units::velocity::meters_per_second_t{0}, rot, false);
+}
+
+void Drivetrain::updateMotorIdleMode(bool auton) {
+  m_frontLeft.switchIdleMode(auton);
+  m_frontRight.switchIdleMode(auton);
+  m_backLeft.switchIdleMode(auton);
+  m_backRight.switchIdleMode(auton);
 }

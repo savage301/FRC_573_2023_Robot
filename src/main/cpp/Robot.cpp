@@ -113,7 +113,7 @@ void Robot::AutonomousInit() {
   m_swerve.crossedramp = false;
   m_swerve.lastRampSide = Drivetrain::RampPos::downside;
   m_swerve.gyroSetpoint = 0;
-  m_swerve.resetDrivetrain(true);
+  m_swerve.updateMotorIdleMode(true);
   // ----------------------------------------------------------------------------------------
 }
 
@@ -174,7 +174,7 @@ void Robot::TeleopInit() {
   m_swerve.currRampPos = Drivetrain::RampPos::floor;
   m_swerve.crossedramp = false;
   m_swerve.lastRampSide = Drivetrain::RampPos::downside;
-  m_swerve.resetDrivetrain(false);
+  m_swerve.updateMotorIdleMode(false);
 }
 
 void Robot::TeleopPeriodic() {
@@ -387,7 +387,7 @@ void Robot::TeleopPeriodic() {
     }
 
   } else if (m_controller1.GetStartButton() && m_controller1.GetBackButton()) {
-    m_swerve.resetDrivetrain(false);
+    m_swerve.updateMotorIdleMode(false);
   } else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
