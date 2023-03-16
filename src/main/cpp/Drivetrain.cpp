@@ -272,7 +272,7 @@ double Drivetrain::gryoStablize() {
   return gyro_PIDController.Calculate(m_gyro.GetAngle(), gyroSetpoint);
 }
 
-void Drivetrain::resetDrivetrain(bool auton) {
+void Drivetrain::resetDrivetrain() {
   m_frontLeft.resetTurningMotorHeading();
   m_frontRight.resetTurningMotorHeading();
   m_backLeft.resetTurningMotorHeading();

@@ -83,7 +83,7 @@ class Drivetrain {
   double gryoStablize();
   double gyroSetpoint;
 
-  void resetDrivetrain(bool auton);
+  void resetDrivetrain();
   void stopDrivetrain(bool gyro, double r);
   void updateMotorIdleMode(bool auton);
 
