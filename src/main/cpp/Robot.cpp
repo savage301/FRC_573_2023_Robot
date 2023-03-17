@@ -303,11 +303,8 @@ void Robot::TeleopPeriodic() {
   // frc::SmartDashboard::PutNumber("current FA Pos", curFA_Pos);
 
   selectGamePiece();
-  /*if (m_appendage.getAnalogWorking()) // Not expected for 1st event
-    hasGamePiece = m_appendage.isGamePieceInClaw();
-  else
-    updateHasGamePiece();*/
   updateHasGamePiece();
+  //hasGamePiece = m_appendage.isGamePieceInClaw(hasGamePiece);
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
@@ -483,7 +480,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.shoulderPID(shoulderMidCube + trim);
     }
 
-    m_appendage.wristPID(wristHigh);
+    m_appendage.wristPID(wristMid);
 
   } else if (m_controller2.GetYButton() && hasGamePiece) {
     // Upper Level Scoring
@@ -1132,7 +1129,7 @@ void Robot::EstimatePose(int camera_pipline) {
 
 double Robot::estimateGamePieceDistanceToCenter() {
   double claw1 = 0, claw2 = 0;
-  if (m_appendage.isGamePieceInClaw()) {
+  if (m_appendage.isGamePieceInClaw(false)) {
     // calc rel to center
     claw1 = std::abs(m_appendage.getClaw1());
     claw2 = std::abs(m_appendage.getClaw2());

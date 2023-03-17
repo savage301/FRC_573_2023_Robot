@@ -51,6 +51,32 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Claw 2 AnalogInput",
+              "_title": "SmartDashboard/Claw 2 AnalogInput",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Encoder",
+              "_title": "SmartDashboard/Wrist Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -183,8 +209,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/traj": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           }
         }
@@ -240,7 +265,7 @@
               "_showGlyph": false
             }
           },
-          "3,0": {
+          "0,0": {
             "size": [
               1,
               1
@@ -253,7 +278,7 @@
               "_showGlyph": false
             }
           },
-          "4,0": {
+          "1,0": {
             "size": [
               1,
               1
@@ -266,7 +291,7 @@
               "_showGlyph": false
             }
           },
-          "3,1": {
+          "0,1": {
             "size": [
               1,
               1
@@ -279,7 +304,7 @@
               "_showGlyph": false
             }
           },
-          "4,1": {
+          "1,1": {
             "size": [
               1,
               1
@@ -292,7 +317,7 @@
               "_showGlyph": false
             }
           },
-          "6,1": {
+          "4,1": {
             "size": [
               1,
               1
@@ -345,8 +370,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/traj": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           },
           "1,1": {

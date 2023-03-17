@@ -55,7 +55,7 @@ class Appendage {
   void pumpOutSensorVal();
 
   // Claw UltSnd
-  bool isGamePieceInClaw();
+  bool isGamePieceInClaw(bool ignoreNoises);
   bool checkEdge();
 
   enum armVals { armDown = -1, armOff = 0, armUp = 1 };

@@ -222,6 +222,7 @@ void Appendage::pumpOutSensorVal() {
   double wristCur = wrist_Encoder->GetDistance();
   double shoulderCur = shoulder_Encoder->GetDistance();
   pumpOut("Claw 1 AnalogInput", claw1_a_input->GetValue());
+  pumpOut("Claw 2 AnalogInput", claw2_a_input->GetValue());
   pumpOut("edge 1 AnalogInput", edge1_a_input->GetValue());
   pumpOut("edge 2 AnalogInput", edge2_a_input->GetValue());
   pumpOut("Arm Encoder", armCur);
@@ -229,15 +230,16 @@ void Appendage::pumpOutSensorVal() {
   pumpOut("Shoulder Encoder", shoulderCur);
 }
 
-bool Appendage::isGamePieceInClaw() {
+bool Appendage::isGamePieceInClaw(bool ignoreNoises) {
   int limUp = 500, limDown = 200;
 
-  if ((claw1_a_input->GetValue() > limDown &&
-       claw1_a_input->GetValue() < limUp) ||
-      (claw2_a_input->GetValue() > limDown &&
-       claw2_a_input->GetValue() < limUp))
-    return true;
-
+  if (!ignoreNoises) {
+    if ((claw1_a_input->GetValue() > limDown &&
+        claw1_a_input->GetValue() < limUp) ||
+        (claw2_a_input->GetValue() > limDown &&
+        claw2_a_input->GetValue() < limUp))
+      return true;
+  }
   return false;
 }
 
@@ -336,7 +338,10 @@ bool Appendage::getAnalogWorking() {
 
 double Appendage::analogToDistance(double i) {
   // from https://www.openhacks.com/uploadsproductos/wiki_4j.pdf
-  return 2076 / (i - 11);
+  // return 2076 / (i - 11);
+
+  // from https://www.desmos.com/calculator/9l9kcwpe5b
+  return 100 / i + 6.14;
 }
 
 double Appendage::getClaw1() {
