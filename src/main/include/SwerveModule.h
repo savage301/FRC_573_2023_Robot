@@ -32,4 +32,12 @@ class SwerveModule {
 
   rev::SparkMaxRelativeEncoder m_driveEncoder;
   ctre::phoenix::sensors::CANCoder m_turningEncoder;
+
+  // Swerve
+  frc2::PIDController m_drivePIDController{1, 0, 0};
+  frc::ProfiledPIDController<units::radians> m_turningPIDController{
+      6.0,
+      0.0,
+      0.0,
+      {kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration}};
 };

@@ -17,14 +17,3 @@ static frc2::PIDController Wrist_PIDController{-0.01, 0, 0};
 
 // Drivetrain
 static frc2::PIDController gyro_PIDController{0.01, 0, 0};
-
-// Robot
-static frc2::PIDController X_PIDController{-0.03, 0, 0};
-static frc2::PIDController Y_PIDController{0.03, 0, 0};
-static frc::ProfiledPIDController<units::radians> theta_PIDController{
-    2.5, 0.0, 0.0, {kMaxAngularSpeed, kMaxAngularAccel}};
-
-// Swerve
-static frc2::PIDController m_drivePIDController{1, 0, 0};
-static frc::ProfiledPIDController<units::radians> m_turningPIDController{
-    6.0, 0.0, 0.0, {kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration}};
