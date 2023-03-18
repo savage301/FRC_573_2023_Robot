@@ -221,17 +221,17 @@ void Appendage::pumpOutSensorVal() {
   double armCur = arm_Encoder->GetPosition();
   double wristCur = wrist_Encoder->GetDistance();
   double shoulderCur = shoulder_Encoder->GetDistance();
-  pumpOut("Claw 1 AnalogInput", claw1_a_input->GetValue());
-  pumpOut("Claw 2 AnalogInput", claw2_a_input->GetValue());
-  pumpOut("edge 1 AnalogInput", edge1_a_input->GetValue());
-  pumpOut("edge 2 AnalogInput", edge2_a_input->GetValue());
-  pumpOut("Arm Encoder", armCur);
-  pumpOut("Wrist Encoder", wristCur);
-  pumpOut("Shoulder Encoder", shoulderCur);
+  pumpOutNum("Claw 1 AnalogInput", claw1_a_input->GetValue());
+  pumpOutNum("Claw 2 AnalogInput", claw2_a_input->GetValue());
+  pumpOutNum("edge 1 AnalogInput", edge1_a_input->GetValue());
+  pumpOutNum("edge 2 AnalogInput", edge2_a_input->GetValue());
+  pumpOutNum("Arm Encoder", armCur);
+  pumpOutNum("Wrist Encoder", wristCur);
+  pumpOutNum("Shoulder Encoder", shoulderCur);
 }
 
 bool Appendage::isGamePieceInClaw(bool gamePieceInClawManual) {
-  int limUp = 500, limDown = 200;
+  int limUp = 2000, limDown = 20;
   bool ret = false;
 
   if (gamePieceInClawManual) {

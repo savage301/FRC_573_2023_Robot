@@ -6,4 +6,5 @@
 #pragma once
 #include <frc/smartdashboard/SmartDashboard.h>
 
-#define pumpOut frc::SmartDashboard::PutNumber
+#define pumpOutNum frc::SmartDashboard::PutNumber
+#define pumpOutBool frc::SmartDashboard::PutBoolean

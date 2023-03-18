@@ -72,10 +72,10 @@ void SwerveModule::SetDesiredState(
   int driveMotorId = m_driveMotor.GetDeviceId();
   switch (driveMotorId) {
     case 1:
-      pumpOut("Drive Encoder FL", m_driveEncoder.GetPosition());
-      pumpOut("Turn Encoder FL", m_turningEncoder.GetAbsolutePosition());
-      pumpOut("fl vol output", driveOutput);
-      pumpOut("fl measured speed", m_driveEncoder.GetVelocity());
+      pumpOutNum("Drive Encoder FL", m_driveEncoder.GetPosition());
+      pumpOutNum("Turn Encoder FL", m_turningEncoder.GetAbsolutePosition());
+      pumpOutNum("fl vol output", driveOutput);
+      pumpOutNum("fl measured speed", m_driveEncoder.GetVelocity());
       /*frc::SmartDashboard::PutNumber(
           "DrivePCF",
           m_driveEncoder
@@ -89,16 +89,16 @@ void SwerveModule::SetDesiredState(
        */
       break;
     case 4:
-      pumpOut("Drive Encoder FR", m_driveEncoder.GetPosition());
-      pumpOut("Turn Encoder FR", m_turningEncoder.GetAbsolutePosition());
+      pumpOutNum("Drive Encoder FR", m_driveEncoder.GetPosition());
+      pumpOutNum("Turn Encoder FR", m_turningEncoder.GetAbsolutePosition());
       break;
     case 7:
-      pumpOut("Drive Encoder BL", m_driveEncoder.GetPosition());
-      pumpOut("Turn Encoder BL", m_turningEncoder.GetAbsolutePosition());
+      pumpOutNum("Drive Encoder BL", m_driveEncoder.GetPosition());
+      pumpOutNum("Turn Encoder BL", m_turningEncoder.GetAbsolutePosition());
       break;
     case 10:
-      pumpOut("Drive Encoder BR", m_driveEncoder.GetPosition());
-      pumpOut("Turn Encoder BR", m_turningEncoder.GetAbsolutePosition());
+      pumpOutNum("Drive Encoder BR", m_driveEncoder.GetPosition());
+      pumpOutNum("Turn Encoder BR", m_turningEncoder.GetAbsolutePosition());
       break;
 
     default:

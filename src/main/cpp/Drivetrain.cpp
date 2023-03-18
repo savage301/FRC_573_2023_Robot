@@ -245,8 +245,8 @@ void Drivetrain::autoBalance() {
 }
 
 void Drivetrain::pumpOutSensorVal() {
-  pumpOut("Gyro angle", m_gyro.GetAngle());
-  pumpOut("Gyro Roll", m_gyro.GetRoll());
+  pumpOutNum("Gyro angle", m_gyro.GetAngle());
+  pumpOutNum("Gyro Roll", m_gyro.GetRoll());
 }
 
 bool Drivetrain::isGyroWorking() {

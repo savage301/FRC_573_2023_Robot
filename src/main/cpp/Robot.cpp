@@ -49,8 +49,7 @@ void Robot::RobotInit() {
   frc::DriverStation::StartDataLog(frcLog::GetLog());
 
   compressor.EnableDigital();
-  frc::SmartDashboard::PutBoolean("Ignore appendage limits",
-                                  m_appendage.unleashThePower);
+  pumpOutBool("Ignore appendage limits", m_appendage.unleashThePower);
 }
 
 /**
@@ -304,7 +303,7 @@ void Robot::TeleopPeriodic() {
 
   selectGamePiece();
   updateHasGamePiece();
-  // hasGamePiece = m_appendage.isGamePieceInClaw(hasGamePiece);
+  pumpOutBool("has game piece", m_appendage.isGamePieceInClaw(hasGamePiece));
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
@@ -581,7 +580,7 @@ void Robot::TeleopPeriodic() {
   // ----------- End Appendage Code -----------------------------------
   handleLedModes(validTarFnd, hasGamePiece, tarGamePiece,
                  m_appendage.checkEdge());
-  frc::SmartDashboard::PutBoolean("edge analog", m_appendage.checkEdge());
+  pumpOutBool("edge analog", m_appendage.checkEdge());
 }  // End of Teleop Periodic
 
 void Robot::DisabledInit() {}
@@ -726,7 +725,7 @@ void Robot::driveWithTraj(bool auton) {
   if (m_timer.Get() < trajectory_.TotalTime()) {
     auto desiredState = trajectory_.Sample(
         m_timer.Get());  // Get the desired pose from the trajectory.
-    pumpOut("desired rot", desiredState.pose.Rotation().Degrees().value());
+    pumpOutNum("desired rot", desiredState.pose.Rotation().Degrees().value());
     auto refChassisSpeeds = m_holonmicController.Calculate(
         m_swerve.GetPose(), desiredState, desiredState.pose.Rotation());
 
@@ -772,20 +771,20 @@ void Robot::handleLedModes(bool isGamePiece, bool isGamePieceAcquired,
 void Robot::getPowerDistribution() {
   frc::PowerDistribution bd =
       frc::PowerDistribution(20, frc::PowerDistribution::ModuleType::kRev);
-  pumpOut("intake motor 1 current", bd.GetCurrent(4));
-  pumpOut("intake motor 2 current", bd.GetCurrent(5));
-  pumpOut("arm motor current", bd.GetCurrent(0));
-  pumpOut("shoulder motor current", bd.GetCurrent(12));
-  pumpOut("wrist motor current", bd.GetCurrent(3));
+  pumpOutNum("intake motor 1 current", bd.GetCurrent(4));
+  pumpOutNum("intake motor 2 current", bd.GetCurrent(5));
+  pumpOutNum("arm motor current", bd.GetCurrent(0));
+  pumpOutNum("shoulder motor current", bd.GetCurrent(12));
+  pumpOutNum("wrist motor current", bd.GetCurrent(3));
 
-  pumpOut("drive motor BR 1", bd.GetCurrent(11));
-  pumpOut("drive motor BR 2", bd.GetCurrent(10));
-  pumpOut("drive motor BL 1", bd.GetCurrent(7));
-  pumpOut("drive motor BL 2", bd.GetCurrent(8));
-  pumpOut("drive motor FR 1", bd.GetCurrent(5));
-  pumpOut("drive motor FR 2", bd.GetCurrent(4));
-  pumpOut("drive motor FL 1", bd.GetCurrent(1));
-  pumpOut("drive motor FL 2", bd.GetCurrent(2));
+  pumpOutNum("drive motor BR 1", bd.GetCurrent(11));
+  pumpOutNum("drive motor BR 2", bd.GetCurrent(10));
+  pumpOutNum("drive motor BL 1", bd.GetCurrent(7));
+  pumpOutNum("drive motor BL 2", bd.GetCurrent(8));
+  pumpOutNum("drive motor FR 1", bd.GetCurrent(5));
+  pumpOutNum("drive motor FR 2", bd.GetCurrent(4));
+  pumpOutNum("drive motor FL 1", bd.GetCurrent(1));
+  pumpOutNum("drive motor FL 2", bd.GetCurrent(2));
 }
 
 void Robot::selectGamePiece() {
