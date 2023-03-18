@@ -304,7 +304,7 @@ void Robot::TeleopPeriodic() {
 
   selectGamePiece();
   updateHasGamePiece();
-  hasGamePiece = m_appendage.isGamePieceInClaw(hasGamePiece);
+  // hasGamePiece = m_appendage.isGamePieceInClaw(hasGamePiece);
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
@@ -460,10 +460,10 @@ void Robot::TeleopPeriodic() {
     double trim = -400 * m_controller2.GetLeftY();
     m_appendage.shoulderPID(shoulderFloor + trim);
 
-    if (m_controller2.GetLeftBumper() || tarGamePiece == Robot::GamePiece::cube)
-      m_appendage.wristPID(wristFloorCube);
+    if (tarGamePiece == Robot::GamePiece::cube)
+      m_appendage.wristPID(wristFloorCubeScore);
     else
-      m_appendage.wristPID(wristFloorCone);
+      m_appendage.wristPID(wristFloorConeScore);
 
   } else if (m_controller2.GetBButton() && hasGamePiece) {
     // Mid Level Scoring Location
@@ -475,12 +475,12 @@ void Robot::TeleopPeriodic() {
     if (tarGamePiece == Robot::GamePiece::cone) {
       double trim = -400 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderMidCone + trim);
+      m_appendage.wristPID(wristMidCone);
     } else {
       double trim = -400 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderMidCube + trim);
+      m_appendage.wristPID(wristMidCube);
     }
-
-    m_appendage.wristPID(wristMid);
 
   } else if (m_controller2.GetYButton() && hasGamePiece) {
     // Upper Level Scoring
@@ -492,6 +492,7 @@ void Robot::TeleopPeriodic() {
 
       double trim = -400 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderHighCone + trim);
+      m_appendage.wristPID(wristHighCone);
 
     } else {
       if (m_controller2.GetRightBumper())
@@ -501,9 +502,9 @@ void Robot::TeleopPeriodic() {
 
       double trim = -400 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderHighCube + trim);
+      m_appendage.wristPID(wristHighCube);
     }
 
-    m_appendage.wristPID(wristHome);
   } else if (m_controller2.GetAButton() && !hasGamePiece) {
     // Floor Level Pickup
     if (m_controller2.GetRightBumper())
@@ -515,24 +516,17 @@ void Robot::TeleopPeriodic() {
     m_appendage.shoulderPID(shoulderFloor + trim);
 
     if (m_controller2.GetLeftBumper() || tarGamePiece == Robot::GamePiece::cube)
-      m_appendage.wristPID(wristFloorCube);
+      m_appendage.wristPID(wristFloorCubeLoad);
     else
-      m_appendage.wristPID(wristFloorCone);
+      m_appendage.wristPID(wristFloorConeLoad);
 
   } else if (m_controller2.GetBButton() && !hasGamePiece) {
     // Side Human Player Loading Location
-    if (m_controller2.GetRightBumper())
-      m_appendage.armPID(armHome);
-    else
-      m_appendage.armPID(armHome);
 
-    if (tarGamePiece == Robot::GamePiece::cone) {
-      double trim = -400 * m_controller2.GetLeftY();
-      m_appendage.shoulderPID(shoulderHumanLowCone + trim);
-    } else {
-      double trim = -400 * m_controller2.GetLeftY();
-      m_appendage.shoulderPID(shoulderHumanLowCube + trim);
-    }
+    m_appendage.armPID(armHome);
+
+    double trim = -400 * m_controller2.GetLeftY();
+    m_appendage.shoulderPID(shoulderHumanLow + trim);
 
     m_appendage.wristPID(wristHumanLow);
 
@@ -545,7 +539,7 @@ void Robot::TeleopPeriodic() {
         m_appendage.armPID(armHome);
 
       double trim = -400 * m_controller2.GetLeftY();
-      m_appendage.shoulderPID(shoulderHumanLowCone + trim);
+      m_appendage.shoulderPID(shoulderHumanHigh + trim);
 
     } else {
       if (m_controller2.GetRightBumper())
@@ -557,7 +551,7 @@ void Robot::TeleopPeriodic() {
       m_appendage.shoulderPID(shoulderHighCube + trim);
     }
 
-    m_appendage.wristPID(200);
+    m_appendage.wristPID(wristHumanHigh);
   } else if (m_controller2.GetXButton()) {
     // Store Position possible from with or without gamepiece
     m_appendage.armPID(armHome);

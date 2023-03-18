@@ -5,11 +5,11 @@
 
 #pragma once
 // Appendage Encoder Limits
-const double shoulder_max = 0.0;
+const double shoulder_max = 1700;
 const double shoulder_min = -2000.0;
 
 const double arm_max = -5;
-const double arm_min = -220.0;
+const double arm_min = -125.0;
 
 const double wrist_max = 10000.0;
 const double wrist_min = 0.0;
@@ -18,22 +18,28 @@ const double armHome = 10;
 // const double armFloor = ;
 // const double armMid = ;
 const double armHighCube = -112;
-const double armHighCone = -158;
-const double armHumanHigh = -188;
+const double armHighCone = -125;
+const double armHumanHigh = -125;
 
 const double shoulderHome = 0;
 const double shoulderFloor = -1994;
-const double shoulderMidCube = -882;
-const double shoulderMidCone = -450;
-const double shoulderHighCube = -683;
-const double shoulderHighCone = -677;
-const double shoulderHumanLowCube = -881;
-const double shoulderHumanLowCone = -1250;
+const double shoulderMidCube = -1150;
+const double shoulderMidCone = -540;
+const double shoulderHighCube = -800;
+const double shoulderHighCone = -650;
+const double shoulderHumanLow = 1600;
+const double shoulderHumanHigh = 535;
 
 const double wristHome = 100;
-const double wristFloorCube = 1900;
-const double wristFloorCone = 1539;
+const double wristFloorCubeScore = 100;
+const double wristFloorConeScore = 100;
+const double wristFloorCubeLoad = 1900;
+const double wristFloorConeLoad = 1539;
 const double wristFloor = 1326;
-const double wristMid = 2662;
+const double wristMidCone = 2200;
+const double wristMidCube = 100;
 const double wristHigh = 2445;
-const double wristHumanLow = 3000;
+const double wristHighCube = 100;
+const double wristHighCone = 2445;
+const double wristHumanLow = 100;
+const double wristHumanHigh = 3700;
