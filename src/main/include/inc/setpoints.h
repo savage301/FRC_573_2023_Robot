@@ -18,8 +18,8 @@ const double armHome = 10;
 // const double armFloor = ;
 // const double armMid = ;
 const double armHighCube = -112;
-const double armHighCone = -125;
-const double armHumanHigh = -125;
+const double armHighCone = -115;
+const double armHumanHigh = 10;
 
 const double shoulderHome = 0;
 const double shoulderFloor = -1994;
