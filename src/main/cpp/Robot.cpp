@@ -304,7 +304,7 @@ void Robot::TeleopPeriodic() {
 
   selectGamePiece();
   updateHasGamePiece();
-  //hasGamePiece = m_appendage.isGamePieceInClaw(hasGamePiece);
+  hasGamePiece = m_appendage.isGamePieceInClaw(hasGamePiece);
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April

@@ -230,17 +230,20 @@ void Appendage::pumpOutSensorVal() {
   pumpOut("Shoulder Encoder", shoulderCur);
 }
 
-bool Appendage::isGamePieceInClaw(bool ignoreNoises) {
+bool Appendage::isGamePieceInClaw(bool gamePieceInClawManual) {
   int limUp = 500, limDown = 200;
+  bool ret = false;
 
-  if (!ignoreNoises) {
+  if (gamePieceInClawManual) {
     if ((claw1_a_input->GetValue() > limDown &&
-        claw1_a_input->GetValue() < limUp) ||
+         claw1_a_input->GetValue() < limUp) ||
         (claw2_a_input->GetValue() > limDown &&
-        claw2_a_input->GetValue() < limUp))
-      return true;
+         claw2_a_input->GetValue() < limUp))
+      ret = true;
+  } else {
+    ret = false;
   }
-  return false;
+  return ret;
 }
 
 void Appendage::appendageReset(bool isPneumaticsIn) {

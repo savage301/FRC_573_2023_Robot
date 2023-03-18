@@ -57,15 +57,15 @@ void SwerveModule::SetDesiredState(
       units::radian_t{m_turningEncoder.GetAbsolutePosition()},
       state.angle.Radians());
 
-  const auto turnFeedforward =
-  m_turnFeedforward.Calculate(m_turningPIDController.GetSetpoint().velocity);
+  const auto turnFeedforward = m_turnFeedforward.Calculate(
+      m_turningPIDController.GetSetpoint().velocity);
 
   // Set the motor outputs. Flip directions as needed to get modules to spin
   // proper direction.
 
   // inverted motor id 1, 2, and 8 thru rev hw client via flipping kInverted in
   // advanced
-  m_turningMotor.SetVoltage(units::volt_t{turnOutput}+ turnFeedforward);
+  m_turningMotor.SetVoltage(units::volt_t{turnOutput} + turnFeedforward);
   m_driveMotor.SetVoltage(units::volt_t{driveOutput} + driveFeedforward);
 
   // 1, 4. 7. 10
