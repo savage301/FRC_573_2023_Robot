@@ -704,8 +704,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(
 
 pathplanner::PathPlannerTrajectory Robot::pathLoad(std::string path) {
   trajectoryPP_ = pathplanner::PathPlanner::loadPath(
-      path,
-      {pathplanner::PathConstraints{kMaxSpeedAuto, kMaxAccelerationAuto}});
+      path, {pathplanner::PathConstraints{kMaxSpeed, kMaxAcceleration}});
   return trajectoryPP_;
 }
 
@@ -1422,18 +1421,151 @@ void Robot::basicAuto2() {
 void Robot::twoGPAuto() {
   switch (autoState) {
     case 0: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.stopDrivetrain(true, 0);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(wristHighCone);
+      bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
+      bool armReady = false;
+      if (wristReady && shoulderReady)
+        armReady = m_appendage.armPID(armHighCone);
+      else
+        m_appendage.armPID(armHome);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 1: {
+      m_appendage.wristPID(wristHighCone);
+      m_appendage.shoulderPID(shoulderHighCone);
+      m_appendage.armPID(armHighCone);
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      bool armReady = m_appendage.armPID(armHome);
+      bool wristReady = false;
+      bool shoulderReady = false;
+      if (armReady) {
+        wristReady = m_appendage.wristPID(wristHighCone);
+        shoulderReady = m_appendage.shoulderPID(shoulderHome);
+      } else {
+        m_appendage.wristPID(wristHighCone);
+        m_appendage.shoulderPID(shoulderHighCone);
+      }
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      EstimatePose(0);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 3: {
       if (firstTime) {
         trajectoryPP_ = pathLoad("2-N2P");  // mid pt
         driveWithTraj(trajectoryPP_, offPose);
+      }
+      if (m_timer.Get().value() < 1) {
+        m_appendage.armPID(armHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.wristPID(wristHighCone);
+      } else if (m_timer.Get().value() < 3) {
+        m_appendage.armPID(armHome);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.pneumaticsIn();
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+      } else {
+        m_appendage.armPID(armHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.wristPID(wristHighCube);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
       }
       firstTime = false;
       driveWithTraj(true);
       EstimatePose(0);
       break;
     }
+    case 4: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.stopDrivetrain(false, 0);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(wristHighCube);
+      bool shoulderReady = m_appendage.shoulderPID(shoulderHighCube);
+      bool armReady = false;
+      if (wristReady && shoulderReady)
+        armReady = m_appendage.armPID(armHighCube);
+      else
+        m_appendage.armPID(armHome);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 5: {
+      m_appendage.wristPID(wristHighCube);
+      m_appendage.shoulderPID(shoulderHighCube);
+      m_appendage.armPID(armHighCube);
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 6: {
+      bool armReady = m_appendage.armPID(armHome);
+      bool wristReady = false;
+      bool shoulderReady = false;
+      if (armReady) {
+        wristReady = m_appendage.wristPID(wristHome);
+        shoulderReady = m_appendage.shoulderPID(shoulderHome);
+      } else {
+        m_appendage.wristPID(wristHighCube);
+        m_appendage.shoulderPID(shoulderHighCube);
+      }
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      EstimatePose(0);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
     default: {
       m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
+      m_appendage.wristPID(wristHome);
+      m_appendage.shoulderPID(shoulderHome);
+      m_appendage.armPID(armHome);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
       break;
     }
   }

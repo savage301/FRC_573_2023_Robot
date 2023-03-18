@@ -13,7 +13,7 @@
 #include <numbers>
 
 // Swerve
-static constexpr double kWheelRadius = 0.0508;
+static constexpr double kWheelRadius = 0.047625;
 static constexpr int kDriveGearRatio = 6.75;
 static constexpr int kSteerEncoderResolution = 4096;
 
