@@ -304,6 +304,7 @@ void Robot::TeleopPeriodic() {
   selectGamePiece();
   updateHasGamePiece();
   pumpOutBool("has game piece", m_appendage.isGamePieceInClaw(hasGamePiece));
+  pumpOutNum("est. GP location", estimateGamePieceDistanceToCenter());
   table->PutNumber(
       "pipeline",
       hasGamePiece ? 0 : tarGamePiece);  // Sets limelight pipeline (0 for April
@@ -1122,7 +1123,7 @@ void Robot::EstimatePose(int camera_pipline) {
 
 double Robot::estimateGamePieceDistanceToCenter() {
   double claw1 = 0, claw2 = 0;
-  if (m_appendage.isGamePieceInClaw(false)) {
+  if (m_appendage.isGamePieceInClaw(true)) {
     // calc rel to center
     claw1 = std::abs(m_appendage.getClaw1());
     claw2 = std::abs(m_appendage.getClaw2());
