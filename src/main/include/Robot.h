@@ -30,6 +30,7 @@
 #include "Appendage.h"
 #include "Drivetrain.h"
 #include "Led.h"
+#include "auto.h"
 #include "networktables/NetworkTable.h"
 #include "networktables/NetworkTableEntry.h"
 #include "networktables/NetworkTableInstance.h"
@@ -84,20 +85,6 @@ class Robot : public frc::TimedRobot {
 
  private:
   frc::SendableChooser<std::string> m_chooser;
-  const std::string kAutonPaths7 = "Basic Red Right Right";
-  const std::string kAutonPaths8 = "Basic Red Left Left";
-  const std::string kAutonPaths9 = "Basic Blue Right Right";
-  const std::string kAutonPaths10 = "Basic Blue Left Left";
-  const std::string kAutonPaths11 = "make a turn";
-  const std::string kAutonPaths12 = "two gp";
-  const std::string kAutonPaths5 = "Red Left 3 to CS";
-  const std::string kAutonPaths6 = "Blue Left 3 to CS";
-  const std::string kAutonPaths1 = "Red Right 6 to 7";
-  const std::string kAutonPaths2 = "Red Left 2 to 1";
-  const std::string kAutonPaths3 = "Blue Right 6 to 7";
-  const std::string kAutonPaths4 = "Blue Left 2 to 1";
-  const std::string kAutoNameDefault = "Default";
-  const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
   nt::DoubleArraySubscriber botPose;
