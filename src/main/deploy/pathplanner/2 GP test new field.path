@@ -123,5 +123,24 @@
   "maxVelocity": 4.4,
   "maxAcceleration": 2.2,
   "isReversed": null,
-  "markers": []
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "score 1st high cone"
+      ]
+    },
+    {
+      "position": 2.0727272727272723,
+      "names": [
+        "pickup first cube"
+      ]
+    },
+    {
+      "position": 4.0,
+      "names": [
+        "score 1st high cube"
+      ]
+    }
+  ]
 }

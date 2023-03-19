@@ -99,16 +99,14 @@ class Robot : public frc::TimedRobot {
   std::shared_ptr<nt::NetworkTable> table;
 
   enum Grid { humanLeft, humanCenter, humanRight };
-
   int tarGrid;
 
   bool isBlue;
 
   enum GamePiece { cone = 1, cube = 2 };
-
   int tarGamePiece;
-
   bool hasGamePiece;
+  void updateHasGamePiece();
 
   enum fA_Pos { top, left, right, bot };
   int curFA_Pos;
@@ -142,10 +140,11 @@ class Robot : public frc::TimedRobot {
   void EstimatePose(int camera_pipline);
   double estimateGamePieceDistanceToCenter();
 
+  // Auto modes
   void driveToCS(bool isBlue);
   void driveToCSsimple(bool isBlue);
   void basicAuto(bool isBlue);
   void basicAuto2();
-  void updateHasGamePiece();
   void twoGPAuto();
+  void threeGPAuto();
 };
