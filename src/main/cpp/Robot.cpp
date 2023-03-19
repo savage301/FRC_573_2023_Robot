@@ -717,8 +717,17 @@ void Robot::driveWithTraj(bool auton) {
     auto desiredState = trajectory_.Sample(
         m_timer.Get());  // Get the desired pose from the trajectory.
     pumpOutNum("desired rot", desiredState.pose.Rotation().Degrees().value());
-    auto refChassisSpeeds = m_holonmicController.Calculate(
+
+    frc::ChassisSpeeds refChassisSpeeds;
+
+    if (auton){
+      refChassisSpeeds = m_holonmicControllerAuto.Calculate(
         m_swerve.GetPose(), desiredState, desiredState.pose.Rotation());
+
+    }else{
+      refChassisSpeeds = m_holonmicController.Calculate(
+        m_swerve.GetPose(), desiredState, desiredState.pose.Rotation());
+    }
 
     frc::SmartDashboard::PutNumber("pose x", m_swerve.GetPose().X().value());
     frc::SmartDashboard::PutNumber("desired pose x",

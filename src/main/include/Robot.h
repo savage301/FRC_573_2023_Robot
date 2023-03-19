@@ -56,11 +56,24 @@ class Robot : public frc::TimedRobot {
   frc::Field2d m_field;
   frc::Field2d field_off;
 
+// Auto Controllers ----------------------------------------------
   // Robot
-  frc2::PIDController X_PIDController{-0.005, 0, 0};
-  frc2::PIDController Y_PIDController{0.005, 0, 0};
-  frc::ProfiledPIDController<units::radians> theta_PIDController{
+  frc2::PIDController X_PIDControllerAuto{-0.005, 0, 0};
+  frc2::PIDController Y_PIDControllerAuto{0.005, 0, 0};
+  frc::ProfiledPIDController<units::radians> theta_PIDControllerAuto{
       3, 0.0, 0.0, {kMaxAngularSpeed, kMaxAngularAccel}};
+
+  // Swerve Controller to follow the trajectory
+  frc::HolonomicDriveController m_holonmicControllerAuto =
+      frc::HolonomicDriveController(X_PIDControllerAuto, Y_PIDControllerAuto,
+                                    theta_PIDControllerAuto);
+// ----------------------------------------------------------------
+// Teleop Controllers --------------------------------------------
+// Robot
+  frc2::PIDController X_PIDController{1.0, 0, 0};
+  frc2::PIDController Y_PIDController{1.0, 0, 0};
+  frc::ProfiledPIDController<units::radians> theta_PIDController{
+      1, 0.0, 0.0, {kMaxAngularSpeed, kMaxAngularAccel}};
 
   // Swerve Controller to follow the trajectory
   frc::HolonomicDriveController m_holonmicController =
