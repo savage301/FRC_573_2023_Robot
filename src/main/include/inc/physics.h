@@ -28,9 +28,8 @@ static constexpr units::meters_per_second_t kMaxSpeed =
 static constexpr units::radians_per_second_t kMaxAngularSpeed{
     std::numbers::pi * 2};  // rotation per second
 
-// Acceleration = (4.4 m/s)^2 / (2 * 0.047625 m * 6.75) = 5.91 m/s^2
 static constexpr auto kMaxAcceleration =
-    units::meters_per_second_squared_t(5.9);  // meters per second^2
+    units::meters_per_second_squared_t(2.2);  // meters per second^2
 
 static constexpr units::radians_per_second_squared_t kMaxAngularAccel{
     std::numbers::pi};  // 1 rotation per second per second
