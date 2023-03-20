@@ -40,7 +40,7 @@ const double wristMidCube = wristHome;
 
 // high score
 const double armHighCube = -112;
-const double armHighCone = -115;
+const double armHighCone = -105;
 const double shoulderHighCube = -800;
 const double shoulderHighCone = -650;
 const double wristHigh = 2445;
