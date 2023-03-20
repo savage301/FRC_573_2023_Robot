@@ -133,14 +133,6 @@ void Drivetrain::setTrajCon() {
 }
 
 void Drivetrain::autoBalance() {
-  double RampZ = 8;
-  double balancedZ = 5;  // 5 works for dock
-  double fastSpeed = 0.5;
-  double midSpeed = 0.045;
-  // double slowSpeed = .045;
-  double slowestSpeed = 0.03;
-  double zeroSpeed = 0;
-  double zeroSpeedrot = 0;
   double vector = .99;
   frc::SmartDashboard::PutNumber("RampState", rampState);
   vector = m_gyro.GetRoll();
@@ -242,6 +234,61 @@ void Drivetrain::autoBalance() {
     lastRampSide = Drivetrain::RampPos::downside;
     DriveWithJoystick(slowSpeed,zeroSpeed,zeroSpeedrot,true,false);
   }*/
+}
+
+void Drivetrain::autoBalanceWithMobility() {
+  double vector = .99;
+  frc::SmartDashboard::PutNumber("RampState", rampState);
+  vector = m_gyro.GetRoll();
+  frc::SmartDashboard::PutNumber("Vector", vector);
+  double coeff = vector / std::abs(vector);
+  switch (rampState) {
+    case RampPos::floor: {
+      DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      if (std::abs(vector) < balancedZ) {
+        rampState += 4;
+        counter = 0;
+      }
+      break;
+    }
+    case RampPos::floorback: {
+      DriveWithJoystick(fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      if (std::abs(vector) > balancedZ)
+        rampState++;
+
+      break;
+    }
+
+    case 1: {
+      DriveWithJoystick(-coeff * midSpeed, zeroSpeed, zeroSpeedrot, true, false,
+                        true);
+      if (std::abs(vector) < balancedZ) {
+        counter = 0;
+        rampState++;
+      }
+      break;
+    }
+    case 2: {
+      if (counter < 5) {
+        DriveWithJoystick(-coeff * slowestSpeed, zeroSpeed, zeroSpeedrot, true,
+                          false, false);
+        counter++;
+      } else {
+        stopDrivetrain(true, 0);
+      }
+      if (std::abs(vector) > RampZ)
+        rampState--;
+      break;
+    }
+    default: {
+      if (counter < 5) {
+        stopDrivetrain(false, 0.025);
+        counter++;
+      } else {
+        stopDrivetrain(true, 0);
+      }
+    }
+  }
 }
 
 void Drivetrain::pumpOutSensorVal() {

@@ -56,7 +56,7 @@ class Robot : public frc::TimedRobot {
   frc::Field2d m_field;
   frc::Field2d field_off;
 
-// Auto Controllers ----------------------------------------------
+  // Auto Controllers ----------------------------------------------
   // Robot
   frc2::PIDController X_PIDControllerAuto{-0.005, 0, 0};
   frc2::PIDController Y_PIDControllerAuto{0.005, 0, 0};
@@ -67,9 +67,9 @@ class Robot : public frc::TimedRobot {
   frc::HolonomicDriveController m_holonmicControllerAuto =
       frc::HolonomicDriveController(X_PIDControllerAuto, Y_PIDControllerAuto,
                                     theta_PIDControllerAuto);
-// ----------------------------------------------------------------
-// Teleop Controllers --------------------------------------------
-// Robot
+  // ----------------------------------------------------------------
+  // Teleop Controllers --------------------------------------------
+  // Robot
   frc2::PIDController X_PIDController{1.0, 0, 0};
   frc2::PIDController Y_PIDController{1.0, 0, 0};
   frc::ProfiledPIDController<units::radians> theta_PIDController{
@@ -156,6 +156,7 @@ class Robot : public frc::TimedRobot {
   // Auto modes
   void driveToCS(bool isBlue);
   void driveToCSsimple(bool isBlue);
+  void driveToCSsimpleWithMobility(bool isBlue);
   void basicAuto(bool isBlue);
   void basicAuto2();
   void twoGPAuto();

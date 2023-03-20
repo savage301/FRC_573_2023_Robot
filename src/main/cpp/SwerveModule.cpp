@@ -7,8 +7,6 @@
 
 #include <frc/geometry/Rotation2d.h>
 
-#include <numbers>
-
 SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
                            int turningEncoderChannel)
     : m_driveMotor(driveMotorChannel, rev::CANSparkMax::MotorType::kBrushless),
@@ -18,16 +16,15 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
           rev::SparkMaxRelativeEncoder::Type::kHallSensor, 42)),
       m_turningEncoder(turningEncoderChannel) {
   m_driveEncoder.SetPositionConversionFactor(
-      2 * std::numbers::pi * kWheelRadius /
-      kDriveGearRatio);  // Conversion from rot to m
+      2 * Pi * kWheelRadius / kDriveGearRatio);  // Conversion from rot to m
   m_driveEncoder.SetVelocityConversionFactor(
-      (2 * std::numbers::pi * kWheelRadius / kDriveGearRatio) /
+      (2 * Pi * kWheelRadius / kDriveGearRatio) /
       60);  // Converstion from rpm to to m/s
 
   // Limit the PID Controller's input range between -pi and pi and set the input
   // to be continuous.
-  m_turningPIDController.EnableContinuousInput(
-      -units::radian_t{std::numbers::pi}, units::radian_t{std::numbers::pi});
+  m_turningPIDController.EnableContinuousInput(-units::radian_t{Pi},
+                                               units::radian_t{Pi});
 }
 
 frc::SwerveModuleState SwerveModule::GetState() {

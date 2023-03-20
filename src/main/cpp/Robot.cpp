@@ -654,7 +654,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(
 
   frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-      pathplanner::PathConstraints(kMaxSpeedAuto, kMaxAccelerationAuto),
+      pathplanner::PathConstraints(kMaxSpeed, kMaxAcceleration),
       pathplanner::PathPoint(
           m_swerve.GetPose().Translation(), m_swerve.GetPose().Rotation(),
           frc::Rotation2d(
@@ -681,7 +681,7 @@ pathplanner::PathPlannerTrajectory Robot::pathGenerate(
 
   frc::SmartDashboard::PutNumber("Robot Vel", robotvelo);
   trajectoryPP_ = pathplanner::PathPlanner::generatePath(
-      pathplanner::PathConstraints(kMaxSpeedAuto, kMaxAccelerationAuto),
+      pathplanner::PathConstraints(kMaxSpeed, kMaxAcceleration),
       pathplanner::PathPoint(
           startPose.Translation(), startPose.Rotation(),
           startPose.Rotation()),  // position, heading(direction of
@@ -720,13 +720,13 @@ void Robot::driveWithTraj(bool auton) {
 
     frc::ChassisSpeeds refChassisSpeeds;
 
-    if (auton){
+    if (auton) {
       refChassisSpeeds = m_holonmicControllerAuto.Calculate(
-        m_swerve.GetPose(), desiredState, desiredState.pose.Rotation());
+          m_swerve.GetPose(), desiredState, desiredState.pose.Rotation());
 
-    }else{
+    } else {
       refChassisSpeeds = m_holonmicController.Calculate(
-        m_swerve.GetPose(), desiredState, desiredState.pose.Rotation());
+          m_swerve.GetPose(), desiredState, desiredState.pose.Rotation());
     }
 
     frc::SmartDashboard::PutNumber("pose x", m_swerve.GetPose().X().value());
@@ -1297,6 +1297,85 @@ void Robot::driveToCSsimple(bool isBlue) {
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
       m_swerve.autoBalance();
+      EstimatePose(0);
+      break;
+    default: {
+      m_swerve.stopDrivetrain(true, 0);
+      EstimatePose(0);
+      m_appendage.wristPID(wristHome);
+      m_appendage.shoulderPID(shoulderHome);
+      m_appendage.armPID(armHome);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      break;
+    }
+  }
+}
+
+void Robot::driveToCSsimpleWithMobility(bool isBlue) {
+  switch (autoState) {
+    case 0: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.stopDrivetrain(true, 0);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(wristHigh);
+      bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
+      bool armReady = false;
+      if (wristReady && shoulderReady)
+        armReady = m_appendage.armPID(armHighCone);
+      else
+        m_appendage.armPID(armHome);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 1: {
+      m_appendage.wristPID(wristHigh);
+      m_appendage.shoulderPID(shoulderHighCone);
+      m_appendage.armPID(armHighCone);
+      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut();
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      bool armReady = m_appendage.armPID(armHome);
+      bool wristReady = false;
+      bool shoulderReady = false;
+      if (armReady) {
+        wristReady = m_appendage.wristPID(wristHome);
+        shoulderReady = m_appendage.shoulderPID(shoulderHome);
+      } else {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHighCone);
+      }
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      EstimatePose(0);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 3:
+      m_appendage.wristPID(wristHome);
+      m_appendage.shoulderPID(shoulderHome);
+      m_appendage.armPID(armHome);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      m_swerve.autoBalanceWithMobility();
       EstimatePose(0);
       break;
     default: {

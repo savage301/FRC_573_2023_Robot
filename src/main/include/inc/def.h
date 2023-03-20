@@ -6,5 +6,9 @@
 #pragma once
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include <numbers>
+
 #define pumpOutNum frc::SmartDashboard::PutNumber
 #define pumpOutBool frc::SmartDashboard::PutBoolean
+
+#define Pi std::numbers::pi
