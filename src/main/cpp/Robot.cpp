@@ -1122,16 +1122,9 @@ void Robot::EstimatePose(int camera_pipline) {
 
 double Robot::estimateGamePieceDistanceToCenter() {
   double claw1 = 0, claw2 = 0;
-  if (m_appendage.isGamePieceInClaw(true)) {
-    // calc rel to center
-    claw1 = std::abs(m_appendage.getClaw1());
-    claw2 = std::abs(m_appendage.getClaw2());
-  }
-  // if (claw1 > 80 && claw2 > 80)
-  //  do this
-
-  // else if (claw2)
-  return claw1 - claw2;
+  claw1 = m_appendage.getClaw1();
+  claw2 = m_appendage.getClaw2();
+  return 0.5 * (claw1 - claw2);
 }
 
 void Robot::driveToCS(bool isBlue) {
