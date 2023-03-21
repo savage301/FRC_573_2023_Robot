@@ -324,6 +324,7 @@ void Drivetrain::resetDrivetrain() {
   m_frontRight.resetTurningMotorHeading();
   m_backLeft.resetTurningMotorHeading();
   m_backRight.resetTurningMotorHeading();
+  resetGyro(0);
 }
 
 void Drivetrain::stopDrivetrain(bool gyro, double r) {
