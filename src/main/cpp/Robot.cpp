@@ -165,13 +165,12 @@ void Robot::TeleopInit() {
   // -------------This chunk needs to be commented out for match play taken care
   // of in auton
   // comment this
-  // m_swerve.gyroSetpoint = 0;
-  /*m_swerve.resetGyro();
+  m_swerve.gyroSetpoint = 0;
   if (isBlue)
-  m_swerve.ResetOdometry(bluePose[8]);
+    m_swerve.ResetOdometry(bluePose[8]);
   else
-  m_swerve.ResetOdometry(redPose[1]);
-  */
+    m_swerve.ResetOdometry(redPose[1]);
+
   // -------------------------------------
 
   m_swerve.currRampPos = Drivetrain::RampPos::floor;
@@ -448,7 +447,7 @@ void Robot::TeleopPeriodic() {
     else
       m_appendage.armPID(armHome);
 
-    double trim = -400 * m_controller2.GetLeftY();
+    double trim = -200 * m_controller2.GetLeftY();
     m_appendage.shoulderPID(shoulderFloor + trim);
 
     if (tarGamePiece == Robot::GamePiece::cube)
@@ -464,11 +463,11 @@ void Robot::TeleopPeriodic() {
       m_appendage.armPID(armHome);
 
     if (tarGamePiece == Robot::GamePiece::cone) {
-      double trim = -400 * m_controller2.GetLeftY();
+      double trim = -200 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderMidCone + trim);
       m_appendage.wristPID(wristMidCone);
     } else {
-      double trim = -400 * m_controller2.GetLeftY();
+      double trim = -200 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderMidCube + trim);
       m_appendage.wristPID(wristMidCube);
     }
@@ -481,7 +480,7 @@ void Robot::TeleopPeriodic() {
       else
         m_appendage.armPID(armHome);
 
-      double trim = -400 * m_controller2.GetLeftY();
+      double trim = -200 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderHighCone + trim);
       m_appendage.wristPID(wristHighCone);
 
@@ -491,7 +490,7 @@ void Robot::TeleopPeriodic() {
       else
         m_appendage.armPID(armHome);
 
-      double trim = -400 * m_controller2.GetLeftY();
+      double trim = -200 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderHighCube + trim);
       m_appendage.wristPID(wristHighCube);
     }
@@ -503,7 +502,7 @@ void Robot::TeleopPeriodic() {
     else
       m_appendage.armPID(armHome);
 
-    double trim = -400 * m_controller2.GetLeftY();
+    double trim = -200 * m_controller2.GetLeftY();
     m_appendage.shoulderPID(shoulderFloor + trim);
 
     if (m_controller2.GetLeftBumper() || tarGamePiece == Robot::GamePiece::cube)
@@ -516,7 +515,7 @@ void Robot::TeleopPeriodic() {
 
     m_appendage.armPID(armHome);
 
-    double trim = -400 * m_controller2.GetLeftY();
+    double trim = -200 * m_controller2.GetLeftY();
     m_appendage.shoulderPID(shoulderHumanLow + trim);
 
     m_appendage.wristPID(wristHumanLow);
@@ -529,7 +528,7 @@ void Robot::TeleopPeriodic() {
       else
         m_appendage.armPID(armHome);
 
-      double trim = -400 * m_controller2.GetLeftY();
+      double trim = -200 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderHumanHigh + trim);
 
     } else {
@@ -538,7 +537,7 @@ void Robot::TeleopPeriodic() {
       else
         m_appendage.armPID(armHome);
 
-      double trim = -400 * m_controller2.GetLeftY();
+      double trim = -200 * m_controller2.GetLeftY();
       m_appendage.shoulderPID(shoulderHighCube + trim);
     }
 

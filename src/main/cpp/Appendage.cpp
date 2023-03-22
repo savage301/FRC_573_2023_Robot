@@ -39,12 +39,14 @@ Appendage::Appendage() {
       m_shoulderId, rev::CANSparkMax::MotorType::kBrushless};
 
   m_shoulderMotor->SetInverted(true);
+  m_shoulderMotor->SetOpenLoopRampRate(0.1);
   shoulder_Encoder = new frc::Encoder(6, 7, false);
 
   m_wristMotor = new rev::CANSparkMax(m_wristMotorId,
                                       rev::CANSparkMax::MotorType::kBrushless);
 
   m_wristMotor->SetInverted(true);
+  m_wristMotor->SetSmartCurrentLimit(20);
   wrist_Encoder = new frc::Encoder(8, 9, false);
 
   claw1_a_input = new frc::AnalogInput(0);
@@ -183,8 +185,8 @@ double Appendage::calculateDistanceToLim() {
 }
 
 void Appendage::wrist(double d) {
-  double out = remapVal(d, .7);
-  out = deadband(out, 0.2);
+  double out = remapVal(d, .85);
+  out = deadband(out, 0.05);
   double cur = wrist_Encoder->GetDistance();
 
   if (!unleashThePower) {
@@ -196,8 +198,8 @@ void Appendage::wrist(double d) {
 }
 
 bool Appendage::wristPID(double tar) {
-  double limit = 50, maxval = 1;
-  double outlimit = 75;
+  double limit = 10, maxval = .5;
+  double outlimit = 20;
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
 

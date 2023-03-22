@@ -51,4 +51,4 @@ const double zeroSpeed = 0;
 const double zeroSpeedrot = 0;
 
 // Appendage
-constexpr double clawWidth = 0.045; // 17.875 inches / 2 in meters
+constexpr double clawWidth = 0.045;  // 17.875 inches / 2 in meters

@@ -209,8 +209,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/traj": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           }
         }
@@ -330,6 +329,19 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/est. GP location",
+              "_title": "SmartDashboard/est. GP location",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -371,8 +383,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/traj": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           },
           "1,1": {
