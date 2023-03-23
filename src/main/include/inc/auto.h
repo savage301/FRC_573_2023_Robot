@@ -33,3 +33,5 @@ const std::string kAutonPaths99 = "3 gp";
 const std::string twoGPPathRed = "2 GP red";
 const std::string twoGPPathBlue = "2 GP blue";
 const std::string threeGPPath = "3rd";
+const std::string tenFtStr8Path = "10 ft str8 x";
+const std::string fiveFtStr8Path = "5 ft str8 x";

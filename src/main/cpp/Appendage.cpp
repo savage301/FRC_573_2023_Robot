@@ -67,10 +67,9 @@ void Appendage::frontRollerIn() {
 
 void Appendage::frontRollerOut(int tar) {
   if (tar == 2)
-  m_frontRollerMotor->Set(-0.25);
+    m_frontRollerMotor->Set(-0.25);
   else
-  m_frontRollerMotor->Set(-0.35);
-
+    m_frontRollerMotor->Set(-0.35);
 }
 
 void Appendage::frontRollerOff() {
@@ -83,9 +82,9 @@ void Appendage::backRollerIn() {
 
 void Appendage::backRollerOut(int tar) {
   if (tar == 2)
-  m_backRollerMotor->Set(0.25);
+    m_backRollerMotor->Set(0.25);
   else
-  m_backRollerMotor->Set(0.35);
+    m_backRollerMotor->Set(0.35);
 }
 
 void Appendage::backRollerOff() {

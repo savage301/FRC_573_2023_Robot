@@ -18,12 +18,6 @@ void Robot::RobotInit() {
   m_appendage.pneumaticsOut();
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   addToChooser(kAutoNameCustom);
-  addToChooser(kAutonPaths1);
-  addToChooser(kAutonPaths2);
-  addToChooser(kAutonPaths3);
-  addToChooser(kAutonPaths4);
-  addToChooser(kAutonPaths5);
-  addToChooser(kAutonPaths6);
   addToChooser(kAutonPaths7);
   addToChooser(kAutonPaths8);
   addToChooser(kAutonPaths9);
@@ -32,6 +26,9 @@ void Robot::RobotInit() {
   // actual paths
   addToChooser(kAutonPaths99);
   addToChooser(kAutonPaths98);
+  // testing the field
+  addToChooser(tenFtStr8Path);
+  addToChooser(fiveFtStr8Path);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
@@ -79,20 +76,7 @@ void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
 
   // reset pos based on selector
-  if (m_autoSelected == kAutonPaths1)
-    // start with 6 / 2
-    m_swerve.ResetOdometry(redPose[6]);
-  else if (m_autoSelected == kAutonPaths2)
-    m_swerve.ResetOdometry(redPose[2]);
-  else if (m_autoSelected == kAutonPaths3)
-    m_swerve.ResetOdometry(bluePose[6]);
-  else if (m_autoSelected == kAutonPaths4)
-    m_swerve.ResetOdometry(bluePose[2]);
-  else if (m_autoSelected == kAutonPaths5)
-    m_swerve.ResetOdometry(redPose[3]);
-  else if (m_autoSelected == kAutonPaths6)
-    m_swerve.ResetOdometry(bluePose[3]);
-  else if (m_autoSelected == kAutonPaths7)
+  if (m_autoSelected == kAutonPaths7)
     m_swerve.ResetOdometry(redPose[0]);
   else if (m_autoSelected == kAutonPaths8)
     m_swerve.ResetOdometry(redPose[8]);
@@ -103,11 +87,15 @@ void Robot::AutonomousInit() {
   else if (m_autoSelected == kAutonPaths11)
     m_swerve.ResetOdometry(botTestStart);
   else if (m_autoSelected == kAutonPaths99)
-    m_swerve.ResetOdometry(redPose[6]);  // update
-  else if (m_autoSelected == kAutonPaths98)
-    m_swerve.ResetOdometry(redPose[8]);  // update
+    m_swerve.ResetOdometry(redPose[6]);
+  else if ((m_autoSelected == kAutonPaths98)
+           // only for testing the field
+           || (m_autoSelected == tenFtStr8Path) ||
+           (m_autoSelected == fiveFtStr8Path))
+    m_swerve.ResetOdometry(redPose[8]);
 
   autoState = 0;
+
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
   m_swerve.isBlue = isBlue;
@@ -152,6 +140,11 @@ void Robot::AutonomousPeriodic() {
     twoGPAuto();
   else if (m_autoSelected == kAutonPaths99)
     threeGPAuto();
+  // testing the field
+  else if (m_autoSelected == tenFtStr8Path)
+    pathLoad(tenFtStr8Path);
+  else if (m_autoSelected == fiveFtStr8Path)
+    pathLoad(fiveFtStr8Path);
 }
 
 void Robot::TeleopInit() {
@@ -1503,7 +1496,7 @@ void Robot::twoGPAuto() {
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
-       m_appendage.armPID(armHome);
+        m_appendage.armPID(armHome);
 
       if (wristReady && armReady && shoulderReady) {
         m_timer.Reset();
