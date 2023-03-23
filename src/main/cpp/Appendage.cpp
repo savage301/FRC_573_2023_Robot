@@ -32,6 +32,8 @@ Appendage::Appendage() {
 
   m_armMotor =
       new rev::CANSparkMax{m_armId, rev::CANSparkMax::MotorType::kBrushless};
+
+  m_armMotor->SetOpenLoopRampRate(0.1);
   arm_Encoder = new rev::SparkMaxRelativeEncoder{m_armMotor->GetEncoder(
       rev::SparkMaxRelativeEncoder::Type::kHallSensor, 42)};
 
@@ -47,6 +49,7 @@ Appendage::Appendage() {
 
   m_wristMotor->SetInverted(true);
   m_wristMotor->SetSmartCurrentLimit(20);
+  m_wristMotor->SetOpenLoopRampRate(0.1);
   wrist_Encoder = new frc::Encoder(8, 9, false);
 
   claw1_a_input = new frc::AnalogInput(0);
@@ -62,8 +65,12 @@ void Appendage::frontRollerIn() {
   m_frontRollerMotor->Set(0.50);
 }
 
-void Appendage::frontRollerOut() {
+void Appendage::frontRollerOut(int tar) {
+  if (tar == 2)
+  m_frontRollerMotor->Set(-0.25);
+  else
   m_frontRollerMotor->Set(-0.35);
+
 }
 
 void Appendage::frontRollerOff() {
@@ -74,7 +81,10 @@ void Appendage::backRollerIn() {
   m_backRollerMotor->Set(-0.50);
 }
 
-void Appendage::backRollerOut() {
+void Appendage::backRollerOut(int tar) {
+  if (tar == 2)
+  m_backRollerMotor->Set(0.25);
+  else
   m_backRollerMotor->Set(0.35);
 }
 
@@ -199,7 +209,7 @@ void Appendage::wrist(double d) {
 
 bool Appendage::wristPID(double tar) {
   double limit = 10, maxval = .5;
-  double outlimit = 20;
+  double outlimit = 30;
   double cur = wrist_Encoder->GetDistance();
   double out = Wrist_PIDController.Calculate(cur, tar);
 

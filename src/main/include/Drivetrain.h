@@ -125,7 +125,4 @@ class Drivetrain {
       frc::Pose2d{0_m, 0_m, 0_deg},
       {0.1, 0.1, 0.1},
       {0.1, 0.1, 0.1}};
-
-  // Drivetrain
-  frc2::PIDController gyro_PIDController{0.01, 0, 0};
 };

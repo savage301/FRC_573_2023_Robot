@@ -30,6 +30,6 @@ const std::string kAutonPaths98 = "2 gp";
 const std::string kAutonPaths99 = "3 gp";
 
 // Pathplanner paths
-const std::string twoGPPath = "2 GP 3_18";
-const std::string twoGPPathNew = "2 GP test new field";
+const std::string twoGPPathRed = "2 GP red";
+const std::string twoGPPathBlue = "2 GP blue";
 const std::string threeGPPath = "3rd";

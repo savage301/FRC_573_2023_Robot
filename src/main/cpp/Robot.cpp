@@ -104,6 +104,8 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(botTestStart);
   else if (m_autoSelected == kAutonPaths99)
     m_swerve.ResetOdometry(redPose[6]);  // update
+  else if (m_autoSelected == kAutonPaths98)
+    m_swerve.ResetOdometry(redPose[8]);  // update
 
   autoState = 0;
   isBlue = (frc::DriverStation::GetAlliance() ==
@@ -146,9 +148,9 @@ void Robot::AutonomousPeriodic() {
     basicAuto(true);
   else if (m_autoSelected == kAutonPaths11)
     basicAuto2();
-  else if (m_autoSelected == kAutonPaths99)
-    twoGPAuto();
   else if (m_autoSelected == kAutonPaths98)
+    twoGPAuto();
+  else if (m_autoSelected == kAutonPaths99)
     threeGPAuto();
 }
 
@@ -411,8 +413,8 @@ void Robot::TeleopPeriodic() {
       m_appendage.frontRollerIn();
       m_appendage.backRollerIn();
     } else if (m_controller2.GetRightTriggerAxis() > .5) {
-      m_appendage.frontRollerOut();
-      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut(tarGamePiece);
+      m_appendage.backRollerOut(tarGamePiece);
     } else {
       m_appendage.frontRollerOff();
       m_appendage.backRollerOff();
@@ -425,8 +427,8 @@ void Robot::TeleopPeriodic() {
       m_appendage.backRollerIn();
       m_appendage.pneumaticsOut();
     } else if (m_controller2.GetRightTriggerAxis() > .5) {
-      m_appendage.frontRollerOut();
-      m_appendage.backRollerOut();
+      m_appendage.frontRollerOut(tarGamePiece);
+      m_appendage.backRollerOut(tarGamePiece);
       m_appendage.pneumaticsOut();
     } else if (m_controller2.GetLeftBumper()) {
       m_appendage.backRollerIn();
@@ -835,8 +837,8 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
@@ -971,8 +973,8 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHighCube);
       m_appendage.armPID(armHighCube);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       m_swerve.stopDrivetrain(false, 0);
       EstimatePose(0);
       if (m_timer.Get().value() > .5) {
@@ -1152,8 +1154,8 @@ void Robot::driveToCS(bool isBlue) {
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -1173,8 +1175,8 @@ void Robot::driveToCS(bool isBlue) {
         m_appendage.wristPID(wristHome);
         m_appendage.shoulderPID(shoulderHighCone);
       }
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       EstimatePose(0);
       if (wristReady && armReady && shoulderReady) {
         m_timer.Reset();
@@ -1251,8 +1253,8 @@ void Robot::driveToCSsimple(bool isBlue) {
       m_appendage.wristPID(wristHigh);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -1330,8 +1332,8 @@ void Robot::driveToCSsimpleWithMobility(bool isBlue) {
       m_appendage.wristPID(wristHigh);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -1409,8 +1411,8 @@ void Robot::basicAuto(bool isBlue) {
       m_appendage.wristPID(wristHigh);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -1501,7 +1503,7 @@ void Robot::twoGPAuto() {
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
-        m_appendage.armPID(armHome);
+       m_appendage.armPID(armHome);
 
       if (wristReady && armReady && shoulderReady) {
         m_timer.Reset();
@@ -1515,8 +1517,8 @@ void Robot::twoGPAuto() {
       m_appendage.wristPID(wristHighCone);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -1548,7 +1550,7 @@ void Robot::twoGPAuto() {
     }
     case 3: {
       if (firstTime) {
-        trajectoryPP_ = pathLoad(twoGPPath);
+        trajectoryPP_ = pathLoad(isBlue ? twoGPPathBlue : twoGPPathRed);
         driveWithTraj(trajectoryPP_, offPose);
       }
       if (m_timer.Get().value() < 1) {
@@ -1598,8 +1600,8 @@ void Robot::twoGPAuto() {
       m_appendage.wristPID(wristHighCube);
       m_appendage.shoulderPID(shoulderHighCube);
       m_appendage.armPID(armHighCube);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(2);
+      m_appendage.frontRollerOut(2);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -1668,8 +1670,8 @@ void Robot::threeGPAuto() {
       m_appendage.wristPID(wristHighCone);
       m_appendage.shoulderPID(shoulderHighCone);
       m_appendage.armPID(armHighCone);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -1701,7 +1703,7 @@ void Robot::threeGPAuto() {
     }
     case 3: {
       if (firstTime) {
-        trajectoryPP_ = pathLoad(twoGPPath);
+        trajectoryPP_ = pathLoad(twoGPPathRed);
         driveWithTraj(trajectoryPP_, offPose);
       }
       if (m_timer.Get().value() < 1) {
@@ -1751,8 +1753,8 @@ void Robot::threeGPAuto() {
       m_appendage.wristPID(wristHighCube);
       m_appendage.shoulderPID(shoulderHighCube);
       m_appendage.armPID(armHighCube);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(2);
+      m_appendage.frontRollerOut(2);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
@@ -1834,8 +1836,8 @@ void Robot::threeGPAuto() {
       m_appendage.wristPID(wristMidCube);
       m_appendage.shoulderPID(shoulderMidCube);
       m_appendage.armPID(armMidCube);
-      m_appendage.backRollerOut();
-      m_appendage.frontRollerOut();
+      m_appendage.backRollerOut(2);
+      m_appendage.frontRollerOut(2);
       EstimatePose(0);
       if (m_timer.Get().value() > .25) {
         m_timer.Stop();
