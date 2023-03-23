@@ -31,7 +31,7 @@ class Drivetrain {
              units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
              bool fieldRelative);
   void UpdateOdometry();
-  void UpdateOdometry(frc::Pose2d camerapose);
+  void UpdateOdometry(frc::Pose2d camerapose, double latency);
 
   void DriveWithJoystick(double xJoy, double yJoy, double rJoy,
                          bool fieldRelative, bool lim, bool gyrostablize);

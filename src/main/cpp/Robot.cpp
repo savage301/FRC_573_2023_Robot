@@ -1042,8 +1042,9 @@ void Robot::EstimatePose() {
       double dy = poseDiff.dy();
       // double dTh = poseDiff.dtheta();
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+      frc::SmartDashboard::PutNumber("Pose to Camera Radius Offset", r);
       if (r < 1) {
-        m_swerve.UpdateOdometry(fldPose);
+        m_swerve.UpdateOdometry(fldPose,(robotPose[6])/1000.0);
       } else {
         m_swerve.UpdateOdometry();
       }
@@ -1091,9 +1092,9 @@ void Robot::EstimatePose(int camera_pipline) {
       double dy = poseDiff.dy();
       // double dTh = poseDiff.dtheta();
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
-
+      frc::SmartDashboard::PutNumber("Pose to Camera Radius Offset", r);
       if (r < 1) {
-        m_swerve.ResetOdometry(fldPose);
+        m_swerve.UpdateOdometry(fldPose,(robotPose[6])/1000.0);
       } else {
         m_swerve.UpdateOdometry();
       }

@@ -47,7 +47,14 @@ void Drivetrain::UpdateOdometry() {
   //    frc::Timer::GetFPGATimestamp() - 0.3_s);
 }
 
-void Drivetrain::UpdateOdometry(frc::Pose2d camerapose) {
+void Drivetrain::UpdateOdometry(frc::Pose2d camerapose, double latency) {
+
+  // Also apply vision measurements. We use 0.3 seconds in the past as an
+  // example -- on a real robot, this must be calculated based either on latency
+  // or timestamps.
+  m_poseEstimator.AddVisionMeasurement(camerapose,
+                                       frc::Timer::GetFPGATimestamp() - units::second_t(latency));
+
   frc::SwerveModulePosition FL = {m_frontLeft.GetPosition().distance,
                                   m_frontLeft.GetPosition().angle};
   frc::SwerveModulePosition FR = {m_frontRight.GetPosition().distance,
@@ -59,11 +66,7 @@ void Drivetrain::UpdateOdometry(frc::Pose2d camerapose) {
 
   m_poseEstimator.Update(m_gyro.GetRotation2d(), {FL, FR, BL, BR});
 
-  // Also apply vision measurements. We use 0.3 seconds in the past as an
-  // example -- on a real robot, this must be calculated based either on latency
-  // or timestamps.
-  m_poseEstimator.AddVisionMeasurement(camerapose,
-                                       frc::Timer::GetFPGATimestamp() - 0.3_s);
+  
 }
 
 frc::ChassisSpeeds Drivetrain::GetRobotVelocity() {
