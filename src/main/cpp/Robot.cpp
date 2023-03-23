@@ -135,16 +135,16 @@ void Robot::AutonomousPeriodic() {
   else if (m_autoSelected == kAutonPaths10)
     basicAuto(true);
   else if (m_autoSelected == kAutonPaths11)
-    basicAuto2();
+    basicAuto2("turn");
   else if (m_autoSelected == kAutonPaths98)
     twoGPAuto();
   else if (m_autoSelected == kAutonPaths99)
     threeGPAuto();
   // testing the field
   else if (m_autoSelected == tenFtStr8Path)
-    pathLoad(tenFtStr8Path);
+    basicAuto2(tenFtStr8Path);
   else if (m_autoSelected == fiveFtStr8Path)
-    pathLoad(fiveFtStr8Path);
+    basicAuto2(fiveFtStr8Path);
 }
 
 void Robot::TeleopInit() {
@@ -1463,12 +1463,12 @@ void Robot::basicAuto(bool isBlue) {
   }
 }
 
-void Robot::basicAuto2() {
+void Robot::basicAuto2(std::string path) {
   m_swerve.resetGyro(0);
   switch (autoState) {
     case 0: {
       if (firstTime) {
-        trajectoryPP_ = pathLoad("turn");  // mid pt
+        trajectoryPP_ = pathLoad(path);  // mid pt
         driveWithTraj(trajectoryPP_, offPose);
       }
       firstTime = false;
