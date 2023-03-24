@@ -135,17 +135,22 @@ void Drivetrain::setTrajCon() {
   auto_traj.SetKinematics(m_kinematics);
 }
 
-void Drivetrain::autoBalance() {
+void Drivetrain::autoBalance(bool mobility) {
   double vector = .99;
   frc::SmartDashboard::PutNumber("RampState", rampState);
   vector = m_gyro.GetRoll();
   frc::SmartDashboard::PutNumber("Vector", vector);
-  double coeff = vector / std::abs(vector);
+  double coeff = vector / std::abs(vector); // need to confirm roll positive  vs negative value this may need negative symbol
   switch (rampState) {
     case 0: {
       DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
-      if (std::abs(vector) > balancedZ)
-        rampState++;
+      if (std::abs(vector) > balancedZ){
+        if (mobility)
+          rampState+=3;
+        else
+          rampState++;
+      }
+        
 
       break;
     }
@@ -161,7 +166,7 @@ void Drivetrain::autoBalance() {
     case 2: {
       if (counter < 5) {
         DriveWithJoystick(coeff * slowestSpeed, zeroSpeed, zeroSpeedrot, true,
-                          false, false);
+                          false, true);
         counter++;
       } else {
         stopDrivetrain(true, 0);
@@ -170,6 +175,41 @@ void Drivetrain::autoBalance() {
         rampState--;
       break;
     }
+
+    case 3: {
+      DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      if (std::abs(vector) < balancedZ){
+          rampState++;
+      }
+      break;
+    }
+    case 4: {
+      DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      if (std::abs(vector) > balancedZ){
+          rampState++;
+          counter = 0;
+      }
+      break;
+    }
+    case 5: { // on floor back side case
+      DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      if (std::abs(vector) < balancedZ){
+          if (counter > 5)
+            rampState++;
+          else
+            counter++;
+      }
+      break;
+    }
+    case 6: { // on floor back side case
+      DriveWithJoystick(fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      counter = 0;
+      if (std::abs(vector) > balancedZ){
+          rampState = 1;
+          }
+      break;
+    }
+
     default: {
       if (counter < 5) {
         stopDrivetrain(false, 0.025);
@@ -179,6 +219,7 @@ void Drivetrain::autoBalance() {
       }
     }
   }
+  
 
   // -----Cross Ramp Section ---------------------------
 
@@ -239,7 +280,7 @@ void Drivetrain::autoBalance() {
   }*/
 }
 
-void Drivetrain::autoBalanceWithMobility() {
+/*void Drivetrain::autoBalanceWithMobility() {
   double vector = .99;
   frc::SmartDashboard::PutNumber("RampState", rampState);
   vector = m_gyro.GetRoll();
@@ -292,7 +333,7 @@ void Drivetrain::autoBalanceWithMobility() {
       }
     }
   }
-}
+}*/
 
 void Drivetrain::pumpOutSensorVal() {
   pumpOutNum("Gyro angle", m_gyro.GetAngle());

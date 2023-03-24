@@ -1213,7 +1213,7 @@ void Robot::driveToCS(bool isBlue) {
       break;
     }
     case 4:
-      m_swerve.autoBalance();
+      m_swerve.autoBalance(false);
       EstimatePose(0);
       break;
     default: {
@@ -1300,7 +1300,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
-      m_swerve.autoBalance();
+      m_swerve.autoBalance(false);
       EstimatePose(0);
       break;
     default: {
@@ -1379,7 +1379,7 @@ void Robot::driveToCSsimpleWithMobility(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
-      m_swerve.autoBalanceWithMobility();
+      m_swerve.autoBalance(true);
       EstimatePose(0);
       break;
     default: {

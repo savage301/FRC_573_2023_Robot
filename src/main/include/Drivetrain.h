@@ -52,8 +52,8 @@ class Drivetrain {
 
   void setTrajCon();
 
-  void autoBalance();
-  void autoBalanceWithMobility();
+  void autoBalance(bool mobility);
+  //void autoBalanceWithMobility();
 
   // bool onRamp = false;
 
