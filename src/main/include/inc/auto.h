@@ -39,3 +39,7 @@ const std::string twoGPpt1 = "2GPpt1";
 const std::string twoGPpt2 = "2GPpt2;";
 const std::string twoGPpt3 = "2GPpt3";
 const std::string twoGPpt4 = "2GPpt4";
+
+// Basic 2 Piece Paths
+const std::string kAutonPaths50 = "Basic 2 Piece Red";
+const std::string kAutonPaths51 = "Basic 2 Piece Blue";;
