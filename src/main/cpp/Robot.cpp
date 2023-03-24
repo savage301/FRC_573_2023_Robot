@@ -26,9 +26,7 @@ void Robot::RobotInit() {
   // actual paths
   addToChooser(kAutonPaths99);
   addToChooser(kAutonPaths98);
-  // testing the field
-  addToChooser(tenFtStr8Path);
-  addToChooser(fiveFtStr8Path);
+
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
@@ -88,10 +86,7 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(botTestStart);
   else if (m_autoSelected == kAutonPaths99)
     m_swerve.ResetOdometry(redPose[6]);
-  else if ((m_autoSelected == kAutonPaths98)
-           // only for testing the field
-           || (m_autoSelected == tenFtStr8Path) ||
-           (m_autoSelected == fiveFtStr8Path))
+  else if (m_autoSelected == kAutonPaths98)
     m_swerve.ResetOdometry(redPose[8]);
 
   autoState = 0;
@@ -140,11 +135,6 @@ void Robot::AutonomousPeriodic() {
     twoGPAuto();
   else if (m_autoSelected == kAutonPaths99)
     threeGPAuto();
-  // testing the field
-  else if (m_autoSelected == tenFtStr8Path)
-    basicAuto2("2-N2P work");
-  else if (m_autoSelected == fiveFtStr8Path)
-    basicAuto2(fiveFtStr8Path);
 }
 
 void Robot::TeleopInit() {
@@ -1858,6 +1848,112 @@ void Robot::threeGPAuto() {
         m_timer.Start();
         autoState++;
       }
+      break;
+    }
+    default: {
+      m_swerve.stopDrivetrain(false, 0);
+      EstimatePose(0);
+      m_appendage.wristPID(wristHome);
+      m_appendage.shoulderPID(shoulderHome);
+      m_appendage.armPID(armHome);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      break;
+    }
+  }
+}
+
+void Robot::newTwoGPAuto() {
+  switch (autoState) {
+    case 0: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.stopDrivetrain(true, 0);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(wristHighCone);
+      bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
+      bool armReady = false;
+      if (wristReady && shoulderReady)
+        armReady = m_appendage.armPID(armHighCone);
+      else
+        m_appendage.armPID(armHome);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 1: {
+      m_appendage.wristPID(wristHighCone);
+      m_appendage.shoulderPID(shoulderHighCone);
+      m_appendage.armPID(armHighCone);
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      bool armReady = m_appendage.armPID(armHome);
+      bool wristReady = false;
+      bool shoulderReady = false;
+      if (armReady) {
+        wristReady = m_appendage.wristPID(wristHighCone);
+        shoulderReady = m_appendage.shoulderPID(shoulderHome);
+      } else {
+        m_appendage.wristPID(wristHighCone);
+        m_appendage.shoulderPID(shoulderHighCone);
+      }
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      EstimatePose(0);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 3: {
+      trajectoryPP_ = pathLoad(twoGPpt1); // pt1 is driving back
+      driveWithTraj(trajectoryPP_, offPose);
+      driveWithTraj(true);
+      EstimatePose(0);
+      autoState++;
+      break;
+    }
+    case 4: {
+      trajectoryPP_ = pathLoad(twoGPpt2); // pt2 is making the turn and picking up the cube
+      driveWithTraj(trajectoryPP_, offPose);
+      driveWithTraj(true);
+      EstimatePose(0);
+      // add the timer for picking up, copy from twoGPAuto
+      // timer value should be 3.72s for the pickup
+      autoState++;
+      break;
+    }
+    case 5: {
+      trajectoryPP_ = pathLoad(twoGPpt3); // pt3 is going back to the middle point
+      driveWithTraj(trajectoryPP_, offPose);
+      driveWithTraj(true);
+      EstimatePose(0);
+      autoState++;
+      break;
+    }
+    case 6: {
+      trajectoryPP_ = pathLoad(twoGPpt4); // pt4 is driving to the grid and dropping the cube
+      driveWithTraj(trajectoryPP_, offPose);
+      driveWithTraj(true);
+      EstimatePose(0);
+      // add the timer for scoring, copy from twoGPAuto
+      // timer value should be 2.96s for the pickup
+      autoState++;
       break;
     }
     default: {

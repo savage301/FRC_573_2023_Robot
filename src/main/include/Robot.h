@@ -161,4 +161,6 @@ class Robot : public frc::TimedRobot {
   void basicAuto2(std::string path);
   void twoGPAuto();
   void threeGPAuto();
+
+  void newTwoGPAuto();
 };
