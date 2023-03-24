@@ -42,11 +42,11 @@ static constexpr frc::SimpleMotorFeedforward<units::radians> m_turnFeedforward{
 
 // Auto balance
 const double RampZ = 8;
-const double balancedZ = 5;  // 5 works for dock
+const double balancedZ = 6.5;  // 5 works for dock
 const double fastSpeed = 0.5;
 const double midSpeed = 0.045;
 // double slowSpeed = .045;
-const double slowestSpeed = 0.03;
+const double slowestSpeed = 0.025;
 const double zeroSpeed = 0;
 const double zeroSpeedrot = 0;
 
