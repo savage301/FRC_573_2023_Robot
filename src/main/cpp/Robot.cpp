@@ -142,7 +142,7 @@ void Robot::AutonomousPeriodic() {
     threeGPAuto();
   // testing the field
   else if (m_autoSelected == tenFtStr8Path)
-    basicAuto2(tenFtStr8Path);
+    basicAuto2("2-N2P work");
   else if (m_autoSelected == fiveFtStr8Path)
     basicAuto2(fiveFtStr8Path);
 }
@@ -164,7 +164,7 @@ void Robot::TeleopInit() {
   if (isBlue)
     m_swerve.ResetOdometry(bluePose[8]);
   else
-    m_swerve.ResetOdometry(redPose[1]);
+    m_swerve.ResetOdometry(redPose[8]);
 
   // -------------------------------------
 
@@ -1465,7 +1465,6 @@ void Robot::basicAuto(bool isBlue) {
 }
 
 void Robot::basicAuto2(std::string path) {
-  m_swerve.resetGyro(0);
   switch (autoState) {
     case 0: {
       if (firstTime) {
