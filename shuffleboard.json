@@ -400,17 +400,17 @@
               "Layout/Number of rows": 3,
               "Layout/Label position": "BOTTOM",
               "_children": {
-                "1,0": {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Vector",
-                  "_title": "Vector",
-                  "_glyph": 148,
-                  "_showGlyph": false
-                },
                 "1,1": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/RampState",
                   "_title": "RampState",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "1,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Gyro Roll",
+                  "_title": "/SmartDashboard/Gyro Roll",
                   "_glyph": 148,
                   "_showGlyph": false
                 }
@@ -453,9 +453,9 @@
     }
   ],
   "windowGeometry": {
-    "x": 188.0,
-    "y": 1.0,
-    "width": 1114.0,
-    "height": 634.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1382.0,
+    "height": 744.0
   }
 }

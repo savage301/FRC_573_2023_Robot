@@ -125,4 +125,7 @@ class Drivetrain {
       frc::Pose2d{0_m, 0_m, 0_deg},
       {0.1, 0.1, 0.1},
       {0.01, 0.01, 0.01}};
+  
+  double remapVal(double i, double threshold);
+  double deadband(double i, double threshold);
 };
