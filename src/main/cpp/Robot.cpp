@@ -15,7 +15,7 @@ wpi::log::StringLogEntry m_log;
 #define addToChooser(x) m_chooser.AddOption(x, x);
 
 void Robot::RobotInit() {
-  m_appendage.pneumaticsOut(); // temp change flip to in
+  m_appendage.pneumaticsIn(); // temp change flip to in
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   addToChooser(kAutoNameCustom);
   addToChooser(kAutonPaths5);
@@ -30,6 +30,8 @@ void Robot::RobotInit() {
   addToChooser(kAutonPaths98);
   addToChooser(kAutonPaths50);
   addToChooser(kAutonPaths51);
+  addToChooser(kAutonPaths45);
+  addToChooser(kAutonPaths46);
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
@@ -100,6 +102,10 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(redPose[3]);
   else if (m_autoSelected == kAutonPaths6)
     m_swerve.ResetOdometry(bluePose[3]);
+  else if (m_autoSelected == kAutonPaths45)
+    m_swerve.ResetOdometry(redPose[3]);
+  else if (m_autoSelected == kAutonPaths46)
+    m_swerve.ResetOdometry(bluePose[3]);
 
   autoState = 0;
 
@@ -151,6 +157,10 @@ void Robot::AutonomousPeriodic() {
     basicAuto2Piece(false);
   else if (m_autoSelected == kAutonPaths51)
     basicAuto2Piece(true);
+  else if (m_autoSelected == kAutonPaths45)
+    driveToCSsimpleWithMobility(false);
+  else if (m_autoSelected == kAutonPaths46)
+    driveToCSsimpleWithMobility(true);
 }
 
 void Robot::TeleopInit() {
@@ -1246,7 +1256,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      //m_appendage.pneumaticsIn(); // Temp
+      m_appendage.pneumaticsIn(); // Temp
       m_appendage.frontRollerIn();
       m_appendage.backRollerIn();
       if (wristReady && shoulderReady)
@@ -1328,6 +1338,7 @@ void Robot::driveToCSsimpleWithMobility(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
+      m_appendage.pneumaticsIn();//temp change to in
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -1407,7 +1418,7 @@ void Robot::basicAuto(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      //m_appendage.pneumaticsIn(); // temp
+      m_appendage.pneumaticsIn(); // temp
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
       if (wristReady && shoulderReady)
