@@ -169,7 +169,7 @@ void Robot::TeleopInit() {
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
   tarGrid = Grid::humanLeft;
-  tarGamePiece = Robot::GamePiece::cone; // switch back to cone later
+  tarGamePiece = Robot::GamePiece::cube; // switch back to cone later
   curFA_Pos_Latch = 0;
   m_swerve.rampState = 0;
   m_swerve.isBlue = isBlue;
