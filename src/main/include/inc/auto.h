@@ -18,6 +18,9 @@ const std::string kAutonPaths4 = "Blue Left 2 to 1";
 const std::string kAutonPaths5 = "Red Left 3 to CS";
 const std::string kAutonPaths6 = "Blue Left 3 to CS";
 
+const std::string kAutonPaths45 = "Red Left 3 M to CS";
+const std::string kAutonPaths46 = "Blue Left 3 M to CS";
+
 // Basic paths
 const std::string kAutonPaths7 = "Basic Red Right Right";
 const std::string kAutonPaths8 = "Basic Red Left Left";

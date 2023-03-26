@@ -30,6 +30,8 @@ void Robot::RobotInit() {
   addToChooser(kAutonPaths98);
   addToChooser(kAutonPaths50);
   addToChooser(kAutonPaths51);
+  addToChooser(kAutonPaths45);
+  addToChooser(kAutonPaths46);
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
@@ -100,6 +102,10 @@ void Robot::AutonomousInit() {
     m_swerve.ResetOdometry(redPose[3]);
   else if (m_autoSelected == kAutonPaths6)
     m_swerve.ResetOdometry(bluePose[3]);
+  else if (m_autoSelected == kAutonPaths45)
+    m_swerve.ResetOdometry(redPose[3]);
+  else if (m_autoSelected == kAutonPaths46)
+    m_swerve.ResetOdometry(bluePose[3]);
 
   autoState = 0;
 
@@ -151,6 +157,10 @@ void Robot::AutonomousPeriodic() {
     basicAuto2Piece(false);
   else if (m_autoSelected == kAutonPaths51)
     basicAuto2Piece(true);
+  else if (m_autoSelected == kAutonPaths45)
+    driveToCSsimpleWithMobility(false);
+  else if (m_autoSelected == kAutonPaths46)
+    driveToCSsimpleWithMobility(true);
 }
 
 void Robot::TeleopInit() {
