@@ -402,7 +402,7 @@ void Robot::TeleopPeriodic() {
   } 
   //This should be commented out for comp
   /*else if(m_controller1.GetRightTriggerAxis()>0.5){
-    m_swerve.autoBalance(false);
+    m_swerve.autoBalance(true);
 
   }*/
   else {
@@ -2121,8 +2121,8 @@ void Robot::basicAuto2Piece(bool isBlue) {
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
+      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn();
       m_swerve.gyroSetpoint = 180*isBlueFactor;
       m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
       EstimatePose(0);
