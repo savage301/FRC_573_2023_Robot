@@ -587,8 +587,7 @@ void Robot::TeleopPeriodic() {
   // --------- End All possible Arm Positions ---------------------
   // ----------- End Appendage Code -----------------------------------
   handleLedModes(validTarFnd, hasGamePiece, tarGamePiece,
-                 m_appendage.checkEdge());
-  pumpOutBool("edge analog", m_appendage.checkEdge());
+                 false);
 }  // End of Teleop Periodic
 
 void Robot::DisabledInit() {}

@@ -56,7 +56,6 @@ class Appendage {
 
   // Claw UltSnd
   bool isGamePieceInClaw(bool gamePieceInClawManual);
-  bool checkEdge();
 
   enum armVals { armDown = -1, armOff = 0, armUp = 1 };
 
@@ -118,9 +117,6 @@ class Appendage {
   // Claw UltSnd
   frc::AnalogInput* claw1_a_input;
   frc::AnalogInput* claw2_a_input;
-  // edge on chassis
-  frc::AnalogInput* edge1_a_input;
-  frc::AnalogInput* edge2_a_input;
 
   double remapVal(double i, double threshold);
   double deadband(double i, double threshold);

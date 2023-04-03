@@ -54,8 +54,6 @@ Appendage::Appendage() {
 
   claw1_a_input = new frc::AnalogInput(0);
   claw2_a_input = new frc::AnalogInput(3);
-  edge1_a_input = new frc::AnalogInput(1);
-  edge2_a_input = new frc::AnalogInput(2);
 #define pneumatics(a, b) \
   new frc::DoubleSolenoid(p_pcmId, frc::PneumaticsModuleType::CTREPCM, a, b)
   p_backRollerCylinder1 = pneumatics(p_Roller1Id_a, p_Roller1Id_b);
@@ -234,8 +232,6 @@ void Appendage::pumpOutSensorVal() {
   double shoulderCur = shoulder_Encoder->GetDistance();
   pumpOutNum("Claw 1 AnalogInput", claw1_a_input->GetValue());
   pumpOutNum("Claw 2 AnalogInput", claw2_a_input->GetValue());
-  pumpOutNum("edge 1 AnalogInput", edge1_a_input->GetValue());
-  pumpOutNum("edge 2 AnalogInput", edge2_a_input->GetValue());
   pumpOutNum("Arm Encoder", armCur);
   pumpOutNum("Wrist Encoder", wristCur);
   pumpOutNum("Shoulder Encoder", shoulderCur);
@@ -269,14 +265,6 @@ void Appendage::appendageReset(bool isPneumaticsIn) {
     pneumaticsIn();  // let go
   else
     pneumaticsOut();
-}
-
-bool Appendage::checkEdge() {
-  double lim = 500;
-  if (edge1_a_input->GetValue() > lim || edge2_a_input->GetValue() > lim)
-    return true;
-
-  return false;
 }
 
 /*
