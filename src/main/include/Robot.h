@@ -160,6 +160,7 @@ class Robot : public frc::TimedRobot {
   void basicAuto(bool isBlue);
   void basicAutoNoMobility(bool isBlue);
   void basicAuto2Piece(bool isBlue);
+  void basicAuto2PieceCT(bool isBlue);
   void basicAuto2(std::string path);
   void twoGPAuto();
   void threeGPAuto();
