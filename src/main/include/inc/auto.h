@@ -28,6 +28,9 @@ const std::string kAutonPaths8 = "Basic Red Left Left";
 const std::string kAutonPaths9 = "Basic Blue Right Right";
 const std::string kAutonPaths10 = "Basic Blue Left Left";
 
+const std::string kAutonPaths12 = "Basic Blue Cone High No Mobility";
+const std::string kAutonPaths13 = "Basic Red Cone High No Mobility";
+
 // New test paths
 const std::string kAutonPaths11 = "simple turn";
 const std::string kAutonPaths98 = "2 gp";
@@ -61,6 +64,12 @@ const std::vector<std::string> autoModes = {
     kAutonPaths9,
     kAutonPaths10,
     kAutonPaths11,
+
+    // mo mobility
+    kAutonPaths12,
+    kAutonPaths13,
+    // no mobility
+    
     kAutonPaths45,
     kAutonPaths46,
     kAutonPaths50,

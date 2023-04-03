@@ -138,6 +138,10 @@ void Robot::AutonomousPeriodic() {
     basicAuto(true);
   else if (m_autoSelected == kAutonPaths11)
     basicAuto2("turn");
+  else if (m_autoSelected == kAutonPaths12)
+    basicAutoNoMobility(true);
+  else if (m_autoSelected == kAutonPaths13)
+    basicAutoNoMobility(false);
   else if (m_autoSelected == kAutonPaths98)
     twoGPAuto();
   else if (m_autoSelected == kAutonPaths99)
@@ -1396,6 +1400,87 @@ void Robot::driveToCSsimpleWithMobility(bool isBlue) {
   }
 }
 
+void Robot::basicAutoNoMobility(bool isBlue) {
+  switch (autoState) {
+    case 0: {
+      table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
+      m_swerve.stopDrivetrain(true, 0);
+      EstimatePose(0);
+      bool wristReady = m_appendage.wristPID(wristHighCone);
+      bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
+      bool armReady = false;
+      //m_appendage.pneumaticsIn(); // temp
+      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn();
+      if (wristReady && shoulderReady)
+        armReady = m_appendage.armPID(armHighCone);
+      else
+        m_appendage.armPID(armHome);
+
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+
+      break;
+    }
+    case 1: {
+      m_appendage.wristPID(wristHighCone);
+      m_appendage.shoulderPID(shoulderHighCone);
+      m_appendage.armPID(armHighCone);
+      m_appendage.backRollerOut(1);
+      m_appendage.frontRollerOut(1);
+      EstimatePose(0);
+      if (m_timer.Get().value() > .25) {
+        m_timer.Stop();
+        autoState++;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2: {
+      bool armReady = m_appendage.armPID(armHome);
+      bool wristReady = false;
+      bool shoulderReady = false;
+      if (armReady) {
+        wristReady = m_appendage.wristPID(wristHome);
+        shoulderReady = m_appendage.shoulderPID(shoulderHome);
+      } else {
+        m_appendage.wristPID(wristHighCone);
+        m_appendage.shoulderPID(shoulderHighCone);
+      }
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      EstimatePose(0);
+      if (wristReady && armReady && shoulderReady) {
+        m_timer.Reset();
+        m_timer.Start();
+        autoState++;
+      }
+      break;
+    }
+    case 3:
+      m_appendage.wristPID(wristHome);
+      m_appendage.shoulderPID(shoulderHome);
+      m_appendage.armPID(armHome);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      m_swerve.stopDrivetrain(true, 0);
+      EstimatePose(0);
+      break;
+    default: {
+      m_swerve.stopDrivetrain(true, 0);
+      EstimatePose(0);
+      m_appendage.wristPID(wristHome);
+      m_appendage.shoulderPID(shoulderHome);
+      m_appendage.armPID(armHome);
+      m_appendage.backRollerOff();
+      m_appendage.frontRollerOff();
+      break;
+    }
+  }
+}
 void Robot::basicAuto(bool isBlue) {
   switch (autoState) {
     case 0: {
