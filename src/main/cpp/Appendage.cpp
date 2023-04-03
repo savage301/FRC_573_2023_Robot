@@ -50,7 +50,7 @@ Appendage::Appendage() {
   m_wristMotor->SetInverted(true);
   m_wristMotor->SetSmartCurrentLimit(20);
   m_wristMotor->SetOpenLoopRampRate(0.1);
-  wrist_Encoder = new frc::Encoder(8, 9, false);
+  wristPot = new frc::AnalogPotentiometer(2, 90, 0); // degrees assuming we start at 0, max is 90 degrees
 
   claw1_a_input = new frc::AnalogInput(0);
   claw2_a_input = new frc::AnalogInput(3);
@@ -178,7 +178,7 @@ double Appendage::calculateDistanceToLim() {
   double distanceToLim;
   double curPos = arm_Encoder->GetPosition();
   double curAng = shoulder_Encoder->GetDistance();
-  double curWAng = wrist_Encoder->GetDistance();
+  double curWAng = wristPot->Get();
   int gearRatioArm = 1, gearRatioShoulder = 1,
       gearRatioWrist = 1;  // update to real
   // num * enc
@@ -194,7 +194,7 @@ double Appendage::calculateDistanceToLim() {
 void Appendage::wrist(double d) {
   double out = remapVal(d, .85);
   out = deadband(out, 0.05);
-  double cur = wrist_Encoder->GetDistance();
+  double cur = wristPot->Get();
 
   if (!unleashThePower) {
     if ((cur < wrist_min && out > 0) || (cur > wrist_max && out < 0))
@@ -207,7 +207,7 @@ void Appendage::wrist(double d) {
 bool Appendage::wristPID(double tar) {
   double limit = 10, maxval = .5;
   double outlimit = 30;
-  double cur = wrist_Encoder->GetDistance();
+  double cur = wristPot->Get();
   double out = Wrist_PIDController.Calculate(cur, tar);
 
   if ((cur < wrist_min && out > 0) || (cur > wrist_max && out < 0))
@@ -228,12 +228,12 @@ bool Appendage::wristPID(double tar) {
 
 void Appendage::pumpOutSensorVal() {
   double armCur = arm_Encoder->GetPosition();
-  double wristCur = wrist_Encoder->GetDistance();
+  double wristCur = wristPot->Get();
   double shoulderCur = shoulder_Encoder->GetDistance();
   pumpOutNum("Claw 1 AnalogInput", claw1_a_input->GetValue());
   pumpOutNum("Claw 2 AnalogInput", claw2_a_input->GetValue());
   pumpOutNum("Arm Encoder", armCur);
-  pumpOutNum("Wrist Encoder", wristCur);
+  pumpOutNum("Wrist Pot", wristCur);
   pumpOutNum("Shoulder Encoder", shoulderCur);
 }
 
@@ -324,7 +324,7 @@ bool Appendage::getShoulderWorking() {
 }
 
 bool Appendage::getWristWorking() {
-  return isSensorWorking(m_wristMotor, wrist_Encoder, lastWrist);
+  return true;
 }
 
 bool Appendage::getAnalogWorking() {

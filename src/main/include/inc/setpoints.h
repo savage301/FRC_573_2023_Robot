@@ -12,8 +12,8 @@ const double arm_min = -125.0;
 const double shoulder_max = 1700;
 const double shoulder_min = -2000.0;
 
-const double wrist_max = 745;
-const double wrist_min = 0;
+const double wrist_max = 10000; // tbd
+const double wrist_min = -10000;
 
 // home
 const double armHome = 10;

@@ -9,6 +9,7 @@
 #include <frc/DigitalInput.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/Encoder.h>
+#include <frc/AnalogPotentiometer.h>
 #include <frc2/command/PIDCommand.h>
 #include <rev/CANSparkMax.h>
 
@@ -107,7 +108,7 @@ class Appendage {
 
   // Wrist Motor
   rev::CANSparkMax* m_wristMotor;
-  frc::Encoder* wrist_Encoder;
+  frc::AnalogPotentiometer* wristPot;
 
   // Claw Rear Roller Cylinder
   frc::DoubleSolenoid* p_backRollerCylinder1;
