@@ -18,20 +18,9 @@ void Robot::RobotInit() {
   m_appendage.pneumaticsOut(); // temp change flip to in
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   addToChooser(kAutoNameCustom);
-  addToChooser(kAutonPaths5);
-  addToChooser(kAutonPaths6);
-  addToChooser(kAutonPaths7);
-  addToChooser(kAutonPaths8);
-  addToChooser(kAutonPaths9);
-  addToChooser(kAutonPaths10);
-  addToChooser(kAutonPaths11);
-  // actual paths
-  addToChooser(kAutonPaths99);
-  addToChooser(kAutonPaths98);
-  addToChooser(kAutonPaths50);
-  addToChooser(kAutonPaths51);
-  addToChooser(kAutonPaths45);
-  addToChooser(kAutonPaths46);
+  for (auto mode : autoModes) {
+    addToChooser(mode);
+  }
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 

@@ -5,6 +5,7 @@
 
 #pragma once
 #include <string>
+#include <vector>
 
 // Placeholder
 const std::string kAutoNameDefault = "Default";
@@ -46,3 +47,24 @@ const std::string twoGPpt4 = "2GPpt4";
 // Basic 2 Piece Paths
 const std::string kAutonPaths50 = "Basic 2 Piece Red";
 const std::string kAutonPaths51 = "Basic 2 Piece Blue";;
+
+const std::vector<std::string> autoModes = {
+    /*kAutonPaths1,
+    kAutonPaths2,
+    kAutonPaths3,
+    kAutonPaths4,
+    */
+    kAutonPaths5,
+    kAutonPaths6,
+    kAutonPaths7,
+    kAutonPaths8,
+    kAutonPaths9,
+    kAutonPaths10,
+    kAutonPaths11,
+    kAutonPaths45,
+    kAutonPaths46,
+    kAutonPaths50,
+    kAutonPaths51,
+    kAutonPaths98,
+    kAutonPaths99,
+};
