@@ -2180,7 +2180,7 @@ void Robot::basicAuto2Piece(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 180*isBlueFactor;
+      m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
@@ -2190,7 +2190,7 @@ void Robot::basicAuto2Piece(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 180*isBlueFactor;
+      m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
@@ -2200,7 +2200,7 @@ void Robot::basicAuto2Piece(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 180*isBlueFactor;
+      m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
@@ -2419,7 +2419,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 180*isBlueFactor;
+      m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
@@ -2429,7 +2429,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 180*isBlueFactor;
+      m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
@@ -2439,7 +2439,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 180*isBlueFactor;
+      m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
