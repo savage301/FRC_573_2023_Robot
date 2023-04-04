@@ -29,6 +29,8 @@ Appendage::Appendage() {
       m_frontRollerId, rev::CANSparkMax::MotorType::kBrushless};
   m_backRollerMotor = new rev::CANSparkMax{
       m_backRollerId, rev::CANSparkMax::MotorType::kBrushless};
+  m_frontRollerMotor->SetInverted(false);
+  m_backRollerMotor->SetInverted(true);
 
   m_armMotor =
       new rev::CANSparkMax{m_armId, rev::CANSparkMax::MotorType::kBrushless};
@@ -50,7 +52,11 @@ Appendage::Appendage() {
   m_wristMotor->SetInverted(true);
   m_wristMotor->SetSmartCurrentLimit(20);
   m_wristMotor->SetOpenLoopRampRate(0.1);
-  wristPot = new frc::AnalogPotentiometer(2, 90, 0); // degrees assuming we start at 0, max is 90 degrees
+  wristPot = new frc::AnalogPotentiometer(1, 1000, 0); // degrees assuming we start at 0, max is 90 degrees
+
+  wrist_Encoder = new rev::SparkMaxRelativeEncoder{m_wristMotor->GetEncoder(
+      rev::SparkMaxRelativeEncoder::Type::kHallSensor, 42)};
+
 
   claw1_a_input = new frc::AnalogInput(0);
   claw2_a_input = new frc::AnalogInput(3);
@@ -194,7 +200,7 @@ double Appendage::calculateDistanceToLim() {
 void Appendage::wrist(double d) {
   double out = remapVal(d, .85);
   out = deadband(out, 0.05);
-  double cur = wristPot->Get();
+  double cur = wrist_Encoder->GetPosition();
 
   if (!unleashThePower) {
     if ((cur < wrist_min && out > 0) || (cur > wrist_max && out < 0))
@@ -205,9 +211,9 @@ void Appendage::wrist(double d) {
 }
 
 bool Appendage::wristPID(double tar) {
-  double limit = 10, maxval = .5;
-  double outlimit = 30;
-  double cur = wristPot->Get();
+  double limit = 0.1, maxval = .5;
+  double outlimit = 1;
+  double cur = wrist_Encoder->GetPosition();
   double out = Wrist_PIDController.Calculate(cur, tar);
 
   if ((cur < wrist_min && out > 0) || (cur > wrist_max && out < 0))
@@ -234,6 +240,7 @@ void Appendage::pumpOutSensorVal() {
   pumpOutNum("Claw 2 AnalogInput", claw2_a_input->GetValue());
   pumpOutNum("Arm Encoder", armCur);
   pumpOutNum("Wrist Pot", wristCur);
+  pumpOutNum("Wrist Enc", wrist_Encoder->GetPosition());
   pumpOutNum("Shoulder Encoder", shoulderCur);
 }
 

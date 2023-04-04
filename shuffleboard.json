@@ -77,6 +77,19 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Pot",
+              "_title": "SmartDashboard/Wrist Pot",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -342,6 +355,45 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Pot",
+              "_title": "SmartDashboard/Wrist Pot",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Enc",
+              "_title": "SmartDashboard/Wrist Enc",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///SmartDashboard/Ignore appendage limits",
+              "_title": "SmartDashboard/Ignore appendage limits",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -453,9 +505,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -8.0,
-    "y": -8.0,
-    "width": 1382.0,
-    "height": 744.0
+    "x": -6.857142925262451,
+    "y": -6.857142925262451,
+    "width": 1110.857177734375,
+    "height": 630.8571166992188
   }
 }

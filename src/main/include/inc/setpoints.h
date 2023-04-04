@@ -9,16 +9,20 @@
 const double arm_max = -5;
 const double arm_min = -125.0;
 
-const double shoulder_max = 1700;
-const double shoulder_min = -2000.0;
+const double shoulder_max = 1900;
+const double shoulder_min = -2400.0;
 
-const double wrist_max = 10000; // tbd
-const double wrist_min = -10000;
+/*
+const double wrist_max = 333;
+const double wrist_min = 290;
+*/
+const double wrist_max = 0;
+const double wrist_min = -7.5;
 
 // home
 const double armHome = 10;
 const double shoulderHome = 0;
-const double wristHome = 10;
+const double wristHome = -0.1;
 
 // floor pickup
 // const double armFloor = ;
@@ -44,8 +48,9 @@ const double armHighCone = -110;
 const double shoulderHighCube = -800;
 const double shoulderHighCone = -500; // -500
 const double wristHigh = 490;
-const double wristHighCube = 350; //350
-const double wristHighCone = 490;       //490
+const double wristHighCube = 305; //350
+//const double wristHighCone = 305;       //490
+const double wristHighCone = -5;       //490
 
 // high human player
 const double armHumanHigh = armHome;

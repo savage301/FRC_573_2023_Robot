@@ -80,11 +80,11 @@ class Appendage {
 
   bool getArmExtended();
 
-  bool unleashThePower = false;
+  bool unleashThePower = true;
 
  private:
-  int m_frontRollerId = 15;
-  int m_backRollerId = 14;
+  int m_frontRollerId = 14;
+  int m_backRollerId = 15;
   int m_armId = 16;
   int m_shoulderId = 17;
   // roller
@@ -109,6 +109,7 @@ class Appendage {
   // Wrist Motor
   rev::CANSparkMax* m_wristMotor;
   frc::AnalogPotentiometer* wristPot;
+  rev::RelativeEncoder* wrist_Encoder;
 
   // Claw Rear Roller Cylinder
   frc::DoubleSolenoid* p_backRollerCylinder1;
