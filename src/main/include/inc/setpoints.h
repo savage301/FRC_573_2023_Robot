@@ -55,7 +55,7 @@ const double shoulderHighCubeAuto = -600;
 
 // high human player
 const double armHumanHigh = armHome;
-const double shoulderHumanHigh = 730;
+const double shoulderHumanHigh = 530;
 const double wristHumanHigh = -6.8; // 730
 
 // low human player
