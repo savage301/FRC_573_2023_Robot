@@ -51,6 +51,7 @@ const double wristHigh = 490;
 const double wristHighCube = -5; //350
 //const double wristHighCone = 305;       //490
 const double wristHighCone = -4.7;       //490
+const double shoulderHighCubeAuto = -600;
 
 // high human player
 const double armHumanHigh = armHome;
