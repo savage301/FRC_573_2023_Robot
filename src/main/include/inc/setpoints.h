@@ -26,8 +26,8 @@ const double wristHome = -0.1;
 
 // floor pickup
 // const double armFloor = ;
-const double shoulderFloor = -2300;
-const double wristFloorCubeLoad = -2.5;
+const double shoulderFloor = -2375;
+const double wristFloorCubeLoad = -2.6;
 const double wristFloorConeLoad = -1.8;
 const double wristFloor = -3;
 

@@ -2393,7 +2393,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
     }
     case 3:{ // 1.5 s at -.7 got bummper to game piece
 
-    if(m_timer.Get().value() < 1){
+    if(m_timer.Get().value() < 1.3){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
@@ -2404,7 +2404,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 1.1){
+    else if(m_timer.Get().value() < 1.4){
       m_appendage.wristPID(wristFloorCubeLoad);
       m_appendage.shoulderPID(shoulderFloor);
       m_appendage.armPID(armHome);
@@ -2413,7 +2413,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 2.3){
+    else if(m_timer.Get().value() < 2.6){
       m_appendage.wristPID(wristFloorCubeLoad);
       m_appendage.shoulderPID(shoulderFloor);
       m_appendage.armPID(armHome);
@@ -2423,7 +2423,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 3.2){
+    else if(m_timer.Get().value() < 3.3){
       m_appendage.wristPID(wristFloorCubeLoad);
       m_appendage.shoulderPID(shoulderFloor);
       m_appendage.armPID(armHome);
@@ -2433,7 +2433,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 4.3){
+    else if(m_timer.Get().value() < 4){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
@@ -2443,7 +2443,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 5.3){
+    else if(m_timer.Get().value() < 5){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
@@ -2453,7 +2453,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 6.5){
+    else if(m_timer.Get().value() < 6.675){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
