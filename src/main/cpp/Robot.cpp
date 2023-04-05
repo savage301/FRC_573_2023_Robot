@@ -2456,11 +2456,8 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
-      if (!isBlue)
-      m_swerve.gyroSetpoint = 210;
-      else
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(-.5, 0, 0, false, false, true);
+      m_swerve.gyroSetpoint = 0;
+      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
     else if(m_timer.Get().value() < 5){
@@ -2469,27 +2466,30 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
+      if (!isBlue)
       m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+      else
+      m_swerve.gyroSetpoint = 180;
+      m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 6.675){
+    else if(m_timer.Get().value() < 6.6){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
       m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(.7, 0, 0, true, false, true);
+      m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 7){
+    else if(m_timer.Get().value() < 6.8){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 15*isBlueFactor;
+      m_swerve.gyroSetpoint = 5*isBlueFactor;
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
@@ -2543,7 +2543,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.backRollerOut(1);
       m_appendage.frontRollerOut(1);
       EstimatePose(0);
-      if (m_timer.Get().value() > .25) {
+      if (m_timer.Get().value() > .5) {
         m_timer.Stop();
         autoState++;
         firstTime = true;
