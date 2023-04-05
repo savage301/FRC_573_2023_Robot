@@ -2174,37 +2174,47 @@ void Robot::basicAuto2Piece(bool isBlue) {
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 2.3){
+    else if(m_timer.Get().value() < 2.5){
       m_appendage.wristPID(wristFloorCubeLoad);
       m_appendage.shoulderPID(shoulderFloor);
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
+      if (isBlue)
+      m_swerve.gyroSetpoint = 190;
+      else
       m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 3.2){
+    else if(m_timer.Get().value() < 3.4){
       m_appendage.wristPID(wristFloorCubeLoad);
       m_appendage.shoulderPID(shoulderFloor);
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
+      if (isBlue)
+      m_swerve.gyroSetpoint = 190;
+      else
       m_swerve.gyroSetpoint = 180;
+
       m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 4.3){
+    else if(m_timer.Get().value() < 4.5){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
+      if (isBlue)
+      m_swerve.gyroSetpoint = 190;
+      else
       m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 5.3){
+    else if(m_timer.Get().value() < 5.7){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
@@ -2214,7 +2224,7 @@ void Robot::basicAuto2Piece(bool isBlue) {
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 6.5){
+    else if(m_timer.Get().value() < 6.9){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
@@ -2224,7 +2234,7 @@ void Robot::basicAuto2Piece(bool isBlue) {
       m_swerve.DriveWithJoystick(.7, 0, 0, true, false, true);
       EstimatePose(0);
     }
-    else if(m_timer.Get().value() < 7){
+    else if(m_timer.Get().value() < 7.4){
       m_appendage.wristPID(wristHome);
       m_appendage.shoulderPID(shoulderHome);
       m_appendage.armPID(armHome);
@@ -2419,6 +2429,9 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerOff();
       m_appendage.frontRollerOff();
+      if (!isBlue)
+      m_swerve.gyroSetpoint = 210;
+      else
       m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
       EstimatePose(0);
@@ -2429,6 +2442,9 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
+      if (!isBlue)
+      m_swerve.gyroSetpoint = 210;
+      else
       m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
       EstimatePose(0);
@@ -2439,6 +2455,9 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       m_appendage.armPID(armHome);
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
+      if (!isBlue)
+      m_swerve.gyroSetpoint = 210;
+      else
       m_swerve.gyroSetpoint = 180;
       m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
       EstimatePose(0);
