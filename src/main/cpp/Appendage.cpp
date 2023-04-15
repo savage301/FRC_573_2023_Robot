@@ -52,11 +52,11 @@ Appendage::Appendage() {
   m_wristMotor->SetInverted(true);
   m_wristMotor->SetSmartCurrentLimit(20);
   m_wristMotor->SetOpenLoopRampRate(0.1);
-  wristPot = new frc::AnalogPotentiometer(1, 1000, 0); // degrees assuming we start at 0, max is 90 degrees
+  wristPot = new frc::AnalogPotentiometer(
+      1, 1000, 0);  // degrees assuming we start at 0, max is 90 degrees
 
   wrist_Encoder = new rev::SparkMaxRelativeEncoder{m_wristMotor->GetEncoder(
       rev::SparkMaxRelativeEncoder::Type::kHallSensor, 42)};
-
 
   claw1_a_input = new frc::AnalogInput(0);
   claw2_a_input = new frc::AnalogInput(3);

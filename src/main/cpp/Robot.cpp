@@ -15,7 +15,7 @@ wpi::log::StringLogEntry m_log;
 #define addToChooser(x) m_chooser.AddOption(x, x);
 
 void Robot::RobotInit() {
-  m_appendage.pneumaticsOut(); // temp change flip to in
+  m_appendage.pneumaticsOut();  // temp change flip to in
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   addToChooser(kAutoNameCustom);
   for (auto mode : autoModes) {
@@ -166,7 +166,7 @@ void Robot::TeleopInit() {
   isBlue = (frc::DriverStation::GetAlliance() ==
             frc::DriverStation::Alliance::kBlue);  // Get Driverstation color
   tarGrid = Grid::humanLeft;
-  tarGamePiece = Robot::GamePiece::cube; // switch back to cone later
+  tarGamePiece = Robot::GamePiece::cube;  // switch back to cone later
   curFA_Pos_Latch = 0;
   m_swerve.rampState = 0;
   m_swerve.isBlue = isBlue;
@@ -396,13 +396,13 @@ void Robot::TeleopPeriodic() {
 
   } else if (m_controller1.GetStartButton() && m_controller1.GetBackButton()) {
     m_swerve.resetDrivetrain();
-  } 
-  //This should be commented out for comp
-  /*else if(m_controller1.GetRightTriggerAxis()>0.5){
-    m_swerve.autoBalance(true);
 
-  }*/
-  else {
+    // This should be commented out for comp
+    /*else if(m_controller1.GetRightTriggerAxis()>0.5){
+      m_swerve.autoBalance(true);
+
+    }*/
+  } else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
     m_swerve.DriveWithJoystick(
@@ -583,8 +583,7 @@ void Robot::TeleopPeriodic() {
 
   // --------- End All possible Arm Positions ---------------------
   // ----------- End Appendage Code -----------------------------------
-  handleLedModes(validTarFnd, hasGamePiece, tarGamePiece,
-                 false);
+  handleLedModes(validTarFnd, hasGamePiece, tarGamePiece, false);
 }  // End of Teleop Periodic
 
 void Robot::DisabledInit() {}
@@ -754,8 +753,6 @@ void Robot::driveWithTraj(bool auton) {
 
     m_swerve.updateGyroAngle();
 
-
-    
   } else {
     // When trajectory is completed if button is still pressed this stops the
     // robot
@@ -1066,7 +1063,7 @@ void Robot::EstimatePose() {
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
       frc::SmartDashboard::PutNumber("Pose to Camera Radius Offset", r);
       if (r < 1) {
-        m_swerve.UpdateOdometry(fldPose,(robotPose[6])/1000.0);
+        m_swerve.UpdateOdometry(fldPose, (robotPose[6]) / 1000.0);
       } else {
         m_swerve.UpdateOdometry();
       }
@@ -1116,7 +1113,7 @@ void Robot::EstimatePose(int camera_pipline) {
       double r = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
       frc::SmartDashboard::PutNumber("Pose to Camera Radius Offset", r);
       if (r < 1) {
-        m_swerve.UpdateOdometry(fldPose,(robotPose[6])/1000.0);
+        m_swerve.UpdateOdometry(fldPose, (robotPose[6]) / 1000.0);
       } else {
         m_swerve.UpdateOdometry();
       }
@@ -1252,7 +1249,7 @@ void Robot::driveToCSsimple(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      //m_appendage.pneumaticsIn(); // Temp
+      // m_appendage.pneumaticsIn(); // Temp
       m_appendage.frontRollerIn();
       m_appendage.backRollerIn();
       if (wristReady && shoulderReady)
@@ -1413,7 +1410,7 @@ void Robot::basicAutoNoMobility(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      //m_appendage.pneumaticsIn(); // temp
+      // m_appendage.pneumaticsIn(); // temp
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
       if (wristReady && shoulderReady)
@@ -1494,7 +1491,7 @@ void Robot::basicAuto(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      //m_appendage.pneumaticsIn(); // temp
+      // m_appendage.pneumaticsIn(); // temp
       m_appendage.backRollerIn();
       m_appendage.frontRollerIn();
       if (wristReady && shoulderReady)
@@ -2040,7 +2037,7 @@ void Robot::newTwoGPAuto() {
       break;
     }
     case 3: {
-      trajectoryPP_ = pathLoad(twoGPpt1); // pt1 is driving back
+      trajectoryPP_ = pathLoad(twoGPpt1);  // pt1 is driving back
       driveWithTraj(trajectoryPP_, offPose);
       driveWithTraj(true);
       EstimatePose(0);
@@ -2048,7 +2045,8 @@ void Robot::newTwoGPAuto() {
       break;
     }
     case 4: {
-      trajectoryPP_ = pathLoad(twoGPpt2); // pt2 is making the turn and picking up the cube
+      trajectoryPP_ =
+          pathLoad(twoGPpt2);  // pt2 is making the turn and picking up the cube
       driveWithTraj(trajectoryPP_, offPose);
       driveWithTraj(true);
       EstimatePose(0);
@@ -2058,7 +2056,8 @@ void Robot::newTwoGPAuto() {
       break;
     }
     case 5: {
-      trajectoryPP_ = pathLoad(twoGPpt3); // pt3 is going back to the middle point
+      trajectoryPP_ =
+          pathLoad(twoGPpt3);  // pt3 is going back to the middle point
       driveWithTraj(trajectoryPP_, offPose);
       driveWithTraj(true);
       EstimatePose(0);
@@ -2066,7 +2065,8 @@ void Robot::newTwoGPAuto() {
       break;
     }
     case 6: {
-      trajectoryPP_ = pathLoad(twoGPpt4); // pt4 is driving to the grid and dropping the cube
+      trajectoryPP_ = pathLoad(
+          twoGPpt4);  // pt4 is driving to the grid and dropping the cube
       driveWithTraj(trajectoryPP_, offPose);
       driveWithTraj(true);
       EstimatePose(0);
@@ -2091,7 +2091,7 @@ void Robot::newTwoGPAuto() {
 // Two piece auto only using turn with gyro and drive straight commands
 void Robot::basicAuto2Piece(bool isBlue) {
   double isBlueFactor = 1;
-  if (isBlue){
+  if (isBlue) {
     isBlueFactor = -1;
   }
   switch (autoState) {
@@ -2152,106 +2152,97 @@ void Robot::basicAuto2Piece(bool isBlue) {
       }
       break;
     }
-    case 3:{ // 1.5 s at -.7 got bummper to game piece
+    case 3: {  // 1.5 s at -.7 got bummper to game piece
+      if (m_timer.Get().value() < 1) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_appendage.pneumaticsIn();
+        // tarGamePiece = Robot::GamePiece::cube;
+        m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 1.1) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 2.5) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        if (isBlue)
+          m_swerve.gyroSetpoint = 210;
+        else
+          m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 3.4) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        if (isBlue)
+          m_swerve.gyroSetpoint = 210;
+        else
+          m_swerve.gyroSetpoint = 180;
 
-    if(m_timer.Get().value() < 1){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_appendage.pneumaticsIn();
-      //tarGamePiece = Robot::GamePiece::cube;
-      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 1.1){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 2.5){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      if (isBlue)
-      m_swerve.gyroSetpoint = 210;
-      else
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 3.4){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      if (isBlue)
-      m_swerve.gyroSetpoint = 210;
-      else
-      m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 4.6) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
 
-      m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 4.6){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
- 
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 5.7){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-     if (isBlue)
-      m_swerve.gyroSetpoint = 0;
-      else
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 6.9){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(.55, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 7.4){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0*isBlueFactor;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else{  
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 5.7) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        if (isBlue)
+          m_swerve.gyroSetpoint = 0;
+        else
+          m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 6.9) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(.55, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 7.4) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0 * isBlueFactor;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else {
         m_timer.Stop();
         autoState++;
         firstTime = true;
       }
       break;
-  }
+    }
     case 4: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, false);
@@ -2339,7 +2330,7 @@ void Robot::basicAuto2Piece(bool isBlue) {
 // Two piece auto only using turn with gyro and drive straight commands
 void Robot::basicAuto2PieceBlue(bool isBlue) {
   double isBlueFactor = 1;
-  if (isBlue){
+  if (isBlue) {
     isBlueFactor = -1;
   }
   switch (autoState) {
@@ -2400,106 +2391,97 @@ void Robot::basicAuto2PieceBlue(bool isBlue) {
       }
       break;
     }
-    case 3:{ // 1.5 s at -.7 got bummper to game piece
+    case 3: {  // 1.5 s at -.7 got bummper to game piece
+      if (m_timer.Get().value() < 1) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_appendage.pneumaticsIn();
+        // tarGamePiece = Robot::GamePiece::cube;
+        m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 1.1) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 2.5) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        if (isBlue)
+          m_swerve.gyroSetpoint = 200;
+        else
+          m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 3.4) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        if (isBlue)
+          m_swerve.gyroSetpoint = 210;
+        else
+          m_swerve.gyroSetpoint = 180;
 
-    if(m_timer.Get().value() < 1){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_appendage.pneumaticsIn();
-      //tarGamePiece = Robot::GamePiece::cube;
-      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 1.1){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 2.5){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      if (isBlue)
-      m_swerve.gyroSetpoint = 200;
-      else
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 3.4){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      if (isBlue)
-      m_swerve.gyroSetpoint = 210;
-      else
-      m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 4.6) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
 
-      m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 4.6){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
- 
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 5.7){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-     if (isBlue)
-      m_swerve.gyroSetpoint = 0;
-      else
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 6.9){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(.55, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 7.4){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0*isBlueFactor;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else{  
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 5.7) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        if (isBlue)
+          m_swerve.gyroSetpoint = 0;
+        else
+          m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 6.9) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(.55, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 7.4) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0 * isBlueFactor;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else {
         m_timer.Stop();
         autoState++;
         firstTime = true;
       }
       break;
-  }
+    }
     case 4: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, false);
@@ -2589,7 +2571,7 @@ void Robot::basicAuto2PieceBlue(bool isBlue) {
 void Robot::basicAuto2PieceCT(bool isBlue) {
   // flipped signs
   double isBlueFactor = -1;
-  if (isBlue){
+  if (isBlue) {
     isBlueFactor = 1;
   }
   switch (autoState) {
@@ -2650,104 +2632,95 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       }
       break;
     }
-    case 3:{ // 1.5 s at -.7 got bummper to game piece
-
-    if(m_timer.Get().value() < 1.3){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_appendage.pneumaticsIn();
-      //tarGamePiece = Robot::GamePiece::cube;
-      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 1.4){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 2.6){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      if (!isBlue)
-      m_swerve.gyroSetpoint = 210;
-      else
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 3.3){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      if (!isBlue)
-      m_swerve.gyroSetpoint = 210;
-      else
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 4){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 5){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      if (!isBlue)
-      m_swerve.gyroSetpoint = 0;
-      else
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 6.6){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 6.8){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 5*isBlueFactor;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else{  
+    case 3: {  // 1.5 s at -.7 got bummper to game piece
+      if (m_timer.Get().value() < 1.3) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_appendage.pneumaticsIn();
+        // tarGamePiece = Robot::GamePiece::cube;
+        m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 1.4) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 2.6) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        if (!isBlue)
+          m_swerve.gyroSetpoint = 210;
+        else
+          m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 3.3) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        if (!isBlue)
+          m_swerve.gyroSetpoint = 210;
+        else
+          m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 4) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 5) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        if (!isBlue)
+          m_swerve.gyroSetpoint = 0;
+        else
+          m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 6.6) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 6.8) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 5 * isBlueFactor;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else {
         m_timer.Stop();
         autoState++;
         firstTime = true;
       }
       break;
-  }
+    }
     case 4: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, false);
@@ -2835,7 +2808,7 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
 void Robot::basicAuto2PieceCTRed(bool isBlue) {
   // flipped signs
   double isBlueFactor = -1;
-  if (isBlue){
+  if (isBlue) {
     isBlueFactor = 1;
   }
   switch (autoState) {
@@ -2896,95 +2869,86 @@ void Robot::basicAuto2PieceCTRed(bool isBlue) {
       }
       break;
     }
-    case 3:{ // 1.5 s at -.7 got bummper to game piece
-
-    if(m_timer.Get().value() < 1.3){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_appendage.pneumaticsIn();
-      //tarGamePiece = Robot::GamePiece::cube;
-      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 1.4){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 2.6){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = -170;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 3.3){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = -170;
-      m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 4){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 5){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 6.7){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 6.9){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 5*isBlueFactor;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else{  
+    case 3: {  // 1.5 s at -.7 got bummper to game piece
+      if (m_timer.Get().value() < 1.3) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_appendage.pneumaticsIn();
+        // tarGamePiece = Robot::GamePiece::cube;
+        m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 1.4) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 2.6) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = -170;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 3.3) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = -170;
+        m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 4) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 5) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(.25, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 6.7) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 6.9) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 5 * isBlueFactor;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else {
         m_timer.Stop();
         autoState++;
         firstTime = true;
       }
       break;
-  }
+    }
     case 4: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, false);
@@ -3069,11 +3033,10 @@ void Robot::basicAuto2PieceCTRed(bool isBlue) {
   }
 }
 
-
 // Two piece auto only using turn with gyro and drive straight commands
 void Robot::basicAuto2PieceRed(bool isBlue) {
   double isBlueFactor = 1;
-  if (isBlue){
+  if (isBlue) {
     isBlueFactor = -1;
   }
   switch (autoState) {
@@ -3134,95 +3097,86 @@ void Robot::basicAuto2PieceRed(bool isBlue) {
       }
       break;
     }
-    case 3:{ // 1.5 s at -.7 got bummper to game piece
-
-    if(m_timer.Get().value() < 1){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_appendage.pneumaticsIn();
-      //tarGamePiece = Robot::GamePiece::cube;
-      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 1.1){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 2.3){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 3.2){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 4.3){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 5.3){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 6.5){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(.7, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 7){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 15*isBlueFactor;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else{  
+    case 3: {  // 1.5 s at -.7 got bummper to game piece
+      if (m_timer.Get().value() < 1) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_appendage.pneumaticsIn();
+        // tarGamePiece = Robot::GamePiece::cube;
+        m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 1.1) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 2.3) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 3.2) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 4.3) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 5.3) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 6.5) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(.7, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 7) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 15 * isBlueFactor;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else {
         m_timer.Stop();
         autoState++;
         firstTime = true;
       }
       break;
-  }
+    }
     case 4: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, false);
@@ -3312,7 +3266,7 @@ void Robot::basicAuto2PieceRed(bool isBlue) {
 void Robot::basicAuto2PieceCTBlue(bool isBlue) {
   // flipped signs
   double isBlueFactor = -1;
-  if (isBlue){
+  if (isBlue) {
     isBlueFactor = 1;
   }
   switch (autoState) {
@@ -3373,95 +3327,86 @@ void Robot::basicAuto2PieceCTBlue(bool isBlue) {
       }
       break;
     }
-    case 3:{ // 1.5 s at -.7 got bummper to game piece
-
-    if(m_timer.Get().value() < 1.3){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_appendage.pneumaticsIn();
-      //tarGamePiece = Robot::GamePiece::cube;
-      m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 1.4){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 2.6){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 3.3){
-      m_appendage.wristPID(wristFloorCubeLoad);
-      m_appendage.shoulderPID(shoulderFloor);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 4){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
-      m_swerve.gyroSetpoint = 180;
-      m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 5){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 6.575){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 0;
-      m_swerve.DriveWithJoystick(.7, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else if(m_timer.Get().value() < 7){
-      m_appendage.wristPID(wristHome);
-      m_appendage.shoulderPID(shoulderHome);
-      m_appendage.armPID(armHome);
-      m_appendage.backRollerOff();
-      m_appendage.frontRollerOff();
-      m_swerve.gyroSetpoint = 15*isBlueFactor;
-      m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
-      EstimatePose(0);
-    }
-    else{  
+    case 3: {  // 1.5 s at -.7 got bummper to game piece
+      if (m_timer.Get().value() < 1.3) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_appendage.pneumaticsIn();
+        // tarGamePiece = Robot::GamePiece::cube;
+        m_swerve.DriveWithJoystick(-.7, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 1.4) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 2.6) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 3.3) {
+        m_appendage.wristPID(wristFloorCubeLoad);
+        m_appendage.shoulderPID(shoulderFloor);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 4) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn();
+        m_swerve.gyroSetpoint = 180;
+        m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 5) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 6.575) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 0;
+        m_swerve.DriveWithJoystick(.7, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else if (m_timer.Get().value() < 7) {
+        m_appendage.wristPID(wristHome);
+        m_appendage.shoulderPID(shoulderHome);
+        m_appendage.armPID(armHome);
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
+        m_swerve.gyroSetpoint = 15 * isBlueFactor;
+        m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
+        EstimatePose(0);
+      } else {
         m_timer.Stop();
         autoState++;
         firstTime = true;
       }
       break;
-  }
+    }
     case 4: {
       table->PutNumber("pipeline", 0);  // April Tag Camera Pipeline
       m_swerve.DriveWithJoystick(0, 0, 0, true, false, false);

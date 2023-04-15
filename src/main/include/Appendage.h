@@ -6,10 +6,10 @@
 #pragma once
 
 #include <frc/AnalogInput.h>
+#include <frc/AnalogPotentiometer.h>
 #include <frc/DigitalInput.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/Encoder.h>
-#include <frc/AnalogPotentiometer.h>
 #include <frc2/command/PIDCommand.h>
 #include <rev/CANSparkMax.h>
 

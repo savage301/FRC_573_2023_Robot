@@ -49,9 +49,9 @@ const std::string twoGPpt4 = "2GPpt4";
 
 // Basic 2 Piece Paths
 const std::string kAutonPaths50 = "Basic 2 Piece Red";
-const std::string kAutonPaths51 = "Basic 2 Piece Blue";;
+const std::string kAutonPaths51 = "Basic 2 Piece Blue";
 const std::string kAutonPaths52 = "Basic 2 Piece Red Cable Tray";
-const std::string kAutonPaths53 = "Basic 2 Piece Blue Cable Tray";;
+const std::string kAutonPaths53 = "Basic 2 Piece Blue Cable Tray";
 
 const std::vector<std::string> autoModes = {
     /*kAutonPaths1,
@@ -71,7 +71,7 @@ const std::vector<std::string> autoModes = {
     kAutonPaths12,
     kAutonPaths13,
     // no mobility
-    
+
     kAutonPaths45,
     kAutonPaths46,
     kAutonPaths50,
@@ -81,7 +81,7 @@ const std::vector<std::string> autoModes = {
     kAutonPaths52,
     kAutonPaths53,
     //
-    
+
     kAutonPaths98,
     kAutonPaths99,
 };

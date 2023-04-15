@@ -67,12 +67,11 @@ void Drivetrain::UpdateOdometry() {
 }
 
 void Drivetrain::UpdateOdometry(frc::Pose2d camerapose, double latency) {
-
   // Also apply vision measurements. We use 0.3 seconds in the past as an
   // example -- on a real robot, this must be calculated based either on latency
   // or timestamps.
-  m_poseEstimator.AddVisionMeasurement(camerapose,
-                                       frc::Timer::GetFPGATimestamp() - units::second_t(latency));
+  m_poseEstimator.AddVisionMeasurement(
+      camerapose, frc::Timer::GetFPGATimestamp() - units::second_t(latency));
 
   frc::SwerveModulePosition FL = {m_frontLeft.GetPosition().distance,
                                   m_frontLeft.GetPosition().angle};
@@ -84,8 +83,6 @@ void Drivetrain::UpdateOdometry(frc::Pose2d camerapose, double latency) {
                                   m_backRight.GetPosition().angle};
 
   m_poseEstimator.Update(m_gyro.GetRotation2d(), {FL, FR, BL, BR});
-
-  
 }
 
 frc::ChassisSpeeds Drivetrain::GetRobotVelocity() {
@@ -158,14 +155,16 @@ void Drivetrain::autoBalance(bool mobility) {
   double vector = .99;
   frc::SmartDashboard::PutNumber("RampState", rampState);
   vector = m_gyro.GetRoll();
-  double coeff = vector / std::abs(vector); // need to confirm roll positive  vs negative value this may need negative symbol
+  double coeff =
+      vector / std::abs(vector);  // need to confirm roll positive  vs negative
+                                  // value this may need negative symbol
   switch (rampState) {
     case 0: {
       DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
-      if (std::abs(vector) > balancedZ){
-        if (mobility)
-          rampState+=4;
-        else{
+      if (std::abs(vector) > balancedZ) {
+        if (mobility) {
+          rampState += 4;
+        } else {
           rampState++;
           counter = 0;
         }
@@ -177,34 +176,32 @@ void Drivetrain::autoBalance(bool mobility) {
       if (std::abs(vector) > balancedZ) {
           val = std::abs(vector) * kP;
       }*/
-      if (counter < 15){
-DriveWithJoystick(coeff * midSpeed, zeroSpeed, zeroSpeedrot, true, false,
-                        true);
-         counter ++;
-      }
-      else{
-      DriveWithJoystick(coeff * midSpeed, zeroSpeed, zeroSpeedrot, true, false,
-                        true);
-      if (std::abs(vector) < RampZ) {
-        counter = 0;
-        rampState++;
-      }
+      if (counter < 15) {
+        DriveWithJoystick(coeff * midSpeed, zeroSpeed, zeroSpeedrot, true,
+                          false, true);
+        counter++;
+      } else {
+        DriveWithJoystick(coeff * midSpeed, zeroSpeed, zeroSpeedrot, true,
+                          false, true);
+        if (std::abs(vector) < RampZ) {
+          counter = 0;
+          rampState++;
+        }
       }
       break;
     }
     case 2: {
       if (counter < 25) {
-        DriveWithJoystick(zeroSpeed, zeroSpeed, zeroSpeedrot, true,
-                          false, true);
+        DriveWithJoystick(zeroSpeed, zeroSpeed, zeroSpeedrot, true, false,
+                          true);
         counter++;
       } else {
-        if (std::abs(vector) < balancedZ)
-        stopDrivetrain(false, 0);
-       else {
-        rampState++;
-        counter = 0;
-       }
-
+        if (std::abs(vector) < balancedZ) {
+          stopDrivetrain(false, 0);
+        } else {
+          rampState++;
+          counter = 0;
+        }
       }
       break;
     }
@@ -220,35 +217,35 @@ DriveWithJoystick(coeff * midSpeed, zeroSpeed, zeroSpeedrot, true, false,
     }
     case 4: {
       DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
-      if (std::abs(vector) < balancedZ){
-          rampState++;
+      if (std::abs(vector) < balancedZ) {
+        rampState++;
       }
       break;
     }
     case 5: {
       DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
-      if (std::abs(vector) > balancedZ){
-          rampState++;
-          counter = 0;
+      if (std::abs(vector) > balancedZ) {
+        rampState++;
+        counter = 0;
       }
       break;
     }
-    case 6: { // on floor back side case
+    case 6: {  // on floor back side case
       DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
-      if (std::abs(vector) < balancedZ){
-          if (counter > 5)
-            rampState++;
-          else
-            counter++;
+      if (std::abs(vector) < balancedZ) {
+        if (counter > 5)
+          rampState++;
+        else
+          counter++;
       }
       break;
     }
-    case 7: { // on floor back side case
+    case 7: {  // on floor back side case
       DriveWithJoystick(fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
       counter = 0;
-      if (std::abs(vector) > balancedZ){
-          rampState = 1;
-          }
+      if (std::abs(vector) > balancedZ) {
+        rampState = 1;
+      }
       break;
     }
 
@@ -261,7 +258,6 @@ DriveWithJoystick(coeff * midSpeed, zeroSpeed, zeroSpeedrot, true, false,
       }
     }
   }
-  
 
   // -----Cross Ramp Section ---------------------------
 

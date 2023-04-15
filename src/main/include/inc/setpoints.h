@@ -27,7 +27,7 @@ const double wristHome = -0.1;
 // floor pickup
 // const double armFloor = ;
 const double shoulderFloor = -2375;
-const double wristFloorCubeLoad = -2.4; //-2.6
+const double wristFloorCubeLoad = -2.4;  // was -2.6
 const double wristFloorConeLoad = -1.8;
 const double wristFloor = -3;
 
@@ -37,26 +37,26 @@ const double wristFloorConeScore = wristHome;
 
 // mid score
 const double armMidCube = armHome;
-const double shoulderMidCube = -800; 
-const double shoulderMidCone = -730; // -515
+const double shoulderMidCube = -800;
+const double shoulderMidCone = -730;  // -515
 const double wristMidCone = -4.4;
-const double wristMidCube = -4.4; //350
+const double wristMidCube = -4.4;  // 350
 
 // high score
 const double armHighCube = -112;
 const double armHighCone = -115;
 const double shoulderHighCube = -700;
-const double shoulderHighCone = -600; // -500
+const double shoulderHighCone = -600;  // -500
 const double wristHigh = 490;
-const double wristHighCube = -5; //350
-//const double wristHighCone = 305;       //490
-const double wristHighCone = -4.7;       //490
+const double wristHighCube = -5;  // 350
+// const double wristHighCone = 305;       //490
+const double wristHighCone = -4.7;  // 490
 const double shoulderHighCubeAuto = -600;
 
 // high human player
 const double armHumanHigh = armHome;
 const double shoulderHumanHigh = 530;
-const double wristHumanHigh = -6.8; // 730
+const double wristHumanHigh = -6.8;  // 730
 
 // low human player
 const double shoulderHumanLow = 1750;
