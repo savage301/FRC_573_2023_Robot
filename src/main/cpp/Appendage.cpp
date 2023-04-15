@@ -31,11 +31,15 @@ Appendage::Appendage() {
       m_backRollerId, rev::CANSparkMax::MotorType::kBrushless};
   m_frontRollerMotor->SetInverted(false);
   m_backRollerMotor->SetInverted(true);
+  m_frontRollerMotor->SetSmartCurrentLimit(20);
+  m_backRollerMotor->SetSmartCurrentLimit(20);
 
   m_armMotor =
       new rev::CANSparkMax{m_armId, rev::CANSparkMax::MotorType::kBrushless};
 
   m_armMotor->SetOpenLoopRampRate(0.1);
+  m_armMotor->SetSmartCurrentLimit(40);
+
   arm_Encoder = new rev::SparkMaxRelativeEncoder{m_armMotor->GetEncoder(
       rev::SparkMaxRelativeEncoder::Type::kHallSensor, 42)};
 
@@ -44,6 +48,8 @@ Appendage::Appendage() {
 
   m_shoulderMotor->SetInverted(true);
   m_shoulderMotor->SetOpenLoopRampRate(0.1);
+  m_shoulderMotor->SetSmartCurrentLimit(40);
+
   shoulder_Encoder = new frc::Encoder(6, 7, false);
 
   m_wristMotor = new rev::CANSparkMax(m_wristMotorId,
@@ -52,6 +58,7 @@ Appendage::Appendage() {
   m_wristMotor->SetInverted(true);
   m_wristMotor->SetSmartCurrentLimit(20);
   m_wristMotor->SetOpenLoopRampRate(0.1);
+
   wristPot = new frc::AnalogPotentiometer(
       1, 1000, 0);  // degrees assuming we start at 0, max is 90 degrees
 

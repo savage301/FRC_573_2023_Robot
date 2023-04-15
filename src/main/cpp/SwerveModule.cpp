@@ -25,6 +25,9 @@ SwerveModule::SwerveModule(int driveMotorChannel, int turningMotorChannel,
   // to be continuous.
   m_turningPIDController.EnableContinuousInput(-units::radian_t{Pi},
                                                units::radian_t{Pi});
+//  m_driveMotor.SetOpenLoopRampRate(0.1);
+  m_driveMotor.SetSmartCurrentLimit(40);
+  m_turningMotor.SetSmartCurrentLimit(40);
 }
 
 frc::SwerveModuleState SwerveModule::GetState() {
