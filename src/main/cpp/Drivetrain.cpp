@@ -153,7 +153,6 @@ void Drivetrain::setTrajCon() {
 
 void Drivetrain::autoBalance(bool mobility) {
   double vector = .99;
-  int stopCnt = 0;
   frc::SmartDashboard::PutNumber("RampState", rampState);
   vector = m_gyro.GetRoll();
   double coeff =
