@@ -217,14 +217,14 @@ void Drivetrain::autoBalance(bool mobility) {
       break;
     }
     case 4: {
-      DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      DriveWithJoystick(-midSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
       if (std::abs(vector) < balancedZ) {
         rampState++;
       }
       break;
     }
     case 5: {
-      DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      DriveWithJoystick(-midSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
       if (std::abs(vector) > balancedZ) {
         rampState++;
         counter = 0;
@@ -234,20 +234,27 @@ void Drivetrain::autoBalance(bool mobility) {
     case 6: {  // on floor back side case
       DriveWithJoystick(-fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
       if (std::abs(vector) < balancedZ) {
-        if (counter > 5)
+        if (counter > 10) {
           rampState++;
-        else
+          counter = 0;
+        } else {
           counter++;
+        }
       }
       break;
     }
-    case 7: {  // on floor back side case
-      stopCnt = 30;
-      if (stopCnt > 0)
-        stopCnt--;
-      else
-        DriveWithJoystick(fastSpeed, zeroSpeed, zeroSpeedrot, true, false,
-                          true);
+    case 7: {
+      if (counter < 60) {
+        stopDrivetrain(true, 0);
+      } else {
+        rampState++;
+        counter = 0;
+      }
+      counter++;
+      break;
+    }
+    case 8: {  // on floor back side case
+      DriveWithJoystick(fastSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
       counter = 0;
       if (std::abs(vector) > balancedZ) {
         rampState = 1;

@@ -398,10 +398,8 @@ void Robot::TeleopPeriodic() {
     m_swerve.resetDrivetrain();
 
     // This should be commented out for comp
-    /*else if(m_controller1.GetRightTriggerAxis()>0.5){
-      m_swerve.autoBalance(true);
-
-    }*/
+  } else if (m_controller1.GetRightTriggerAxis() > 0.5) {
+    m_swerve.autoBalance(true);
   } else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
@@ -422,8 +420,8 @@ void Robot::TeleopPeriodic() {
   if (tarGamePiece == Robot::GamePiece::cube) {
     m_appendage.pneumaticsIn();
     if (m_controller2.GetLeftTriggerAxis() > .5) {
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
     } else if (m_controller2.GetRightTriggerAxis() > .5) {
       m_appendage.frontRollerOut(tarGamePiece);
       m_appendage.backRollerOut(tarGamePiece);
@@ -435,15 +433,15 @@ void Robot::TeleopPeriodic() {
 
   if (tarGamePiece == Robot::GamePiece::cone) {
     if (m_controller2.GetLeftTriggerAxis() > .5) {
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       m_appendage.pneumaticsOut();
     } else if (m_controller2.GetRightTriggerAxis() > .5) {
       m_appendage.frontRollerOut(tarGamePiece);
       m_appendage.backRollerOut(tarGamePiece);
       m_appendage.pneumaticsOut();
     } else if (m_controller2.GetLeftBumper()) {
-      m_appendage.backRollerIn();
+      m_appendage.backRollerIn(tarGamePiece);
       m_appendage.frontRollerOff();
       m_appendage.pneumaticsIn();
     } else {
@@ -892,8 +890,8 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
       m_appendage.armPID(armHome);
       m_appendage.wristPID(-1994);
       m_appendage.shoulderPID(2050);
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       m_appendage.pneumaticsIn();
       driveWithTraj(true);
       EstimatePose(2);
@@ -913,8 +911,8 @@ void Robot::autonomousPaths(bool isBlue, int slot, frc::Pose2d poseMidPoint,
         m_appendage.armPID(armHome);
         m_appendage.wristPID(-1994);
         m_appendage.shoulderPID(2050);
-        m_appendage.frontRollerIn();
-        m_appendage.backRollerIn();
+        m_appendage.frontRollerIn(tarGamePiece);
+        m_appendage.backRollerIn(tarGamePiece);
         m_appendage.pneumaticsIn();
         EstimatePose(2);
         if (m_timer.Get().value() > 1.5 || isPassCenterLine()) {
@@ -1250,8 +1248,8 @@ void Robot::driveToCSsimple(bool isBlue) {
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
       // m_appendage.pneumaticsIn(); // Temp
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -1411,8 +1409,8 @@ void Robot::basicAutoNoMobility(bool isBlue) {
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
       // m_appendage.pneumaticsIn(); // temp
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn(tarGamePiece);
+      m_appendage.frontRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -1492,8 +1490,8 @@ void Robot::basicAuto(bool isBlue) {
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
       // m_appendage.pneumaticsIn(); // temp
-      m_appendage.backRollerIn();
-      m_appendage.frontRollerIn();
+      m_appendage.backRollerIn(tarGamePiece);
+      m_appendage.frontRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -1661,8 +1659,8 @@ void Robot::twoGPAuto() {
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.pneumaticsIn();
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
       } else {
         m_appendage.armPID(armHome);
         m_appendage.shoulderPID(shoulderHome);
@@ -1814,8 +1812,8 @@ void Robot::threeGPAuto() {
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.pneumaticsIn();
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
       } else {
         m_appendage.armPID(armHome);
         m_appendage.shoulderPID(shoulderHome);
@@ -1897,8 +1895,8 @@ void Robot::threeGPAuto() {
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.pneumaticsIn();
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
       } else {
         m_appendage.armPID(armHome);
         m_appendage.shoulderPID(shoulderHome);
@@ -2102,8 +2100,8 @@ void Robot::basicAuto2Piece(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -2187,8 +2185,8 @@ void Robot::basicAuto2Piece(bool isBlue) {
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
         if (isBlue)
           m_swerve.gyroSetpoint = 210;
         else
@@ -2200,8 +2198,8 @@ void Robot::basicAuto2Piece(bool isBlue) {
         m_appendage.wristPID(wristHome);
         m_appendage.shoulderPID(shoulderHome);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
         m_swerve.gyroSetpoint = 0;
         m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
 
@@ -2341,8 +2339,8 @@ void Robot::basicAuto2PieceBlue(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -2426,8 +2424,8 @@ void Robot::basicAuto2PieceBlue(bool isBlue) {
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
         if (isBlue)
           m_swerve.gyroSetpoint = 210;
         else
@@ -2439,8 +2437,8 @@ void Robot::basicAuto2PieceBlue(bool isBlue) {
         m_appendage.wristPID(wristHome);
         m_appendage.shoulderPID(shoulderHome);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
         m_swerve.gyroSetpoint = 0;
         m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
 
@@ -2582,8 +2580,8 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -2667,8 +2665,8 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
         if (!isBlue)
           m_swerve.gyroSetpoint = 210;
         else
@@ -2679,8 +2677,8 @@ void Robot::basicAuto2PieceCT(bool isBlue) {
         m_appendage.wristPID(wristHome);
         m_appendage.shoulderPID(shoulderHome);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
         m_swerve.gyroSetpoint = 0;
         m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
         EstimatePose(0);
@@ -2819,8 +2817,8 @@ void Robot::basicAuto2PieceCTRed(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -2901,8 +2899,8 @@ void Robot::basicAuto2PieceCTRed(bool isBlue) {
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
         m_swerve.gyroSetpoint = -170;
         m_swerve.DriveWithJoystick(.5, 0, 0, false, false, true);
         EstimatePose(0);
@@ -2910,8 +2908,8 @@ void Robot::basicAuto2PieceCTRed(bool isBlue) {
         m_appendage.wristPID(wristHome);
         m_appendage.shoulderPID(shoulderHome);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerOff();
+        m_appendage.frontRollerOff();
         m_swerve.gyroSetpoint = 0;
         m_swerve.DriveWithJoystick(0, 0, 0, true, false, true);
         EstimatePose(0);
@@ -3047,8 +3045,8 @@ void Robot::basicAuto2PieceRed(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -3129,8 +3127,8 @@ void Robot::basicAuto2PieceRed(bool isBlue) {
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
         m_swerve.gyroSetpoint = 180;
         m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
         EstimatePose(0);
@@ -3138,8 +3136,8 @@ void Robot::basicAuto2PieceRed(bool isBlue) {
         m_appendage.wristPID(wristHome);
         m_appendage.shoulderPID(shoulderHome);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
         m_swerve.gyroSetpoint = 180;
         m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
         EstimatePose(0);
@@ -3277,8 +3275,8 @@ void Robot::basicAuto2PieceCTBlue(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
-      m_appendage.frontRollerIn();
-      m_appendage.backRollerIn();
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else
@@ -3359,8 +3357,8 @@ void Robot::basicAuto2PieceCTBlue(bool isBlue) {
         m_appendage.wristPID(wristFloorCubeLoad);
         m_appendage.shoulderPID(shoulderFloor);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
         m_swerve.gyroSetpoint = 180;
         m_swerve.DriveWithJoystick(-.5, 0, 0, true, false, true);
         EstimatePose(0);
@@ -3368,8 +3366,8 @@ void Robot::basicAuto2PieceCTBlue(bool isBlue) {
         m_appendage.wristPID(wristHome);
         m_appendage.shoulderPID(shoulderHome);
         m_appendage.armPID(armHome);
-        m_appendage.backRollerIn();
-        m_appendage.frontRollerIn();
+        m_appendage.backRollerIn(tarGamePiece);
+        m_appendage.frontRollerIn(tarGamePiece);
         m_swerve.gyroSetpoint = 180;
         m_swerve.DriveWithJoystick(.5, 0, 0, true, false, true);
         EstimatePose(0);

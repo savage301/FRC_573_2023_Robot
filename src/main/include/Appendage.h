@@ -24,12 +24,12 @@ class Appendage {
   Appendage();
 
   // Claw - front
-  void frontRollerIn();
+  void frontRollerIn(int tar);
   void frontRollerOut(int tar);
   void frontRollerOff();
 
   // Claw - back
-  void backRollerIn();
+  void backRollerIn(int tar);
   void backRollerOut(int tar);
   void backRollerOff();
   void pneumaticsIn();

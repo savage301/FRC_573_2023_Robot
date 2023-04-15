@@ -72,8 +72,11 @@ Appendage::Appendage() {
   p_backRollerCylinder1 = pneumatics(p_Roller1Id_a, p_Roller1Id_b);
 }
 
-void Appendage::frontRollerIn() {
-  m_frontRollerMotor->Set(0.70);
+void Appendage::frontRollerIn(int tar) {
+  if (tar == 2)
+    m_frontRollerMotor->Set(1);
+  else
+    m_frontRollerMotor->Set(1);
 }
 
 void Appendage::frontRollerOut(int tar) {
@@ -87,8 +90,11 @@ void Appendage::frontRollerOff() {
   m_frontRollerMotor->Set(0);
 }
 
-void Appendage::backRollerIn() {
-  m_backRollerMotor->Set(-0.70);
+void Appendage::backRollerIn(int tar) {
+  if (tar == 2)
+    m_backRollerMotor->Set(-1);
+  else
+    m_backRollerMotor->Set(-1);
 }
 
 void Appendage::backRollerOut(int tar) {
