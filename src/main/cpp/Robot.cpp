@@ -398,9 +398,10 @@ void Robot::TeleopPeriodic() {
     m_swerve.resetDrivetrain();
 
     // This should be commented out for comp
-  } else if (m_controller1.GetRightTriggerAxis() > 0.5) {
-    m_swerve.autoBalance(true);
-  } else {
+  } //else if (m_controller1.GetRightTriggerAxis() > 0.5) {
+   // m_swerve.autoBalance(true);
+  //} 
+  else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller
     m_swerve.DriveWithJoystick(
@@ -1329,6 +1330,8 @@ void Robot::driveToCSsimpleWithMobility(bool isBlue) {
       bool wristReady = m_appendage.wristPID(wristHighCone);
       bool shoulderReady = m_appendage.shoulderPID(shoulderHighCone);
       bool armReady = false;
+      m_appendage.frontRollerIn(tarGamePiece);
+      m_appendage.backRollerIn(tarGamePiece);
       if (wristReady && shoulderReady)
         armReady = m_appendage.armPID(armHighCone);
       else

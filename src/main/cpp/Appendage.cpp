@@ -31,8 +31,8 @@ Appendage::Appendage() {
       m_backRollerId, rev::CANSparkMax::MotorType::kBrushless};
   m_frontRollerMotor->SetInverted(false);
   m_backRollerMotor->SetInverted(true);
-  m_frontRollerMotor->SetSmartCurrentLimit(20);
-  m_backRollerMotor->SetSmartCurrentLimit(20);
+  m_frontRollerMotor->SetSmartCurrentLimit(35);
+  m_backRollerMotor->SetSmartCurrentLimit(35);
 
   m_armMotor =
       new rev::CANSparkMax{m_armId, rev::CANSparkMax::MotorType::kBrushless};
