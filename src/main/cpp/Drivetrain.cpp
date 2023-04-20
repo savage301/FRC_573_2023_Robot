@@ -176,7 +176,7 @@ void Drivetrain::autoBalance(bool mobility) {
       if (std::abs(vector) > balancedZ) {
           val = std::abs(vector) * kP;
       }*/
-      if (counter < 15) {
+      if (counter < 8) {
         DriveWithJoystick(coeff * midSpeed, zeroSpeed, zeroSpeedrot, true,
                           false, true);
         counter++;
@@ -191,7 +191,7 @@ void Drivetrain::autoBalance(bool mobility) {
       break;
     }
     case 2: {
-      if (counter < 25) {
+      if (counter < 15) {
         DriveWithJoystick(zeroSpeed, zeroSpeed, zeroSpeedrot, true, false,
                           true);
         counter++;
@@ -216,7 +216,7 @@ void Drivetrain::autoBalance(bool mobility) {
       break;
     }
     case 4: {
-      DriveWithJoystick(-midSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
+      DriveWithJoystick(-overrampSpeed, zeroSpeed, zeroSpeedrot, true, false, true);
       if (std::abs(vector) < balancedZ) {
         rampState++;
       }
