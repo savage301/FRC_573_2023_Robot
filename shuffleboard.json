@@ -10,7 +10,88 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "titleType": 0,
-        "tiles": {}
+        "tiles": {
+          "0,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Modes",
+              "_title": "SmartDashboard/Auto Modes",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/edge analog",
+              "_title": "/SmartDashboard/edge analog",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Claw 1 AnalogInput",
+              "_title": "/SmartDashboard/Claw 1 AnalogInput",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Claw 2 AnalogInput",
+              "_title": "SmartDashboard/Claw 2 AnalogInput",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Encoder",
+              "_title": "SmartDashboard/Wrist Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Pot",
+              "_title": "SmartDashboard/Wrist Pot",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          }
+        }
       }
     },
     {
@@ -128,7 +209,7 @@
               "_showGlyph": false
             }
           },
-          "1,0": {
+          "2,0": {
             "size": [
               4,
               3
@@ -141,8 +222,7 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false,
-              "Colors/traj": "#FFFFFFFF"
+              "Visuals/Show Outside Circles": false
             }
           }
         }
@@ -159,7 +239,7 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "5,2": {
+          "0,2": {
             "size": [
               1,
               1
@@ -185,7 +265,7 @@
               "_showGlyph": false
             }
           },
-          "6,2": {
+          "1,2": {
             "size": [
               1,
               1
@@ -198,7 +278,7 @@
               "_showGlyph": false
             }
           },
-          "3,0": {
+          "0,0": {
             "size": [
               1,
               1
@@ -211,7 +291,7 @@
               "_showGlyph": false
             }
           },
-          "4,0": {
+          "1,0": {
             "size": [
               1,
               1
@@ -224,7 +304,7 @@
               "_showGlyph": false
             }
           },
-          "3,1": {
+          "0,1": {
             "size": [
               1,
               1
@@ -237,7 +317,7 @@
               "_showGlyph": false
             }
           },
-          "4,1": {
+          "1,1": {
             "size": [
               1,
               1
@@ -249,15 +329,185 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Gyro",
+              "_title": "/SmartDashboard/Gyro",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/est. GP location",
+              "_title": "/SmartDashboard/est. GP location",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Pot",
+              "_title": "SmartDashboard/Wrist Pot",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist Enc",
+              "_title": "SmartDashboard/Wrist Enc",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///SmartDashboard/Ignore appendage limits",
+              "_title": "SmartDashboard/Ignore appendage limits",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Field",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Modes",
+              "_title": "Auto Modes",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,0": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "Field",
+              "_source0": "network_table:///SmartDashboard/Field",
+              "_title": "Field",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Game/Game": "A2023_Charged_Up",
+              "Visuals/Robot Icon Size": 50.0,
+              "Visuals/Show Outside Circles": false
+            }
+          },
+          "1,1": {
+            "size": [
+              1,
+              2
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Charging station",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "1,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/RampState",
+                  "_title": "RampState",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "1,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Gyro Roll",
+                  "_title": "/SmartDashboard/Gyro Roll",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              }
+            }
+          },
+          "0,1": {
+            "size": [
+              1,
+              2
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Game piece",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Has Game Piece",
+                  "_title": "Has Game Piece",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "0,1": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Target Game Piece",
+                  "_title": "Target Game Piece",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              }
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": -6.857142925262451,
-    "y": -6.857142925262451,
-    "width": 1110.857177734375,
-    "height": 630.8571166992188
+    "x": -7.0,
+    "y": -7.0,
+    "width": 1111.0,
+    "height": 631.0
   }
 }

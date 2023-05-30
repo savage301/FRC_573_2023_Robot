@@ -30,11 +30,13 @@
 #include "Appendage.h"
 #include "Drivetrain.h"
 #include "Led.h"
-#include "frc/smartdashboard/Smartdashboard.h"
+#include "auto.h"
 #include "networktables/NetworkTable.h"
 #include "networktables/NetworkTableEntry.h"
 #include "networktables/NetworkTableInstance.h"
 #include "networktables/NetworkTableValue.h"
+#include "pid.h"
+#include "poses.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -45,17 +47,6 @@ class Robot : public frc::TimedRobot {
   frc::XboxController m_controller2{1};
 
   // -------------- Added for Auto------------------------------
-  /*frc::Trajectory exampleTrajectory =
-      frc::TrajectoryGenerator::GenerateTrajectory(
-          // Start at the origin facing the +X direction
-          frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)),
-          // Pass through these two interior waypoints, making an 's' curve path
-          {frc::Translation2d(6_m, 6_m), frc::Translation2d(7_m, 4_m)},
-          // End 3 meters straight ahead of where we started, facing forward
-          frc::Pose2d(8_m, 5_m, frc::Rotation2d(0_deg)),
-          // Pass the config
-          m_swerve.auto_traj);
-*/
   pathplanner::PathPlannerTrajectory trajectoryPP_;
   frc::Trajectory trajectory_;
   // The timer to use during the autonomous period.
@@ -63,16 +54,26 @@ class Robot : public frc::TimedRobot {
 
   // Create Field2d for robot and trajectory visualizations.
   frc::Field2d m_field;
-
   frc::Field2d field_off;
 
-  // The Ramsete Controller to follow the trajectory.
-  //frc::RamseteController m_ramseteController;
+  // Auto Controllers ----------------------------------------------
+  // Robot
+  frc2::PIDController X_PIDControllerAuto{-0.005, 0, 0};
+  frc2::PIDController Y_PIDControllerAuto{0.005, 0, 0};
+  frc::ProfiledPIDController<units::radians> theta_PIDControllerAuto{
+      3, 0.0, 0.0, {kMaxAngularSpeed, kMaxAngularAccel}};
 
+  // Swerve Controller to follow the trajectory
+  frc::HolonomicDriveController m_holonmicControllerAuto =
+      frc::HolonomicDriveController(X_PIDControllerAuto, Y_PIDControllerAuto,
+                                    theta_PIDControllerAuto);
+  // ----------------------------------------------------------------
+  // Teleop Controllers --------------------------------------------
+  // Robot
   frc2::PIDController X_PIDController{1.0, 0, 0};
   frc2::PIDController Y_PIDController{1.0, 0, 0};
   frc::ProfiledPIDController<units::radians> theta_PIDController{
-      1, 0.0, 0.0, {m_swerve.kMaxAngularSpeed, m_swerve.kMaxAngularAccel}};
+      1, 0.0, 0.0, {kMaxAngularSpeed, kMaxAngularAccel}};
 
   // Swerve Controller to follow the trajectory
   frc::HolonomicDriveController m_holonmicController =
@@ -96,14 +97,6 @@ class Robot : public frc::TimedRobot {
 
  private:
   frc::SendableChooser<std::string> m_chooser;
-  const std::string kAutoNameDefault = "Default";
-  const std::string kAutoNameCustom = "My Auto";
-  const std::string kAutonPaths1 = "Red Right 6 to 7";
-  const std::string kAutonPaths2 = "Red Left 2 to 1";
-  const std::string kAutonPaths3 = "Blue Right 6 to 7";
-  const std::string kAutonPaths4 = "Blue Left 2 to 1";
-  const std::string kAutonPaths5 = "Red Left 3 to CS";
-  const std::string kAutonPaths6 = "Blue Left 3 to CS";
   std::string m_autoSelected;
 
   nt::DoubleArraySubscriber botPose;
@@ -113,64 +106,20 @@ class Robot : public frc::TimedRobot {
   frc::Compressor compressor =
       frc::Compressor(19, frc::PneumaticsModuleType::CTREPCM);
 
-  int autoState = 0;
+  int autoState;
   bool firstTime;
 
   std::shared_ptr<nt::NetworkTable> table;
 
-#define pose1(x, y) frc::Pose2d(x, y, frc::Rotation2d(0_deg))
-#define pose2(x, y) frc::Pose2d(x, y, frc::Rotation2d(180_deg))
-#define poseCubes(x, y) \
-  frc::Pose2d(x, y, frc::Rotation2d(180_deg))  // facing away from the wall
-#define poseRed(y) pose1(6.41_m, y)
-#define poseBlue(y) pose2(-6.41_m, y)
-#define poseMid(x) pose1(x, 5.09_m)
-#define poseCubes_(x) poseCubes(x, 1.2_m)
-
-  std::vector<frc::Pose2d> redPose = {                     // slot num
-                                      poseRed(-3.5_m),     // 0
-                                      poseRed(-2.94_m),    // 1
-                                      poseRed(-2.38_m),    // 2
-                                      poseRed(-1.82_m),    // 3
-                                      poseRed(-1.26_m),    // 4
-                                      poseRed(-.7_m),      // 5
-                                      poseRed(-.14_m),     // 6
-                                      poseRed(.42_m),      // 7
-                                      poseRed(.98_m)};     // 8
-  std::vector<frc::Pose2d> bluePose = {                    // slot num
-                                       poseBlue(.98_m),    // 0
-                                       poseBlue(.42_m),    // 1
-                                       poseBlue(-.14_m),   // 2
-                                       poseBlue(-.7_m),    // 3
-                                       poseBlue(-1.26_m),  // 4
-                                       poseBlue(-1.82_m),  // 5
-                                       poseBlue(-2.38_m),  // 6
-                                       poseBlue(-2.94_m),  // 7
-                                       poseBlue(-3.5_m)};  // 8
-
-  frc::Pose2d redRightMidPose = poseMid(0.67_m);
-  frc::Pose2d redLeftMidPose = poseMid(-3.17_m);
-  frc::Pose2d redRightcube = poseCubes_(.57_m);
-  frc::Pose2d redLeftcube = poseCubes_(-3.09_m);
-
-  frc::Pose2d blueLeftMidPose = poseMid(-0.67_m);
-  frc::Pose2d blueRightMidPose = poseMid(3.17_m);
-  frc::Pose2d blueLeftcube = poseCubes_(-.57_m);
-  frc::Pose2d blueRightcube = poseCubes_(3.09_m);
-
-  frc::Pose2d redCharge = pose1(5.88_m, -1.29_m);
-  frc::Pose2d blueCharge = pose1(-5.88_m, -1.29_m);
   enum Grid { humanLeft, humanCenter, humanRight };
-
   int tarGrid;
 
   bool isBlue;
 
   enum GamePiece { cone = 1, cube = 2 };
-
   int tarGamePiece;
-
   bool hasGamePiece;
+  void updateHasGamePiece();
 
   enum fA_Pos { top, left, right, bot };
   int curFA_Pos;
@@ -180,7 +129,12 @@ class Robot : public frc::TimedRobot {
       frc::Rotation2d(units::degree_t(0)));
 
   pathplanner::PathPlannerTrajectory pathGenerate(int slot);
-  pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d tarPose);
+  pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d tarPose,
+                                                  frc::Rotation2d angle);
+  pathplanner::PathPlannerTrajectory pathGenerate(frc::Pose2d startPose,
+                                                  frc::Pose2d tarPose,
+                                                  frc::Rotation2d angle);
+  pathplanner::PathPlannerTrajectory pathLoad(std::string path);
   void driveWithTraj(pathplanner::PathPlannerTrajectory trajectoryPP_,
                      frc::Pose2d offPose);
   void driveWithTraj(bool auton);
@@ -199,6 +153,21 @@ class Robot : public frc::TimedRobot {
   void EstimatePose(int camera_pipline);
   double estimateGamePieceDistanceToCenter();
 
+  // Auto modes
   void driveToCS(bool isBlue);
-  void updateHasGamePiece();
+  void driveToCSsimple(bool isBlue);
+  void driveToCSsimpleWithMobility(bool isBlue);
+  void basicAuto(bool isBlue);
+  void basicAutoNoMobility(bool isBlue);
+  void basicAuto2Piece(bool isBlue);
+  void basicAuto2PieceCT(bool isBlue);
+  void basicAuto2PieceRed(bool isBlue);
+  void basicAuto2PieceCTRed(bool isBlue);
+  void basicAuto2PieceBlue(bool isBlue);
+  void basicAuto2PieceCTBlue(bool isBlue);
+  void basicAuto2(std::string path);
+  void twoGPAuto();
+  void threeGPAuto();
+
+  void newTwoGPAuto();
 };

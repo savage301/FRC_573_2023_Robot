@@ -17,6 +17,8 @@
 #include <vector>
 
 #include "SwerveModule.h"
+#include "def.h"
+#include "pid.h"
 
 /**
  * Represents a swerve drive style drivetrain.
@@ -29,27 +31,16 @@ class Drivetrain {
              units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
              bool fieldRelative);
   void UpdateOdometry();
-  void UpdateOdometry(frc::Pose2d camerapose);
+  void UpdateOdometry(frc::Pose2d camerapose, double latency);
 
   void DriveWithJoystick(double xJoy, double yJoy, double rJoy,
-                         bool fieldRelative, bool lim);
+                         bool fieldRelative, bool lim, bool gyrostablize);
 
   void ResetOdometry(const frc::Pose2d& pose);
   frc::ChassisSpeeds GetRobotVelocity();
   bool isBlue = false;
 
   frc::Pose2d GetPose() const;
-
-  static constexpr units::meters_per_second_t kMaxSpeed =
-      4.4_mps;  // 14.5 ft/s to meters per second
-  static constexpr units::radians_per_second_t kMaxAngularSpeed{
-      std::numbers::pi * 2};  // rotation per second
-
-  static constexpr auto kMaxAcceleration =
-      units::meters_per_second_squared_t(2.2);  // meters per second^2
-
-  static constexpr units::radians_per_second_squared_t kMaxAngularAccel{
-      std::numbers::pi};  // 1 rotation per second per second
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
   // to 1.
@@ -58,15 +49,21 @@ class Drivetrain {
   frc::SlewRateLimiter<units::dimensionless::scalar> m_rotLimiter{3 / 1_s};
 
   frc::TrajectoryConfig auto_traj{kMaxSpeed, kMaxAcceleration};
-  // auto_traj.AddConstraints(SwerveDriveKinematicsConstraint);
 
   void setTrajCon();
 
-  void autoBalance();
+  void autoBalance(bool mobility);
+  // void autoBalanceWithMobility();
 
-  //bool onRamp = false;
+  // bool onRamp = false;
 
-  enum RampPos { floor = 0, upward = 1, balanced = 2, downside = 3, floorback = 4 };
+  enum RampPos {
+    floor = 0,
+    upward = 1,
+    balanced = 2,
+    downside = 3,
+    floorback = 4
+  };
 
   int currRampPos;
 
@@ -74,11 +71,22 @@ class Drivetrain {
 
   bool crossedramp;
 
+  int rampState;
+
   void pumpOutSensorVal();
 
   bool isGyroWorking();
 
-  void resetGyro();
+  void resetGyro(double angle);
+
+  void updateGyroAngle();
+
+  double gryoStablize();
+  double gyroSetpoint;
+
+  void resetDrivetrain();
+  void stopDrivetrain(bool gyro, double r);
+  void updateMotorIdleMode(bool auton);
 
  private:
   frc::Translation2d m_frontLeftLocation{+0.3175_m, +0.27305_m};
@@ -105,6 +113,8 @@ class Drivetrain {
 
   double last = 0;
 
+  int counter = 0;
+
   // Gains are for example purposes only - must be determined for your own
   // robot!
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator{
@@ -114,5 +124,8 @@ class Drivetrain {
        m_backLeft.GetPosition(), m_backRight.GetPosition()},
       frc::Pose2d{0_m, 0_m, 0_deg},
       {0.1, 0.1, 0.1},
-      {0.1, 0.1, 0.1}};
+      {0.01, 0.01, 0.01}};
+
+  double remapVal(double i, double threshold);
+  double deadband(double i, double threshold);
 };

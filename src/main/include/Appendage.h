@@ -6,27 +6,31 @@
 #pragma once
 
 #include <frc/AnalogInput.h>
+#include <frc/AnalogPotentiometer.h>
 #include <frc/DigitalInput.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/Encoder.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/PIDCommand.h>
 #include <rev/CANSparkMax.h>
 
 #include <numbers>
+
+#include "def.h"
+#include "pid.h"
+#include "setpoints.h"
 
 class Appendage {
  public:
   Appendage();
 
   // Claw - front
-  void frontRollerIn();
-  void frontRollerOut();
+  void frontRollerIn(int tar);
+  void frontRollerOut(int tar);
   void frontRollerOff();
 
   // Claw - back
-  void backRollerIn();
-  void backRollerOut();
+  void backRollerIn(int tar);
+  void backRollerOut(int tar);
   void backRollerOff();
   void pneumaticsIn();
   void pneumaticsOut();
@@ -52,8 +56,7 @@ class Appendage {
   void pumpOutSensorVal();
 
   // Claw UltSnd
-  bool isGamePieceInClaw();
-  bool checkEdge();
+  bool isGamePieceInClaw(bool gamePieceInClawManual);
 
   enum armVals { armDown = -1, armOff = 0, armUp = 1 };
 
@@ -72,42 +75,24 @@ class Appendage {
   bool getWristWorking();
   bool getAnalogWorking();
 
-  void frontClawPneumaticsIn();
-  void frontClawPneumaticsOut();
-  void backClawPneumaticsIn();
-  void backClawPneumaticsOut();
   double getClaw1();
   double getClaw2();
 
   bool getArmExtended();
 
-  bool unleashThePower = false;
+  bool unleashThePower = true;
 
  private:
-  int m_frontRollerId = 15;
-  int m_backRollerId = 14;
+  int m_frontRollerId = 14;
+  int m_backRollerId = 15;
   int m_armId = 16;
   int m_shoulderId = 17;
   // roller
   int p_Roller1Id_a = 1;
   int p_Roller1Id_b = 0;
-  int p_RollerB_Id_a = 3;
-  int p_RollerB_Id_b = 2;
-  int p_RollerF_Id_a = 4;
-  int p_RollerF_Id_b = 5;
 
   int m_wristMotorId = 18;
   int p_pcmId = 19;
-
-  // Appendage Encoder Limits
-  double shoulder_max = 0.0;
-  double shoulder_min = -2000.0;
-
-  double arm_max = -5;
-  double arm_min = -220.0;
-
-  double wrist_max = 2100.0;
-  double wrist_min = 0.0;
 
   // Claw Motors
   rev::CANSparkMax* m_backRollerMotor;
@@ -123,7 +108,8 @@ class Appendage {
 
   // Wrist Motor
   rev::CANSparkMax* m_wristMotor;
-  frc::Encoder* wrist_Encoder;
+  frc::AnalogPotentiometer* wristPot;
+  rev::RelativeEncoder* wrist_Encoder;
 
   // Claw Rear Roller Cylinder
   frc::DoubleSolenoid* p_backRollerCylinder1;
@@ -133,18 +119,10 @@ class Appendage {
   // Claw UltSnd
   frc::AnalogInput* claw1_a_input;
   frc::AnalogInput* claw2_a_input;
-  // edge on chassis
-  frc::AnalogInput* edge1_a_input;
-  frc::AnalogInput* edge2_a_input;
 
   double remapVal(double i, double threshold);
   double deadband(double i, double threshold);
   double analogToDistance(double i);
-
-  frc2::PIDController Arm_PIDController{1.0, 0, 0};
-  frc2::PIDController Shoulder_PIDController{1.0, 0, 0};
-  frc2::PIDController Wrist_PIDController{1.0, 0, 0};
-
   double lastArm = 0;
   double lastShoulder = 0;
   double lastWrist = 0;
