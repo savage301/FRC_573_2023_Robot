@@ -398,9 +398,9 @@ void Robot::TeleopPeriodic() {
     m_swerve.resetDrivetrain();
 
     // This should be commented out for comp
-  } else if (m_controller1.GetRightTriggerAxis() > 0.5) {
-    m_swerve.autoBalance(true);
-  } 
+  } //else if (m_controller1.GetRightTriggerAxis() > 0.5) {
+   // m_swerve.autoBalance(true);
+  //} 
   else {
     // Default joystick driving. This is done if no other buttons are pressed on
     // driver controller

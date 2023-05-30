@@ -172,7 +172,7 @@ bool Appendage::shoulderPID(double tar) {
 }
 
 bool Appendage::armPID(double tar) {
-  double limit = 5, maxval = 1;
+  double limit = 1.5, maxval = 1;
   double outlimit = 10;
   double cur = arm_Encoder->GetPosition();
   double out = Arm_PIDController.Calculate(cur, tar);
